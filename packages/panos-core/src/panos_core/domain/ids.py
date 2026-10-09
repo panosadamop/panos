@@ -21,6 +21,11 @@ PREFIXES: Final = {
     "conversation": "cnv",
     "message": "msg",
     "usage": "use",
+    "requirement": "req",
+    "requirement_approval": "rap",
+    "trace_link": "trl",
+    "interview": "itv",
+    "skill": "skl",
 }
 
 _ID_RE: Final = re.compile(r"^[a-z]{3}_[0-9a-f]{32}$")

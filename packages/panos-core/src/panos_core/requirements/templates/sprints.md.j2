@@ -1,0 +1,16 @@
+# {{ project }} — Sprint Plan
+
+{% include "_header.md.j2" %}
+{% if estimate and estimate.sprints %}
+{% for sprint in estimate.sprints %}
+
+## Sprint {{ sprint.number }} ({{ sprint.points }} points)
+
+{% for key in sprint.stories %}
+- {{ key }}
+{% endfor %}
+{% endfor %}
+{% else %}
+
+_No stories to plan yet._
+{% endif %}

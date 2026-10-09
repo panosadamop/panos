@@ -1,0 +1,28 @@
+# {{ project }} — Backlog
+
+{% include "_header.md.j2" %}
+{% macro story(us) %}
+- **{{ us | label }}** — {{ us.attributes.get("points", "?") }} pts, {{ us.attributes.get("priority", "should") }}{% if us.body %}: {{ us.body }}{% endif %}
+
+{% for ac in children[us.key] if ac.type.value == "AC" %}
+  - {{ ac.key }}: {{ ac.title }}
+{% endfor %}
+{% endmacro %}
+{% for epic in t.get("EPIC", []) %}
+
+## {{ epic | label }}
+
+{% for feat in children[epic.key] if feat.type.value == "FEAT" %}
+### {{ feat | label }}
+
+{% for us in children[feat.key] if us.type.value == "US" %}{{ story(us) }}{% endfor %}
+
+{% endfor %}
+{% for us in children[epic.key] if us.type.value == "US" %}{{ story(us) }}{% endfor %}
+{% endfor %}
+{% set loose = t.get("US", []) | rejectattr("parent_key", "in", (t.get("EPIC", []) + t.get("FEAT", [])) | map(attribute="key") | list) | list %}
+{% if loose %}
+
+## Stories
+{% for us in loose %}{{ story(us) }}{% endfor %}
+{% endif %}

@@ -26,7 +26,7 @@ from panos_core.events import EventBus
 from panos_core.jobs import JobService
 from panos_core.jobs.context import JobContextFactory, JobServices
 from panos_core.jobs.runner import JobRunner
-from panos_core.jobs.workflows import CodingWorkflow, CommandWorkflow
+from panos_core.jobs.workflows import CodingWorkflow, CommandWorkflow, ImpactAnalysisWorkflow
 from panos_core.knowledge import KnowledgeIndex, KnowledgeService
 from panos_core.knowledge.service import Embedder
 from panos_core.nodes import ensure_local_node
@@ -38,6 +38,8 @@ from panos_core.policy import PolicyEngine
 from panos_core.projects import ProjectService
 from panos_core.projects.context import project_tool_context
 from panos_core.repository import AnalysisService
+from panos_core.requirements import RequirementsService
+from panos_core.requirements.pipeline import PipelineService
 from panos_core.secrets import SecretStore, create_secret_store, get_or_create_node_key
 from panos_core.tools import ToolContext, ToolRegistry, ToolRuntime
 from panos_core.tools.builtin import build_default_registry
@@ -72,6 +74,8 @@ class NodeContainer:
     checkpoints: CheckpointService
     notifications: NotificationService
     runner: JobRunner
+    requirements: RequirementsService
+    pipeline: PipelineService
     started_monotonic: float = field(default_factory=time.monotonic)
     background: list[asyncio.Task[object]] = field(default_factory=list)
 
@@ -209,6 +213,10 @@ async def build_container(
     knowledge.attach_embedder(_embedder(gateway))
     events = EventBus()
     checkpoints = CheckpointService(uow_factory, audit, settings)
+    requirements = RequirementsService(uow_factory, audit)
+    pipeline = PipelineService(
+        uow_factory, audit, requirements, projects, gateway, settings.estimation
+    )
     notifications = NotificationService([EventChannel(events), LogChannel()])
     runner = JobRunner(
         JobServices(
@@ -220,8 +228,9 @@ async def build_container(
             uow_factory=uow_factory,
             settings=settings.jobs,
             context_for=_job_context_factory(uow_factory, node.id),
+            requirements=requirements,
         ),
-        [CodingWorkflow(), CommandWorkflow()],
+        [CodingWorkflow(), CommandWorkflow(), ImpactAnalysisWorkflow()],
         events,
         project_lookup=projects.get,
     )
@@ -262,7 +271,22 @@ async def build_container(
         checkpoints=checkpoints,
         notifications=notifications,
         runner=runner,
+        requirements=requirements,
+        pipeline=pipeline,
     )
+
+    async def impact_task(project_id: str, changed_key: str, stale_keys: list[str]) -> None:
+        # ADR-014: a changed approved item creates an impact-analysis task.
+        project = await projects.get(project_id)
+        await runner.submit(
+            f"Impact analysis: {changed_key} changed",
+            kind="impact_analysis",
+            project=project,
+            actor="system",
+            input={"changed_key": changed_key, "stale_keys": stale_keys},
+        )
+
+    requirements.set_change_hook(impact_task)
     await runner.recover()  # ADR-011: interrupted jobs become PAUSED; queued jobs start
 
     async def start_coding_job(objective: str, project: Project, actor: str) -> str:

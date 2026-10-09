@@ -28,6 +28,7 @@ from panos_core.jobs.context import (
     Blocked,
     JobContext,
     JobServices,
+    NeedsUser,
     Suspend,
     Workflow,
 )
@@ -41,7 +42,13 @@ INTERRUPTED: Final = "interrupted"
 _INTERRUPTIBLE: Final = (JobStatus.RUNNING, JobStatus.PLANNING, JobStatus.WAITING_FOR_TOOL)
 # WAITING_FOR_APPROVAL is resumable so an expired approval request can be re-issued.
 _RESUMABLE: Final = frozenset(
-    {JobStatus.PAUSED, JobStatus.BLOCKED, JobStatus.QUEUED, JobStatus.WAITING_FOR_APPROVAL}
+    {
+        JobStatus.PAUSED,
+        JobStatus.BLOCKED,
+        JobStatus.QUEUED,
+        JobStatus.WAITING_FOR_APPROVAL,
+        JobStatus.WAITING_FOR_USER,
+    }
 )
 
 StatusListener = Callable[[Job], Awaitable[None]]
@@ -285,6 +292,13 @@ class JobRunner:
                 job_id, {"success": False, "blocked": True, "reason": b.reason, **b.report}
             )
             await self._transition(job_id, JobStatus.BLOCKED, b.reason)
+            return
+        except NeedsUser as n:
+            await ctx.save()
+            await self._s.jobs.set_result(
+                job_id, {"success": False, "waiting": True, "reason": n.reason, **n.report}
+            )
+            await self._transition(job_id, JobStatus.WAITING_FOR_USER, n.reason)
             return
         except ApprovalRejectedError as exc:
             await ctx.save()

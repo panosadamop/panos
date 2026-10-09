@@ -1,0 +1,27 @@
+# {{ project }} — Functional Requirements (FRD)
+
+{% include "_header.md.j2" %}
+{% for fr in t.get("FR", []) %}
+
+## {{ fr | label }}
+
+{% if fr.parent_key %}
+Traces to: {{ fr.parent_key }}
+
+{% endif %}
+{{ fr.body or "_No description._" }}
+{% set realized = links_to[fr.key] %}
+{% if realized %}
+
+Realized by: {% for l in realized %}{{ l.source_key }} ({{ l.relation.value }}){% if not loop.last %}, {% endif %}{% endfor %}
+
+{% endif %}
+{% if children[fr.key] %}
+
+Backlog: {% for c in children[fr.key] %}{{ c.key }}{% if not loop.last %}, {% endif %}{% endfor %}
+
+{% endif %}
+{% else %}
+
+_None yet._
+{% endfor %}

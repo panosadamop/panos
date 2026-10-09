@@ -18,6 +18,9 @@ from panos_core.persistence.repositories import (
     SqlSnapshotRepository,
     SqlUsageRepository,
 )
+from panos_core.persistence.requirement_repository import (
+    SqlRequirementRepository,
+)
 
 
 class SqlUnitOfWork:
@@ -41,6 +44,7 @@ class SqlUnitOfWork:
         self.preferences = SqlPreferenceRepository(s)
         self.conversations = SqlConversationRepository(s)
         self.ai_usage = SqlUsageRepository(s)
+        self.requirements = SqlRequirementRepository(s)
         return self
 
     async def __aexit__(

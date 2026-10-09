@@ -13,10 +13,22 @@ from panos_node_api.routers import (
     jobs,
     node,
     projects,
+    requirements,
 )
 
 api_router = APIRouter(prefix=f"/api/{API_VERSION}")
-for module in (node, approvals, audit, projects, apps, conversation, ai, events, jobs):
+for module in (
+    node,
+    approvals,
+    audit,
+    projects,
+    apps,
+    conversation,
+    ai,
+    events,
+    jobs,
+    requirements,
+):
     api_router.include_router(module.router)
 
 __all__ = ["api_router"]

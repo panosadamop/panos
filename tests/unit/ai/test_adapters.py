@@ -441,3 +441,22 @@ def test_factory_builds_enabled_providers_with_keyring_keys() -> None:
     assert providers["lan"].locality == Locality.CLOUD  # untrusted LAN is treated as cloud
     assert providers["lan2"].locality == Locality.LOCAL
     assert providers["anthropic"].locality == Locality.CLOUD
+
+
+@respx.mock
+async def test_slow_local_generation_is_a_clear_non_retryable_timeout() -> None:
+    respx.post(f"{OLLAMA}/api/chat").mock(side_effect=httpx.ReadTimeout("slow"))
+    provider = OllamaProvider(
+        "ollama", OLLAMA, locality=Locality.LOCAL, registry=ModelRegistry(), timeout_s=12
+    )
+    with pytest.raises(ProviderError, match="timed out after 12 s") as err:
+        await provider.chat(request(), "qwen2.5:3b")
+    assert not err.value.retryable and not isinstance(err.value, ProviderUnavailableError)
+
+
+def test_local_runtimes_get_a_longer_default_timeout() -> None:
+    from panos_core.ai.adapters.factory import CLOUD_TIMEOUT_S, LOCAL_TIMEOUT_S, _timeout
+
+    assert _timeout(ProviderSettings(id="o", kind="ollama")) == LOCAL_TIMEOUT_S
+    assert _timeout(ProviderSettings(id="a", kind="anthropic")) == CLOUD_TIMEOUT_S
+    assert _timeout(ProviderSettings(id="o", kind="ollama", timeout_s=60)) == 60

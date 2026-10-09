@@ -1,0 +1,14 @@
+# {{ project }} — Risks, Assumptions and Dependencies
+
+{% include "_header.md.j2" %}
+{% for title, kind in [("Risks", "RISK"), ("Assumptions", "ASSUMPTION"), ("Dependencies", "DEPENDENCY")] %}
+
+## {{ title }}
+
+{% for item in t.get(kind, []) %}
+- **{{ item | label }}**{% if item.attributes.get("mitigation") %} — mitigation: {{ item.attributes["mitigation"] }}{% endif %}{% if item.body %}: {{ item.body }}{% endif %}
+
+{% else %}
+_None recorded._
+{% endfor %}
+{% endfor %}

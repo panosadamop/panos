@@ -28,6 +28,7 @@ from panos_core.domain.models import Job, JobStep
 from panos_core.jobs.service import JobService
 from panos_core.persistence.unit_of_work import UnitOfWorkFactory
 from panos_core.repository import AnalysisService
+from panos_core.requirements.service import RequirementsService
 from panos_core.tools import ToolContext, ToolRuntime
 from panos_core.tools.contract import CancelToken
 from panos_core.tools.runtime import ToolResult, ToolStatus
@@ -50,6 +51,15 @@ class Suspend(Exception):  # noqa: N818 - control flow, not an error
 
 class Blocked(Exception):  # noqa: N818 - control flow, not an error
     """The job cannot continue without the user (limit reached, repairs exhausted...)."""
+
+    def __init__(self, reason: str, report: dict[str, Any] | None = None) -> None:
+        super().__init__(reason)
+        self.reason = reason
+        self.report = report or {}
+
+
+class NeedsUser(Exception):  # noqa: N818 - control flow, not an error
+    """The job waits for a user decision (WAITING_FOR_USER); resume re-runs the workflow."""
 
     def __init__(self, reason: str, report: dict[str, Any] | None = None) -> None:
         super().__init__(reason)
@@ -94,6 +104,7 @@ class JobServices:
     uow_factory: UnitOfWorkFactory
     settings: JobSettings
     context_for: JobContextFactory
+    requirements: "RequirementsService | None" = None
 
 
 @dataclass

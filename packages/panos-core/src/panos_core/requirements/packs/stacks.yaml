@@ -1,0 +1,450 @@
+# Stack knowledge packs (BR-008, M6-06). Declarative: detection keywords, conventions,
+# commands and offline scaffold templates (Jinja2; variables: name, package, description).
+# Add-ons extend an application pack (database, containers, orchestration).
+
+packs:
+  - id: python-fastapi
+    name: Python / FastAPI
+    family: python
+    keywords: [fastapi]
+    languages: [Python]
+    frameworks: [FastAPI, Pydantic, pytest]
+    default_addons: [postgresql, docker]
+    preferred_ide: jetbrains.pycharm
+    commands:
+      test: [[uv, run, pytest]]
+      lint: [[uv, run, ruff, check, .]]
+      format: [[uv, run, ruff, format, .]]
+    conventions:
+      - "src layout: src/{{ package }}/ with routers per resource"
+      - "pydantic models for request/response schemas"
+      - "pytest with httpx TestClient; ruff for lint and format"
+    files:
+      pyproject.toml: |
+        [project]
+        name = "{{ name }}"
+        version = "0.1.0"
+        description = "{{ description }}"
+        requires-python = ">=3.12"
+        dependencies = ["fastapi>=0.115", "uvicorn>=0.32"]
+
+        [dependency-groups]
+        dev = ["pytest>=8", "httpx>=0.27", "ruff>=0.8"]
+
+        [tool.pytest.ini_options]
+        testpaths = ["tests"]
+        pythonpath = ["src"]
+      src/{{ package }}/__init__.py: ""
+      src/{{ package }}/main.py: |
+        """{{ description }}"""
+
+        from fastapi import FastAPI
+
+        app = FastAPI(title="{{ name }}")
+
+
+        @app.get("/health")
+        def health() -> dict[str, str]:
+            return {"status": "ok"}
+      tests/test_health.py: |
+        from fastapi.testclient import TestClient
+
+        from {{ package }}.main import app
+
+
+        def test_health() -> None:
+            assert TestClient(app).get("/health").json() == {"status": "ok"}
+      .gitignore: |
+        __pycache__/
+        .venv/
+        .pytest_cache/
+        .ruff_cache/
+
+  - id: python-django
+    name: Python / Django
+    family: python
+    keywords: [django]
+    languages: [Python]
+    frameworks: [Django, pytest]
+    default_addons: [postgresql]
+    preferred_ide: jetbrains.pycharm
+    commands:
+      test: [[python, manage.py, test]]
+    conventions:
+      - "one Django app per bounded context; settings split by environment"
+      - "migrations committed; tests per app"
+    files:
+      requirements.txt: |
+        django>=5.1
+      manage.py: |
+        #!/usr/bin/env python
+        import os
+        import sys
+
+        if __name__ == "__main__":
+            os.environ.setdefault("DJANGO_SETTINGS_MODULE", "{{ package }}.settings")
+            from django.core.management import execute_from_command_line
+
+            execute_from_command_line(sys.argv)
+      "{{ package }}/__init__.py": ""
+      "{{ package }}/settings.py": |
+        SECRET_KEY = "change-me"  # replaced from the environment in deployments
+        DEBUG = True
+        INSTALLED_APPS = ["django.contrib.contenttypes"]
+        ROOT_URLCONF = "{{ package }}.urls"
+        DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "db.sqlite3"}}
+      "{{ package }}/urls.py": |
+        urlpatterns: list[object] = []
+      .gitignore: |
+        __pycache__/
+        db.sqlite3
+
+  - id: java-spring-boot
+    name: Java / Spring Boot
+    family: java
+    keywords: [spring boot, spring-boot, springboot, spring]
+    languages: [Java]
+    frameworks: [Spring Boot, JUnit 5]
+    default_addons: [postgresql, docker]
+    preferred_ide: jetbrains.idea
+    commands:
+      test: [[./mvnw, test]]
+      build: [[./mvnw, package]]
+    conventions:
+      - "package by feature under com.example.{{ package }}"
+      - "constructor injection; records for DTOs; JUnit 5 + Spring Boot Test"
+    files:
+      pom.xml: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <project xmlns="http://maven.apache.org/POM/4.0.0">
+          <modelVersion>4.0.0</modelVersion>
+          <parent>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>3.4.0</version>
+          </parent>
+          <groupId>com.example</groupId>
+          <artifactId>{{ name }}</artifactId>
+          <version>0.1.0</version>
+          <description>{{ description }}</description>
+          <dependencies>
+            <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-web</artifactId>
+            </dependency>
+            <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-test</artifactId>
+              <scope>test</scope>
+            </dependency>
+          </dependencies>
+        </project>
+      src/main/java/com/example/{{ package }}/Application.java: |
+        package com.example.{{ package }};
+
+        import org.springframework.boot.SpringApplication;
+        import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+        @SpringBootApplication
+        public class Application {
+            public static void main(String[] args) {
+                SpringApplication.run(Application.class, args);
+            }
+        }
+      src/test/java/com/example/{{ package }}/ApplicationTests.java: |
+        package com.example.{{ package }};
+
+        import org.junit.jupiter.api.Test;
+        import org.springframework.boot.test.context.SpringBootTest;
+
+        @SpringBootTest
+        class ApplicationTests {
+            @Test
+            void contextLoads() {
+            }
+        }
+      .gitignore: |
+        target/
+
+  - id: java-vaadin
+    name: Java / Spring Boot + Vaadin
+    family: java
+    keywords: [vaadin]
+    languages: [Java]
+    frameworks: [Spring Boot, Vaadin, JUnit 5]
+    default_addons: [postgresql]
+    preferred_ide: jetbrains.idea
+    commands:
+      test: [[./mvnw, test]]
+      build: [[./mvnw, package]]
+    conventions:
+      - "views under com.example.{{ package }}.views; services behind interfaces"
+    files:
+      pom.xml: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <project xmlns="http://maven.apache.org/POM/4.0.0">
+          <modelVersion>4.0.0</modelVersion>
+          <parent>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>3.4.0</version>
+          </parent>
+          <groupId>com.example</groupId>
+          <artifactId>{{ name }}</artifactId>
+          <version>0.1.0</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.vaadin</groupId>
+              <artifactId>vaadin-spring-boot-starter</artifactId>
+              <version>24.5.0</version>
+            </dependency>
+          </dependencies>
+        </project>
+      src/main/java/com/example/{{ package }}/views/MainView.java: |
+        package com.example.{{ package }}.views;
+
+        import com.vaadin.flow.component.html.H1;
+        import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+        import com.vaadin.flow.router.Route;
+
+        @Route("")
+        public class MainView extends VerticalLayout {
+            public MainView() {
+                add(new H1("{{ name }}"));
+            }
+        }
+      .gitignore: |
+        target/
+        node_modules/
+
+  - id: react-typescript
+    name: React / TypeScript (Vite)
+    family: javascript
+    keywords: [react, typescript, vite]
+    languages: [TypeScript]
+    frameworks: [React, Vite, Vitest]
+    default_addons: []
+    preferred_ide: jetbrains.webstorm
+    commands:
+      test: [[npm, test]]
+      lint: [[npm, run, lint]]
+      build: [[npm, run, build]]
+    conventions:
+      - "function components with hooks; one component per file under src/components"
+      - "Vitest + Testing Library"
+    files:
+      package.json: |
+        {
+          "name": "{{ name }}",
+          "private": true,
+          "version": "0.1.0",
+          "type": "module",
+          "scripts": {"dev": "vite", "build": "tsc -b && vite build", "test": "vitest run",
+                      "lint": "eslint ."},
+          "dependencies": {"react": "^19.0.0", "react-dom": "^19.0.0"},
+          "devDependencies": {"typescript": "^5.6.0", "vite": "^6.0.0", "vitest": "^2.1.0",
+                              "@vitejs/plugin-react": "^4.3.0"}
+        }
+      index.html: |
+        <!doctype html>
+        <html lang="en"><head><meta charset="UTF-8" /><title>{{ name }}</title></head>
+        <body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body>
+        </html>
+      src/main.tsx: |
+        import { createRoot } from "react-dom/client";
+        import { App } from "./App";
+
+        createRoot(document.getElementById("root")!).render(<App />);
+      src/App.tsx: |
+        export function App() {
+          return <h1>{{ name }}</h1>;
+        }
+      src/App.test.tsx: |
+        import { describe, expect, it } from "vitest";
+        import { App } from "./App";
+
+        describe("App", () => {
+          it("renders", () => {
+            expect(App).toBeTypeOf("function");
+          });
+        });
+      tsconfig.json: |
+        {"compilerOptions": {"target": "ES2022", "jsx": "react-jsx", "module": "ESNext",
+                             "moduleResolution": "bundler", "strict": true}, "include": ["src"]}
+      .gitignore: |
+        node_modules/
+        dist/
+
+  - id: node-nestjs
+    name: Node / NestJS
+    family: javascript
+    keywords: [nestjs, nest.js]
+    languages: [TypeScript]
+    frameworks: [NestJS, Jest]
+    default_addons: [postgresql, docker]
+    preferred_ide: jetbrains.webstorm
+    commands:
+      test: [[npm, test]]
+      build: [[npm, run, build]]
+    conventions:
+      - "one module per feature; DTOs validated with class-validator"
+    files:
+      package.json: |
+        {
+          "name": "{{ name }}",
+          "version": "0.1.0",
+          "private": true,
+          "scripts": {"build": "nest build", "start": "nest start", "test": "jest"},
+          "dependencies": {"@nestjs/common": "^10.4.0", "@nestjs/core": "^10.4.0",
+                           "@nestjs/platform-express": "^10.4.0", "reflect-metadata": "^0.2.0",
+                           "rxjs": "^7.8.0"},
+          "devDependencies": {"@nestjs/cli": "^10.4.0", "@nestjs/testing": "^10.4.0",
+                              "jest": "^29.7.0", "ts-jest": "^29.2.0", "typescript": "^5.6.0"}
+        }
+      src/main.ts: |
+        import { NestFactory } from "@nestjs/core";
+        import { AppModule } from "./app.module";
+
+        async function bootstrap() {
+          const app = await NestFactory.create(AppModule);
+          await app.listen(3000);
+        }
+        bootstrap();
+      src/app.module.ts: |
+        import { Module } from "@nestjs/common";
+        import { HealthController } from "./health.controller";
+
+        @Module({ controllers: [HealthController] })
+        export class AppModule {}
+      src/health.controller.ts: |
+        import { Controller, Get } from "@nestjs/common";
+
+        @Controller("health")
+        export class HealthController {
+          @Get()
+          health() {
+            return { status: "ok" };
+          }
+        }
+      test/health.controller.spec.ts: |
+        import { HealthController } from "../src/health.controller";
+
+        describe("HealthController", () => {
+          it("reports ok", () => {
+            expect(new HealthController().health()).toEqual({ status: "ok" });
+          });
+        });
+      .gitignore: |
+        node_modules/
+        dist/
+
+  - id: php-laravel
+    name: PHP / Laravel
+    family: php
+    keywords: [laravel]
+    languages: [PHP]
+    frameworks: [Laravel, PHPUnit]
+    default_addons: [postgresql]
+    preferred_ide: jetbrains.phpstorm
+    commands:
+      test: [[php, artisan, test]]
+      format: [[./vendor/bin/pint]]
+    conventions:
+      - "Eloquent models in app/Models; form requests for validation; feature tests"
+    files:
+      composer.json: |
+        {
+          "name": "example/{{ name }}",
+          "description": "{{ description }}",
+          "require": {"php": "^8.3", "laravel/framework": "^11.0"},
+          "require-dev": {"phpunit/phpunit": "^11.0", "laravel/pint": "^1.18"},
+          "autoload": {"psr-4": {"App\\": "app/"}}
+        }
+      artisan: |
+        #!/usr/bin/env php
+        <?php
+        // Run `composer install` to fetch the framework, then use `php artisan`.
+      routes/web.php: |
+        <?php
+
+        use Illuminate\Support\Facades\Route;
+
+        Route::get('/health', fn () => ['status' => 'ok']);
+      tests/Feature/HealthTest.php: |
+        <?php
+
+        namespace Tests\Feature;
+
+        use Tests\TestCase;
+
+        class HealthTest extends TestCase
+        {
+            public function test_health(): void
+            {
+                $this->get('/health')->assertJson(['status' => 'ok']);
+            }
+        }
+      .gitignore: |
+        /vendor/
+        .env
+
+addons:
+  - id: postgresql
+    name: PostgreSQL
+    keywords: [postgres, postgresql]
+    conventions: ["schema migrations versioned with the code; no ORM auto-DDL in production"]
+    files:
+      docs/DATABASE.md: |
+        # Database
+
+        {{ name }} uses PostgreSQL. Connection settings come from the environment
+        (`DATABASE_URL`); local development can use the docker compose service.
+  - id: mongodb
+    name: MongoDB
+    keywords: [mongo, mongodb]
+    conventions: ["document schemas validated at the application boundary"]
+    files:
+      docs/DATABASE.md: |
+        # Database
+
+        {{ name }} uses MongoDB (`MONGODB_URI` from the environment).
+  - id: docker
+    name: Docker / Compose
+    keywords: [docker, container, compose]
+    conventions: ["non-root container user; pinned base images; healthchecks"]
+    files:
+      Dockerfile: |
+        # Build image for {{ name }} (adjust to the stack's build).
+        FROM debian:bookworm-slim
+        RUN useradd --create-home app
+        USER app
+        WORKDIR /home/app
+        HEALTHCHECK CMD ["true"]
+      compose.yaml: |
+        services:
+          app:
+            build: .
+  - id: kubernetes
+    name: Kubernetes
+    keywords: [kubernetes, k8s, helm]
+    conventions: ["resource requests/limits on every container; readiness and liveness probes"]
+    files:
+      deploy/k8s/deployment.yaml: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: {{ name }}
+        spec:
+          replicas: 1
+          selector:
+            matchLabels: {app: {{ name }}}
+          template:
+            metadata:
+              labels: {app: {{ name }}}
+            spec:
+              containers:
+                - name: app
+                  image: {{ name }}:0.1.0
+                  resources:
+                    requests: {cpu: 100m, memory: 128Mi}
+                    limits: {cpu: 500m, memory: 512Mi}

@@ -212,3 +212,62 @@ def apps_prefer(technology: str, app: str) -> None:
     """Prefer an IDE for a technology (e.g. `panos apps prefer Python pycharm`)."""
     data = call(lambda c: c.put(f"/preferences/ide/{technology}", {"app": app}))
     typer.echo(f"{technology}: prefer {data['name']}")
+
+
+@project_app.command("estimate")
+def project_estimate(ref: str, as_json: AsJson = False) -> None:
+    """Story points, hours, person-days, cost and a sprint plan from the backlog."""
+    data = call(lambda c: c.get(f"/projects/{ref}/estimate"))
+    if as_json:
+        print_json(data)
+        return
+    typer.echo(
+        f"{data['total_points']} points · {data['total_hours']} h · "
+        f"{data['person_days']} person-days · {data['total_cost']:.2f} "
+        f"{data['currency']} (confidence {data['confidence']})"
+    )
+    for role, r in data["by_role"].items():
+        typer.echo(f"  {role:<10} {r['hours']:>7} h × {r['rate']} = {r['cost']:.2f}")
+    for sprint in data["sprints"]:
+        typer.echo(
+            f"  sprint {sprint['number']}: {', '.join(sprint['stories'])} ({sprint['points']} pts)"
+        )
+    for assumption in data["assumptions"]:
+        typer.echo(f"  * {assumption}")
+
+
+@project_app.command("docs")
+def project_docs(ref: str) -> None:
+    """(Re)generate the requirement documents under docs/requirements/."""
+    data = call(lambda c: c.post(f"/projects/{ref}/documents", {}))
+    typer.echo(f"Wrote {len(data['files'])} file(s): " + ", ".join(data["files"]))
+
+
+@project_app.command("skills")
+def project_skills(ref: str) -> None:
+    """(Re)generate Claude skills from approved facts (versioned)."""
+    data = call(lambda c: c.post(f"/projects/{ref}/skills", {}))
+    for skill in data["skills"]:
+        state = "updated" if skill["updated"] else "unchanged"
+        typer.echo(f"{skill['name']} v{skill['version']} ({state}) → {skill['path']}")
+
+
+@project_app.command("scaffold")
+def project_scaffold(
+    ref: str,
+    open_ide: Annotated[bool, typer.Option("--open", help="open in the preferred IDE")] = False,
+) -> None:
+    """Create the project skeleton from the approved stack, then docs and skills."""
+    data = call(lambda c: c.post(f"/projects/{ref}/scaffold", {"open_ide": open_ide}))
+    typer.echo(
+        f"Stack {data['pack']}"
+        + (f" + {', '.join(data['addons'])}" if data["addons"] else "")
+        + f": {len(data['created'])} file(s) created"
+        + (f", {len(data['skipped'])} existing kept" if data["skipped"] else "")
+    )
+    typer.echo(
+        f"Docs: {len(data['documents'])} · skills: "
+        + ", ".join(f"{s['name']} v{s['version']}" for s in data["skills"])
+    )
+    if data.get("opened"):
+        typer.echo(f"Open in IDE: {data['opened']['status']}")

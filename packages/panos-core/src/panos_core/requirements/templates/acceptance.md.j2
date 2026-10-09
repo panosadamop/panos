@@ -1,0 +1,14 @@
+# {{ project }} — Acceptance Criteria
+
+{% include "_header.md.j2" %}
+{% for us in t.get("US", []) %}
+
+## {{ us.key }} — {{ us.title }}
+
+{% for ac in children[us.key] if ac.type.value == "AC" %}
+- **{{ ac | label }}**{% if ac.body %}: {{ ac.body }}{% endif %}
+
+{% else %}
+- _No acceptance criteria yet (gap)._
+{% endfor %}
+{% endfor %}

@@ -1,0 +1,43 @@
+# {{ project }} — Architecture
+
+{% include "_header.md.j2" %}
+
+## Stack
+{% if stack %}
+
+**{{ stack.name }}** (`{{ stack.pack }}`){% if stack.addons %} with {{ stack.addons | join(", ") }}{% endif %}.
+
+{% for c in stack.conventions %}
+- {{ c }}
+{% endfor %}
+{% if stack.commands %}
+
+Commands:
+{% for kind, cmds in stack.commands.items() %}
+- {{ kind }}: {% for c in cmds %}`{{ c | join(" ") }}`{% if not loop.last %}, {% endif %}{% endfor %}
+
+{% endfor %}
+{% endif %}
+{% else %}
+
+_No stack decided yet._
+{% endif %}
+
+## Architecture decisions
+{% for a in t.get("ADR", []) %}
+
+### {{ a | label }}
+
+{{ a.body or "_No description._" }}
+{% else %}
+
+_None yet._
+{% endfor %}
+
+## APIs
+{% for api in t.get("API", []) %}
+- **{{ api.key }}** `{{ api.attributes.get("method", "GET") | upper }} {{ api.attributes.get("path", "/") }}` — {{ api.title }}{% if api.parent_key %} (traces to {{ api.parent_key }}){% endif %}
+
+{% else %}
+_None yet._
+{% endfor %}

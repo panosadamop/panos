@@ -70,7 +70,8 @@ class ProviderSettings(BaseModel):
     enabled: bool = True
     # A LAN endpoint counts as *local* only if the user explicitly trusts it (ADR-009).
     trusted_lan: bool = False
-    timeout_s: float = Field(default=300.0, gt=0)
+    # None = per-kind default: 1800 s for local runtimes (CPU generation is slow), else 300 s.
+    timeout_s: float | None = Field(default=None, gt=0)
 
 
 def _default_providers() -> list[ProviderSettings]:
@@ -109,6 +110,25 @@ class JobSettings(BaseModel):
     checkpoint_retention: int = Field(default=20, ge=1)
 
 
+class EstimationSettings(BaseModel):
+    """Estimation model (BR-014, M6-08). Rates are per hour, in ``currency``."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    hours_per_point: float = Field(default=6.0, gt=0)
+    hours_per_day: float = Field(default=8.0, gt=0)
+    default_points: int = Field(default=3, gt=0)  # stories without an estimate
+    role_split: dict[str, float] = Field(
+        default_factory=lambda: {"developer": 0.6, "qa": 0.25, "analyst": 0.15}
+    )
+    role_rates: dict[str, float] = Field(
+        default_factory=lambda: {"developer": 60.0, "qa": 50.0, "analyst": 55.0}
+    )
+    currency: str = "EUR"
+    velocity_points: int = Field(default=20, gt=0)  # per sprint
+    sprint_weeks: int = Field(default=2, gt=0)
+
+
 class PanosSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="PANOS_",
@@ -131,6 +151,7 @@ class PanosSettings(BaseSettings):
     allowed_origins: tuple[str, ...] = DEFAULT_ALLOWED_ORIGINS
     ai: AISettings = Field(default_factory=AISettings)
     jobs: JobSettings = Field(default_factory=JobSettings)
+    estimation: EstimationSettings = Field(default_factory=EstimationSettings)
 
     @field_validator("data_dir", "config_dir", "log_dir", "runtime_dir", "workspace_dir")
     @classmethod

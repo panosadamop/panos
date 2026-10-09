@@ -1,0 +1,27 @@
+# {{ project }} — Estimates
+
+{% include "_header.md.j2" %}
+{% if estimate %}
+
+**{{ estimate.total_points }} story points · {{ estimate.total_hours }} h · {{ estimate.person_days }} person-days · {{ "%.2f" | format(estimate.total_cost) }} {{ estimate.currency }}** — confidence {{ estimate.confidence }} ({{ estimate.confidence_score }})
+
+| Story | Points | Hours | Person-days | Priority |
+|---|---|---|---|---|
+{% for s in estimate.stories %}
+| {{ s.key }} {{ s.title }} | {{ s.points }}{% if not s.estimated %}*{% endif %} | {{ s.hours }} | {{ s.person_days }} | {{ s.priority }} |
+{% endfor %}
+
+| Role | Hours | Rate | Cost |
+|---|---|---|---|
+{% for role, r in estimate.by_role.items() %}
+| {{ role }} | {{ r.hours }} | {{ r.rate }} | {{ "%.2f" | format(r.cost) }} |
+{% endfor %}
+
+Assumptions:
+{% for a in estimate.assumptions %}
+- {{ a }}
+{% endfor %}
+{% else %}
+
+_No estimate yet._
+{% endif %}

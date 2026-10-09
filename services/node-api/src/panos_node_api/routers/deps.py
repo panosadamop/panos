@@ -24,6 +24,9 @@ _REASON_STATUS = {
     "invalid_state": 409,
     "mismatch": 409,
     "git_failed": 500,
+    "invalid": 400,
+    "invalid_parent": 400,
+    "not_approved": 409,
 }
 
 

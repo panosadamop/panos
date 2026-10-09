@@ -16,6 +16,7 @@ from panos_cli.common import (
 )
 from panos_cli.jobs import job_app
 from panos_cli.projects import apps_app, project_app
+from panos_cli.requirements import interview_app, new, req_app
 from panos_core import API_VERSION, __version__
 from panos_core.config import load_settings
 from panos_core.config.settings import default_config_file
@@ -122,6 +123,9 @@ app.add_typer(project_app, name="project")
 app.add_typer(apps_app, name="apps")
 app.add_typer(ai_app, name="ai")
 app.add_typer(job_app, name="job")
+app.add_typer(interview_app, name="interview")
+app.add_typer(req_app, name="req")
+app.command("new")(new)
 app.command("ask")(ask)
 
 

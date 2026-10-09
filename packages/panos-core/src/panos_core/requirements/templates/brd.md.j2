@@ -1,0 +1,37 @@
+# {{ project }} — Business Requirements (BRD)
+
+{% include "_header.md.j2" %}
+
+## Business requirements
+{% for br in t.get("BR", []) %}
+
+### {{ br | label }}
+
+{{ br.body or "_No description._" }}
+{% if children[br.key] %}
+
+Refined by: {% for c in children[br.key] %}{{ c.key }}{% if not loop.last %}, {% endif %}{% endfor %}
+
+{% endif %}
+{% else %}
+
+_None yet._
+{% endfor %}
+
+## Business rules
+
+{% for r in t.get("RULE", []) %}
+- **{{ r | label }}**{% if r.body %}: {{ r.body }}{% endif %}
+
+{% else %}
+_None yet._
+{% endfor %}
+
+## Use cases
+
+{% for u in t.get("UC", []) %}
+- **{{ u | label }}**{% if u.body %}: {{ u.body }}{% endif %}
+
+{% else %}
+_None yet._
+{% endfor %}

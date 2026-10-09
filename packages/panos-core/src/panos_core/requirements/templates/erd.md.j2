@@ -1,0 +1,29 @@
+# {{ project }} — Data Model (ERD)
+
+{% include "_header.md.j2" %}
+{% if t.get("DATA") %}
+
+```mermaid
+erDiagram
+{% for d in t["DATA"] %}
+    {{ d.title | replace(" ", "") }} {
+{% for f in d.attributes.get("fields", []) %}
+        {{ f.get("type", "string") }} {{ f.get("name") }}
+{% endfor %}
+    }
+{% endfor %}
+{% for d in t["DATA"] %}
+{% for r in d.attributes.get("relations", []) %}
+    {{ d.title | replace(" ", "") }} {{ {"one-to-many": "||--o{", "many-to-one": "}o--||", "one-to-one": "||--||", "many-to-many": "}o--o{"}.get(r.get("kind", "one-to-many"), "||--o{") }} {{ r.get("target", "") | replace(" ", "") }} : "{{ r.get("label", "relates") }}"
+{% endfor %}
+{% endfor %}
+```
+
+{% for d in t["DATA"] %}
+- **{{ d | label }}**{% if d.body %}: {{ d.body }}{% endif %}
+
+{% endfor %}
+{% else %}
+
+_No data entities yet._
+{% endif %}

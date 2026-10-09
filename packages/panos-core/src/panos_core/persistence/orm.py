@@ -238,3 +238,88 @@ class AIUsageRow(Base):
     conversation_id: Mapped[str | None] = mapped_column(String(36))
     job_id: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+# ---------------------------------------------------------------- requirements (M6, ADR-014)
+class RequirementRow(Base):
+    __tablename__ = "requirement"
+    __table_args__ = (
+        UniqueConstraint("project_id", "key", "version"),
+        Index("ix_requirement_project_key", "project_id", "key"),
+    )
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str] = mapped_column(ForeignKey("project.id", ondelete="CASCADE"))
+    key: Mapped[str] = mapped_column(String(32))
+    type: Mapped[str] = mapped_column(String(16))
+    version: Mapped[int] = mapped_column(Integer)
+    parent_key: Mapped[str | None] = mapped_column(String(32))
+    title: Mapped[str] = mapped_column(Text)
+    body: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(24))
+    stale: Mapped[bool] = mapped_column(Boolean, default=False)
+    attributes: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    source: Mapped[list[str]] = mapped_column(JSON, default=list)
+    created_by: Mapped[str] = mapped_column(String(128))
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class RequirementApprovalRow(Base):
+    __tablename__ = "requirement_approval"
+    __table_args__ = (Index("ix_requirement_approval_key", "project_id", "key"),)
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str] = mapped_column(ForeignKey("project.id", ondelete="CASCADE"))
+    requirement_id: Mapped[str] = mapped_column(ForeignKey("requirement.id", ondelete="CASCADE"))
+    key: Mapped[str] = mapped_column(String(32))
+    version: Mapped[int] = mapped_column(Integer)
+    decision: Mapped[str] = mapped_column(String(24))
+    decided_by: Mapped[str] = mapped_column(String(128))
+    comments: Mapped[str] = mapped_column(Text, default="")
+    cascaded_from_id: Mapped[str | None] = mapped_column(ID)
+    excluded_keys: Mapped[list[str]] = mapped_column(JSON, default=list)
+    decided_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class TraceLinkRow(Base):
+    __tablename__ = "trace_link"
+    __table_args__ = (
+        UniqueConstraint("project_id", "source_key", "target", "relation"),
+        Index("ix_trace_link_target", "project_id", "target"),
+    )
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str] = mapped_column(ForeignKey("project.id", ondelete="CASCADE"))
+    source_key: Mapped[str] = mapped_column(String(32))
+    target: Mapped[str] = mapped_column(String(600))
+    relation: Mapped[str] = mapped_column(String(32))
+    created_by: Mapped[str] = mapped_column(String(128))
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class InterviewRow(Base):
+    __tablename__ = "interview"
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str] = mapped_column(ForeignKey("project.id", ondelete="CASCADE"))
+    brief: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(16))
+    ambiguities: Mapped[list[str]] = mapped_column(JSON, default=list)
+    questions: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    explicit_stack: Mapped[str | None] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class GeneratedSkillRow(Base):
+    __tablename__ = "generated_skill"
+    __table_args__ = (UniqueConstraint("project_id", "name"),)
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str] = mapped_column(ForeignKey("project.id", ondelete="CASCADE"))
+    name: Mapped[str] = mapped_column(String(64))
+    version: Mapped[int] = mapped_column(Integer)
+    facts_hash: Mapped[str] = mapped_column(String(64))
+    source_keys: Mapped[list[str]] = mapped_column(JSON, default=list)
+    path: Mapped[str] = mapped_column(Text)
+    generated_at: Mapped[datetime] = mapped_column(UTCDateTime)

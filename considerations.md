@@ -83,6 +83,10 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 18. **(M5)** Review findings are reported, not auto-fixed. The trace check only reports which requirement IDs travelled through the job and appear in the plan.
 19. **(M5)** Docker has no dedicated execution tool. Execution goes through `shell.run` + classifier (`docker.exec` P3), which already gives "inspect without approval, execute only with approval".
 20. **(M5)** Notifications go to the event bus (`/ws/events`) and the log only; desktop toasts and voice arrive in M7.
+21. **(M6)** Requirement endpoints are project-scoped (`/projects/{ref}/requirements/{key}…`) instead of API.md's `/requirements/{id}`, because keys are unique per project, not globally.
+22. **(M6)** "8 stack families" are delivered as 7 application packs (FastAPI, Django, Spring Boot, Vaadin, React/TypeScript, NestJS, Laravel) plus 4 add-ons (PostgreSQL, MongoDB, Docker, Kubernetes), which covers every technology BR-008 names. The cloud providers in BR-008 (GCP/Azure/AWS) have no scaffold templates yet.
+23. **(M6)** Only Markdown and OpenAPI artifacts are generated. DOCX/XLSX/PPTX/PDF export (FR-029, BR-028) is still open.
+24. **(M6)** Official project generators (Spring Initializr, `create-vite`, …) are not used; scaffolding is template-based and offline.
 
 ## 5a. Design points added in M3
 
@@ -111,6 +115,16 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - **Every failure path ends visibly:** limits, exhausted repairs, invalid edits and rejected approvals end BLOCKED with a report. Nothing unsuccessful is ever marked COMPLETED.
 - **Work requests in conversation start jobs** ("implement …", "φτιάξε …" with a project); without a project they are answered as chat.
 - **Docker execution stays in `shell.run`** (`docker.exec`, P3). `docker.inspect` only parses files and, if the Docker CLI exists, runs read-only `ps` / `compose config`.
+
+## 5a-quater. Design points added in M6
+
+- **A new project is created only after the model has analysed the brief.** If no suitable model is available, nothing is left behind and the same name can be reused.
+- **Briefs and specifications of new projects are LOCAL_ONLY** like any new project, so the interview runs on local models unless the owner relaxes the project.
+- **A stack named in the brief is honoured without a model call** (US-021). Otherwise the Architect proposes one from the declared packs only. Either way it is an ADR that **must be approved before scaffolding**.
+- **Skipped interview questions become explicit assumptions** with provenance, so silence is never treated as an answer.
+- **Scaffolding is offline and never overwrites files.** It creates a local Git repository but **no commit**; commits keep their approval flow.
+- **Skills contain approved, non-stale facts only.** They are versioned by a hash of exactly those facts, so unrelated changes do not bump them.
+- **Change control is transitive over trace links,** not just the parent tree. Re-approving a parent clears its descendants; linked items (APIs, data) need their own decision or an explicit, reasoned clear.
 
 ## 5b. Security incidents
 
@@ -151,6 +165,10 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] Retrieval uses FTS snippets (~matched lines), not whole chunks. Pass full chunk text to the model when context budgets allow.
 - [ ] An LLM-based intent classifier on the local light tier, for paraphrased commands the rules miss.
 - [ ] Approval-gated budget escalation: still open. M5 limits block the job; the user resumes it, optionally with a larger budget via a new job.
+- [ ] DOCX/XLSX/PPTX/PDF export of the requirement documents (FR-029, BR-028).
+- [ ] Coding jobs should record `implements` evidence links (commit, files) for the requirement IDs they touch.
+- [x] Live interview and specification run with local models (M6 report): works in about 5 min; content thin.
+- [ ] Follow-up interview rounds (questions based on the first answers) and a review/critique pass on the generated specification.
 - [ ] Checkpoint retention pruning (`jobs.checkpoint_retention` unused), a large-file limit, and nested Git repos in checkpoints.
 - [ ] Approval tokens are memory-only. An approval granted just before a node restart must be re-requested (resume re-issues it). The 30-minute approval TTL may be short for unattended jobs.
 - [ ] Planning a commit writes blob objects into the user's object store (no refs or index change; `git gc` prunes unused ones). Git hooks run on the real commit; if a hook rewrites content, `tree_matches_approval: false` is reported.

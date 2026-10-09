@@ -1,6 +1,32 @@
 {
   "components": {
     "schemas": {
+      "AnswerRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "answer": {
+            "anyOf": [
+              {
+                "maxLength": 10000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "question_id"
+        ],
+        "title": "AnswerRequest",
+        "type": "object"
+      },
       "AppLaunchRequest": {
         "additionalProperties": false,
         "properties": {
@@ -125,7 +151,7 @@
         "properties": {
           "approvals": {
             "items": {
-              "$ref": "#/components/schemas/ApprovalView"
+              "$ref": "#/components/schemas/panos_node_api__schemas__ApprovalView"
             },
             "title": "Approvals",
             "type": "array"
@@ -137,103 +163,40 @@
         "title": "ApprovalList",
         "type": "object"
       },
-      "ApprovalView": {
+      "ApprovalRequest": {
+        "additionalProperties": false,
         "properties": {
-          "action_type": {
-            "title": "Action Type",
+          "cascade": {
+            "default": true,
+            "title": "Cascade",
+            "type": "boolean"
+          },
+          "comments": {
+            "default": "",
+            "maxLength": 5000,
+            "title": "Comments",
             "type": "string"
           },
-          "decided_at": {
-            "anyOf": [
-              {
-                "format": "date-time",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
+          "decision": {
+            "enum": [
+              "approve",
+              "reject"
             ],
-            "title": "Decided At"
-          },
-          "decided_by": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Decided By"
-          },
-          "expires_at": {
-            "format": "date-time",
-            "title": "Expires At",
+            "title": "Decision",
             "type": "string"
           },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "job_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Job Id"
-          },
-          "payload_hash": {
-            "title": "Payload Hash",
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Project Id"
-          },
-          "requested_at": {
-            "format": "date-time",
-            "title": "Requested At",
-            "type": "string"
-          },
-          "status": {
-            "title": "Status",
-            "type": "string"
-          },
-          "summary": {
-            "title": "Summary",
-            "type": "string"
-          },
-          "target": {
-            "title": "Target",
-            "type": "string"
+          "exclude": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Exclude",
+            "type": "array"
           }
         },
         "required": [
-          "id",
-          "status",
-          "action_type",
-          "target",
-          "summary",
-          "payload_hash",
-          "project_id",
-          "job_id",
-          "requested_at",
-          "expires_at",
-          "decided_at",
-          "decided_by"
+          "decision"
         ],
-        "title": "ApprovalView",
+        "title": "ApprovalRequest",
         "type": "object"
       },
       "AuditEventView": {
@@ -445,6 +408,31 @@
         "title": "CheckpointView",
         "type": "object"
       },
+      "ClearStaleRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "keys": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Keys",
+            "type": "array"
+          },
+          "reason": {
+            "maxLength": 2000,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "keys",
+          "reason"
+        ],
+        "title": "ClearStaleRequest",
+        "type": "object"
+      },
       "Complexity": {
         "enum": [
           "low",
@@ -533,7 +521,7 @@
       "DecisionResponse": {
         "properties": {
           "approval": {
-            "$ref": "#/components/schemas/ApprovalView"
+            "$ref": "#/components/schemas/panos_node_api__schemas__ApprovalView"
           },
           "token": {
             "anyOf": [
@@ -652,6 +640,104 @@
           "chunks"
         ],
         "title": "IndexStatsView",
+        "type": "object"
+      },
+      "InterviewStart": {
+        "additionalProperties": false,
+        "properties": {
+          "brief": {
+            "maxLength": 50000,
+            "minLength": 10,
+            "title": "Brief",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 100,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "new project name",
+            "title": "Name"
+          },
+          "project": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "existing project id or name",
+            "title": "Project"
+          }
+        },
+        "required": [
+          "brief"
+        ],
+        "title": "InterviewStart",
+        "type": "object"
+      },
+      "InterviewView": {
+        "properties": {
+          "ambiguities": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Ambiguities",
+            "type": "array"
+          },
+          "brief": {
+            "title": "Brief",
+            "type": "string"
+          },
+          "explicit_stack": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explicit Stack"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "project_id": {
+            "title": "Project Id",
+            "type": "string"
+          },
+          "questions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Questions",
+            "type": "array"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "project_id",
+          "brief",
+          "status",
+          "explicit_stack",
+          "ambiguities",
+          "questions"
+        ],
+        "title": "InterviewView",
         "type": "object"
       },
       "JobBudget": {
@@ -1067,6 +1153,29 @@
           "key"
         ],
         "title": "KeyRequest",
+        "type": "object"
+      },
+      "LinkRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "relation": {
+            "$ref": "#/components/schemas/TraceRelation"
+          },
+          "source_key": {
+            "title": "Source Key",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_key",
+          "target",
+          "relation"
+        ],
+        "title": "LinkRequest",
         "type": "object"
       },
       "MessageRequest": {
@@ -1632,6 +1741,310 @@
         "title": "ReplyView",
         "type": "object"
       },
+      "RequirementCreate": {
+        "additionalProperties": false,
+        "properties": {
+          "attributes": {
+            "additionalProperties": true,
+            "title": "Attributes",
+            "type": "object"
+          },
+          "body": {
+            "default": "",
+            "maxLength": 50000,
+            "title": "Body",
+            "type": "string"
+          },
+          "parent_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Key"
+          },
+          "title": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/RequirementType"
+          }
+        },
+        "required": [
+          "type",
+          "title"
+        ],
+        "title": "RequirementCreate",
+        "type": "object"
+      },
+      "RequirementDetail": {
+        "properties": {
+          "approvals": {
+            "items": {
+              "$ref": "#/components/schemas/panos_node_api__routers__requirements__ApprovalView"
+            },
+            "title": "Approvals",
+            "type": "array"
+          },
+          "attributes": {
+            "additionalProperties": true,
+            "title": "Attributes",
+            "type": "object"
+          },
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "created_by": {
+            "title": "Created By",
+            "type": "string"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/RequirementView"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "parent_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Key"
+          },
+          "source": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Source",
+            "type": "array"
+          },
+          "stale": {
+            "title": "Stale",
+            "type": "boolean"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "type",
+          "version",
+          "parent_key",
+          "title",
+          "body",
+          "status",
+          "stale",
+          "attributes",
+          "source",
+          "created_by",
+          "created_at",
+          "history",
+          "approvals"
+        ],
+        "title": "RequirementDetail",
+        "type": "object"
+      },
+      "RequirementEdit": {
+        "additionalProperties": false,
+        "properties": {
+          "attributes": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attributes"
+          },
+          "body": {
+            "anyOf": [
+              {
+                "maxLength": 50000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "RequirementEdit",
+        "type": "object"
+      },
+      "RequirementStatus": {
+        "enum": [
+          "DRAFT",
+          "PENDING_APPROVAL",
+          "APPROVED",
+          "REJECTED",
+          "SUPERSEDED"
+        ],
+        "title": "RequirementStatus",
+        "type": "string"
+      },
+      "RequirementType": {
+        "enum": [
+          "BR",
+          "FR",
+          "NFR",
+          "RULE",
+          "UC",
+          "EPIC",
+          "FEAT",
+          "US",
+          "AC",
+          "TC",
+          "API",
+          "DATA",
+          "ADR",
+          "RISK",
+          "ASSUMPTION",
+          "DEPENDENCY"
+        ],
+        "title": "RequirementType",
+        "type": "string"
+      },
+      "RequirementView": {
+        "properties": {
+          "attributes": {
+            "additionalProperties": true,
+            "title": "Attributes",
+            "type": "object"
+          },
+          "body": {
+            "title": "Body",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "created_by": {
+            "title": "Created By",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "parent_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Key"
+          },
+          "source": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Source",
+            "type": "array"
+          },
+          "stale": {
+            "title": "Stale",
+            "type": "boolean"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "type",
+          "version",
+          "parent_key",
+          "title",
+          "body",
+          "status",
+          "stale",
+          "attributes",
+          "source",
+          "created_by",
+          "created_at"
+        ],
+        "title": "RequirementView",
+        "type": "object"
+      },
       "RollbackRequest": {
         "additionalProperties": false,
         "properties": {
@@ -1769,6 +2182,23 @@
           "est_cost_usd"
         ],
         "title": "RouteView",
+        "type": "object"
+      },
+      "ScaffoldRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "git_init": {
+            "default": true,
+            "title": "Git Init",
+            "type": "boolean"
+          },
+          "open_ide": {
+            "default": false,
+            "title": "Open Ide",
+            "type": "boolean"
+          }
+        },
+        "title": "ScaffoldRequest",
         "type": "object"
       },
       "SearchHitView": {
@@ -2094,6 +2524,18 @@
         "title": "ToolResultView",
         "type": "object"
       },
+      "TraceRelation": {
+        "enum": [
+          "refines",
+          "realizes",
+          "verifies",
+          "implements",
+          "depends_on",
+          "relates"
+        ],
+        "title": "TraceRelation",
+        "type": "string"
+      },
       "UsageRow": {
         "properties": {
           "calls": {
@@ -2213,6 +2655,169 @@
           "type"
         ],
         "title": "ValidationError",
+        "type": "object"
+      },
+      "panos_node_api__routers__requirements__ApprovalView": {
+        "properties": {
+          "cascaded_from_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cascaded From Id"
+          },
+          "comments": {
+            "title": "Comments",
+            "type": "string"
+          },
+          "decided_at": {
+            "format": "date-time",
+            "title": "Decided At",
+            "type": "string"
+          },
+          "decided_by": {
+            "title": "Decided By",
+            "type": "string"
+          },
+          "decision": {
+            "title": "Decision",
+            "type": "string"
+          },
+          "excluded_keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Keys",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "version",
+          "decision",
+          "decided_by",
+          "comments",
+          "cascaded_from_id",
+          "excluded_keys",
+          "decided_at"
+        ],
+        "title": "ApprovalView",
+        "type": "object"
+      },
+      "panos_node_api__schemas__ApprovalView": {
+        "properties": {
+          "action_type": {
+            "title": "Action Type",
+            "type": "string"
+          },
+          "decided_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided At"
+          },
+          "decided_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided By"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Id"
+          },
+          "payload_hash": {
+            "title": "Payload Hash",
+            "type": "string"
+          },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "title": "Requested At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "action_type",
+          "target",
+          "summary",
+          "payload_hash",
+          "project_id",
+          "job_id",
+          "requested_at",
+          "expires_at",
+          "decided_at",
+          "decided_by"
+        ],
+        "title": "ApprovalView",
         "type": "object"
       }
     }
@@ -2531,7 +3136,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApprovalView"
+                  "$ref": "#/components/schemas/panos_node_api__schemas__ApprovalView"
                 }
               }
             },
@@ -2962,6 +3567,187 @@
         "summary": "Health",
         "tags": [
           "node"
+        ]
+      }
+    },
+    "/api/v1/interviews": {
+      "post": {
+        "operationId": "start_interview_api_v1_interviews_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InterviewStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Start Interview",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/interviews/{interview_id}": {
+      "get": {
+        "operationId": "get_interview_api_v1_interviews__interview_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "interview_id",
+            "required": true,
+            "schema": {
+              "title": "Interview Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Interview",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/interviews/{interview_id}/answers": {
+      "post": {
+        "operationId": "answer_api_v1_interviews__interview_id__answers_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "interview_id",
+            "required": true,
+            "schema": {
+              "title": "Interview Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InterviewView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Answer",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/interviews/{interview_id}/complete": {
+      "post": {
+        "operationId": "complete_interview_api_v1_interviews__interview_id__complete_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "interview_id",
+            "required": true,
+            "schema": {
+              "title": "Interview Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RequirementView"
+                  },
+                  "title": "Response Complete Interview Api V1 Interviews  Interview Id  Complete Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Complete Interview",
+        "tags": [
+          "requirements"
         ]
       }
     },
@@ -3592,6 +4378,94 @@
         ]
       }
     },
+    "/api/v1/projects/{ref}/documents": {
+      "post": {
+        "operationId": "generate_documents_api_v1_projects__ref__documents_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Generate Documents Api V1 Projects  Ref  Documents Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Generate Documents",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/estimate": {
+      "get": {
+        "operationId": "project_estimate_api_v1_projects__ref__estimate_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Project Estimate Api V1 Projects  Ref  Estimate Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Project Estimate",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
     "/api/v1/projects/{ref}/index": {
       "post": {
         "operationId": "index_project_api_v1_projects__ref__index_post",
@@ -3643,6 +4517,103 @@
         "summary": "Index Project",
         "tags": [
           "projects"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/links": {
+      "delete": {
+        "operationId": "remove_link_api_v1_projects__ref__links_delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Link",
+        "tags": [
+          "requirements"
+        ]
+      },
+      "post": {
+        "operationId": "add_link_api_v1_projects__ref__links_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Add Link Api V1 Projects  Ref  Links Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Link",
+        "tags": [
+          "requirements"
         ]
       }
     },
@@ -3767,6 +4738,470 @@
         ]
       }
     },
+    "/api/v1/projects/{ref}/requirements": {
+      "get": {
+        "operationId": "list_requirements_api_v1_projects__ref__requirements_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RequirementType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RequirementStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RequirementView"
+                  },
+                  "title": "Response List Requirements Api V1 Projects  Ref  Requirements Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Requirements",
+        "tags": [
+          "requirements"
+        ]
+      },
+      "post": {
+        "operationId": "create_requirement_api_v1_projects__ref__requirements_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequirementCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Requirement",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/requirements/clear-stale": {
+      "post": {
+        "operationId": "clear_stale_api_v1_projects__ref__requirements_clear_stale_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClearStaleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Clear Stale Api V1 Projects  Ref  Requirements Clear Stale Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Clear Stale",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/requirements/{key}": {
+      "get": {
+        "operationId": "get_requirement_api_v1_projects__ref__requirements__key__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Requirement",
+        "tags": [
+          "requirements"
+        ]
+      },
+      "patch": {
+        "operationId": "edit_requirement_api_v1_projects__ref__requirements__key__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequirementEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Edit Requirement Api V1 Projects  Ref  Requirements  Key  Patch",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Edit Requirement",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/requirements/{key}/approval": {
+      "post": {
+        "operationId": "decide_requirement_api_v1_projects__ref__requirements__key__approval_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/panos_node_api__routers__requirements__ApprovalView"
+                  },
+                  "title": "Response Decide Requirement Api V1 Projects  Ref  Requirements  Key  Approval Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Decide Requirement",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/requirements/{key}/submit": {
+      "post": {
+        "operationId": "submit_requirement_api_v1_projects__ref__requirements__key__submit_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "title": "Key",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequirementView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Submit Requirement",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/scaffold": {
+      "post": {
+        "operationId": "scaffold_api_v1_projects__ref__scaffold_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScaffoldRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Scaffold Api V1 Projects  Ref  Scaffold Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Scaffold",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
     "/api/v1/projects/{ref}/search": {
       "get": {
         "operationId": "search_project_api_v1_projects__ref__search_get",
@@ -3832,6 +5267,50 @@
         ]
       }
     },
+    "/api/v1/projects/{ref}/skills": {
+      "post": {
+        "operationId": "generate_skills_api_v1_projects__ref__skills_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Generate Skills Api V1 Projects  Ref  Skills Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Generate Skills",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
     "/api/v1/projects/{ref}/snapshot": {
       "get": {
         "operationId": "latest_snapshot_api_v1_projects__ref__snapshot_get",
@@ -3871,6 +5350,66 @@
         "summary": "Latest Snapshot",
         "tags": [
           "projects"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/traceability": {
+      "get": {
+        "operationId": "traceability_api_v1_projects__ref__traceability_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "root",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Root"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Traceability Api V1 Projects  Ref  Traceability Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Traceability",
+        "tags": [
+          "requirements"
         ]
       }
     }

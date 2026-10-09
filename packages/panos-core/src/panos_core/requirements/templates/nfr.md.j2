@@ -1,0 +1,11 @@
+# {{ project }} — Non-Functional Requirements
+
+{% include "_header.md.j2" %}
+
+| Key | Category | Requirement | Measure | Status |
+|---|---|---|---|---|
+{% for n in t.get("NFR", []) %}
+| {{ n.key }} | {{ n.attributes.get("category", "-") }} | {{ n.title }} | {{ n.attributes.get("measure", n.body or "-") }} | v{{ n.version }} {{ n.status.value }}{% if n.stale %} STALE{% endif %} |
+{% else %}
+| - | - | _None yet._ | - | - |
+{% endfor %}

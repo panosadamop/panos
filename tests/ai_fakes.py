@@ -123,6 +123,120 @@ FIX_MULTIPLY = {
         }
     ],
 }
+QUESTIONS = {
+    "ambiguities": ["payment methods are not specified", "no target load is given"],
+    "questions": [
+        {"text": "Which payment methods must be supported?", "why": "scope of checkout"},
+        {"text": "How many orders per day do you expect?", "why": "performance target"},
+        {"text": "Do customers need accounts?", "why": "identity scope"},
+    ],
+}
+
+SHOP_SPEC = {
+    "business": [
+        {
+            "title": "Sell products online",
+            "body": "Customers buy products through a web shop.",
+            "sources": ["q1"],
+            "frs": [
+                {
+                    "ref": "checkout",
+                    "title": "Customers can check out and pay by card",
+                    "sources": ["q1"],
+                    "epics": [
+                        {
+                            "title": "Checkout",
+                            "features": [
+                                {
+                                    "title": "Card payment",
+                                    "stories": [
+                                        {
+                                            "title": "As a customer I can pay by card",
+                                            "points": 5,
+                                            "priority": "must",
+                                            "sources": ["q1"],
+                                            "acceptance": [
+                                                {
+                                                    "title": "A valid card is charged once",
+                                                    "tests": ["Charge succeeds with a test card"],
+                                                },
+                                                {
+                                                    "title": "A declined card shows an error",
+                                                    "tests": [],
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                },
+                {
+                    "ref": "catalog",
+                    "title": "Admins manage the product catalog",
+                    "epics": [
+                        {
+                            "title": "Catalog",
+                            "features": [
+                                {
+                                    "title": "Products",
+                                    "stories": [
+                                        {
+                                            "title": "As an admin I can add a product",
+                                            "points": 3,
+                                            "priority": "should",
+                                            "acceptance": [
+                                                {
+                                                    "title": "A new product appears in the catalog",
+                                                    "tests": ["Added product is listed"],
+                                                }
+                                            ],
+                                        },
+                                    ],
+                                }
+                            ],
+                        }
+                    ],
+                },
+            ],
+        }
+    ],
+    "nfrs": [
+        {
+            "category": "perf",
+            "title": "Checkout responds fast",
+            "measure": "p95 < 2 s at 500 orders/day",
+        }
+    ],
+    "rules": ["An order needs at least one item"],
+    "apis": [
+        {"method": "post", "path": "/orders", "title": "Place an order", "fr_ref": "checkout"}
+    ],
+    "data": [
+        {
+            "name": "Order",
+            "fields": [{"name": "id", "type": "int"}, {"name": "total", "type": "decimal"}],
+            "relations": [{"target": "Product", "kind": "many-to-many", "label": "contains"}],
+            "fr_refs": ["checkout"],
+        },
+        {
+            "name": "Product",
+            "fields": [{"name": "id", "type": "int"}, {"name": "name", "type": "string"}],
+        },
+    ],
+    "risks": [{"title": "Payment provider outage", "mitigation": "retry and queue orders"}],
+    "assumptions": ["Single currency (EUR)"],
+    "dependencies": ["A card payment provider account"],
+}
+
+STACK_PROPOSAL = {
+    "pack": "python-fastapi",
+    "addons": ["postgresql", "docker"],
+    "rationale": "Small API-first shop; the team knows Python.",
+    "alternatives": ["node-nestjs"],
+}
+
 APPROVE = {"verdict": "approve", "summary": "Looks correct and tested.", "findings": []}
 DIAGNOSIS = {
     "summary": "multiply returns the wrong value",
@@ -142,6 +256,7 @@ class ScriptedAgents:
             "planner": MULTIPLY_PLAN,
             "developer": multiply_change(),
             "reviewer": APPROVE,
+            "solutionarchitect": STACK_PROPOSAL,
             "qa": DIAGNOSIS,
         }
         self.calls: list[tuple[str, ChatRequest]] = []
@@ -152,7 +267,12 @@ class ScriptedAgents:
         role = match.group(1).lower() if match else "chat"
         self.calls.append((role, request))
         queue = self.queues[role]
-        item = queue.pop(0) if queue else self.defaults.get(role, "ok")
+        if queue:
+            item = queue.pop(0)
+        elif role == "businessanalyst":  # same role, two tasks: tell them apart by schema
+            item = QUESTIONS if '"ambiguities"' in system else SHOP_SPEC
+        else:
+            item = self.defaults.get(role, "ok")
         return item if isinstance(item, str) else json.dumps(item)
 
     def roles(self) -> list[str]:

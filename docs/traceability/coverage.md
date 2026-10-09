@@ -1,17 +1,17 @@
 # Requirement test coverage
 
-_Generated 2026-10-09 10:34 UTC by `pytest --req-report`. Do not edit by hand._
+_Generated 2026-10-09 12:25 UTC by `pytest --req-report`. Do not edit by hand._
 
 A requirement counts as *covered* when at least one test is tagged with it. Coverage grows milestone by milestone; untested requirements belong to later milestones.
 
 | Type | Total | Covered | Passing |
 |---|---|---|---|
-| BR | 29 | 14 | 14 |
-| FR | 30 | 18 | 18 |
+| BR | 29 | 19 | 19 |
+| FR | 30 | 23 | 23 |
 | NFR | 31 | 17 | 17 |
 | EPIC | 7 | 0 | 0 |
-| US | 30 | 13 | 13 |
-| AC | 90 | 40 | 40 |
+| US | 30 | 18 | 18 |
+| AC | 90 | 52 | 52 |
 
 ## Covered requirements
 
@@ -23,20 +23,28 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | BR-004 | Local-only privacy | passed | 14 |
 | BR-006 | Desktop productivity | passed | 16 |
 | BR-007 | Development assistant | passed | 11 |
-| BR-008 | Technology breadth | passed | 13 |
+| BR-008 | Technology breadth | passed | 24 |
+| BR-009 | Requirements lifecycle | passed | 11 |
+| BR-010 | Approval hierarchy | passed | 5 |
 | BR-011 | Existing projects | passed | 17 |
+| BR-013 | Claude skills | passed | 3 |
+| BR-014 | Estimation | passed | 3 |
 | BR-017 | Git governance | passed | 82 |
 | BR-018 | Docker governance | passed | 60 |
 | BR-019 | Email boundary | passed | 9 |
 | BR-022 | Browser boundary | passed | 4 |
 | BR-027 | Offline operation | passed | 2 |
+| BR-028 | Documents | passed | 12 |
 | BR-029 | Workspace | passed | 4 |
 | FR-002 | Conversation | passed | 20 |
 | FR-003 | Application registry | passed | 29 |
 | FR-004 | Project registry | passed | 69 |
 | FR-005 | Repository onboarding | passed | 35 |
 | FR-006 | Coding workflow | passed | 11 |
-| FR-010 | Approval model | passed | 24 |
+| FR-007 | Project creation | passed | 17 |
+| FR-008 | Requirements artifacts | passed | 21 |
+| FR-009 | Requirements traceability | passed | 4 |
+| FR-010 | Approval model | passed | 32 |
 | FR-011 | Tool execution | passed | 58 |
 | FR-012 | Terminal | passed | 161 |
 | FR-013 | Git | passed | 51 |
@@ -49,13 +57,15 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | FR-024 | Checkpoints | passed | 5 |
 | FR-025 | Notifications | passed | 2 |
 | FR-028 | Audit | passed | 18 |
-| NFR-MNT-004 | No provider-specific behavior in domain services. *Enforced by impo... | passed | 12 |
+| FR-029 | Document generation | passed | 12 |
+| FR-030 | Claude skills | passed | 2 |
+| NFR-MNT-004 | No provider-specific behavior in domain services. *Enforced by impo... | passed | 14 |
 | NFR-OBS-001 | Structured logs with correlation/job/step IDs. | passed | 3 |
 | NFR-OBS-002 | Metrics for latency, failures, AI tokens/cost, tool outcomes and qu... | passed | 1 |
 | NFR-PERF-002 | Simple local commands should not require a cloud round trip. | passed | 16 |
 | NFR-PERF-004 | Indexing runs incrementally after initial project ingestion. | passed | 2 |
 | NFR-PORT-002 | Windows/macOS/Linux behavior lives behind adapter contracts. *One c... | passed | 4 |
-| NFR-PORT-003 | AI/STT/TTS/vector/integration providers are pluggable. | passed | 12 |
+| NFR-PORT-003 | AI/STT/TTS/vector/integration providers are pluggable. | passed | 14 |
 | NFR-PRV-003 | Knowledge sources retain provenance and access scope. | passed | 15 |
 | NFR-PRV-004 | Project privacy policy overrides model preference/cost. | passed | 1 |
 | NFR-REL-001 | Persist job state before consequential steps. | passed | 4 |
@@ -71,9 +81,14 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | US-011 | I can register a project anywhere on disk. | passed | 11 |
 | US-012 | Panos analyzes an existing repository before major changes. | passed | 8 |
 | US-020 | I can request a feature in natural language and have Panos plan, im... | passed | 11 |
+| US-021 | I can request a specific technology stack and have it honored. | passed | 11 |
 | US-022 | I can ask Panos to diagnose build/test failures and attempt bounded... | passed | 2 |
 | US-023 | I can roll back an autonomous task to its checkpoint. | passed | 5 |
 | US-024 | I can use voice, coding, requirements and repository analysis witho... | passed | 2 |
+| US-030 | I can provide a brief and be interviewed for missing requirements. | passed | 2 |
+| US-031 | I can approve requirements hierarchically. | passed | 2 |
+| US-032 | I can trace a business requirement to stories, tests and implementa... | passed | 2 |
+| US-033 | A full project generates project-specific Claude skills. | passed | 2 |
 | US-040 | I am asked before Git commits. | passed | 6 |
 | US-041 | I am asked before Docker execution. | passed | 2 |
 | US-050 | Panos can work autonomously while I do something else. | passed | 11 |
@@ -105,6 +120,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | AC-US023-02 | Rollback restores the checkpointed file contents exactly and does n... | passed | 1 |
 | AC-US023-03 | Rollback works for projects that are not Git repositories and is au... | passed | 1 |
 | AC-US024-02 | Offline state is detected and routing selects only local models wit... | passed | 2 |
+| AC-US030-01 | Panos identifies ambiguities and missing information in a brief and... | passed | 1 |
+| AC-US030-02 | Interview state persists and can be resumed after restart. | passed | 1 |
+| AC-US030-03 | Answers are recorded with provenance and reflected in the generated... | passed | 1 |
+| AC-US031-01 | Parent approval can cascade to descendants. | passed | 2 |
+| AC-US031-02 | User can exclude selected descendants. | passed | 1 |
+| AC-US031-03 | Approval records include version, user decision and timestamp. | passed | 1 |
+| AC-US031-04 | Modifying an approved item creates a new version requiring appropri... | passed | 1 |
+| AC-US032-01 | For a given business requirement, Panos shows linked functional req... | passed | 1 |
+| AC-US032-02 | Items with no downstream links (e.g. a story without tests) are rep... | passed | 1 |
+| AC-US032-03 | Changing an approved upstream item marks affected downstream items ... | passed | 2 |
+| AC-US033-01 | A full project generates project-specific Claude skills containing ... | passed | 2 |
+| AC-US033-02 | When approved architecture or standards change, the skills are rege... | passed | 2 |
 | AC-US040-01 | Panos shows a meaningful change summary/diff context before request... | passed | 1 |
 | AC-US040-02 | No commit is created without valid approval for the exact proposed ... | passed | 71 |
 | AC-US041-01 | Panos may inspect Docker configuration without approval. | passed | 30 |
@@ -228,6 +255,34 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **AC-US024-02**
   - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
   - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
+- **AC-US030-01**
+  - `tests/integration/requirements/test_pipeline.py::test_interview_asks_targeted_questions_and_survives_restart` — passed
+- **AC-US030-02**
+  - `tests/integration/requirements/test_pipeline.py::test_interview_asks_targeted_questions_and_survives_restart` — passed
+- **AC-US030-03**
+  - `tests/integration/requirements/test_pipeline.py::test_completion_creates_traceable_drafts_with_provenance` — passed
+- **AC-US031-01**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_cascade_with_exclusions_records_each_decision` — passed
+- **AC-US031-02**
+  - `tests/integration/requirements/test_requirements_service.py::test_cascade_with_exclusions_records_each_decision` — passed
+- **AC-US031-03**
+  - `tests/integration/requirements/test_requirements_service.py::test_cascade_with_exclusions_records_each_decision` — passed
+- **AC-US031-04**
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_an_approved_item_versions_it_and_marks_downstream_stale` — passed
+- **AC-US032-01**
+  - `tests/integration/requirements/test_requirements_service.py::test_traceability_tree_links_evidence_and_gaps` — passed
+- **AC-US032-02**
+  - `tests/integration/requirements/test_requirements_service.py::test_traceability_tree_links_evidence_and_gaps` — passed
+- **AC-US032-03**
+  - `tests/integration/requirements/test_pipeline.py::test_changing_approved_requirements_creates_an_impact_task_and_blocks_coding` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_an_approved_item_versions_it_and_marks_downstream_stale` — passed
+- **AC-US033-01**
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_skills_use_only_approved_facts_and_hash_changes_with_them` — passed
+- **AC-US033-02**
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_skills_use_only_approved_facts_and_hash_changes_with_them` — passed
 - **AC-US040-01**
   - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
 - **AC-US040-02**
@@ -521,6 +576,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/agents/test_contract.py::test_two_invalid_replies_fail_closed` — passed
   - `tests/unit/agents/test_contract.py::test_valid_reply_and_handoff_carry_ids_decisions_and_provenance` — passed
 - **BR-008**
+  - `tests/integration/requirements/test_pipeline.py::test_a_stack_named_in_the_brief_is_honoured_without_asking` — passed
   - `tests/unit/repository/test_detectors.py::test_detected_commands_are_classified_as_safe_once_allowlisted` — passed
   - `tests/unit/repository/test_detectors.py::test_django_with_pip` — passed
   - `tests/unit/repository/test_detectors.py::test_fixture_and_sample_content_does_not_shape_the_stack` — passed
@@ -534,6 +590,34 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/repository/test_detectors.py::test_react_vite_with_pnpm_scripts` — passed
   - `tests/unit/repository/test_detectors.py::test_spring_boot_vaadin_maven_wrapper` — passed
   - `tests/unit/repository/test_detectors.py::test_unknown_stack_has_no_manifests_or_commands` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_every_stack_family_has_a_pack_and_addons_exist` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[A FastAPI service with PostgreSQL in Docker-python-fastapi-extra0]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[A React dashboard-react-typescript-extra6]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[A Spring Boot REST API on Kubernetes-java-spring-boot-extra3]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[A small tool for our team-None-extra7]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[Django admin for the warehouse-python-django-extra1]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[Laravel shop-php-laravel-extra5]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[Our springboard project (not a stack)-None-extra8]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[React/TypeScript front end and a NestJS backend with MongoDB-node-nestjs-extra4]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[Spring Boot + Vaadin back office-java-vaadin-extra2]` — passed
+- **BR-009**
+  - `tests/integration/requirements/test_pipeline.py::test_a_stack_named_in_the_brief_is_honoured_without_asking` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_changing_approved_requirements_creates_an_impact_task_and_blocks_coding` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_completion_creates_traceable_drafts_with_provenance` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_estimate_uses_points_rates_and_plans_sprints` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_interview_asks_targeted_questions_and_survives_restart` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_cascade_with_exclusions_records_each_decision` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_a_draft_replaces_it_without_change_control` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_an_approved_item_versions_it_and_marks_downstream_stale` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_keys_are_allocated_per_type_and_story` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_traceability_tree_links_evidence_and_gaps` — passed
+- **BR-010**
+  - `tests/integration/requirements/test_requirements_service.py::test_cascade_with_exclusions_records_each_decision` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_a_draft_replaces_it_without_change_control` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_an_approved_item_versions_it_and_marks_downstream_stale` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_keys_are_allocated_per_type_and_story` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_traceability_tree_links_evidence_and_gaps` — passed
 - **BR-011**
   - `tests/integration/jobs/test_coding_job.py::test_a_fix_that_cannot_be_applied_is_a_failed_attempt_not_a_dead_end` — passed
   - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
@@ -552,6 +636,14 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_analysis.py::test_remote_urls_are_redacted` — passed
   - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
   - `tests/integration/projects/test_analysis.py::test_workspace_declared_monorepo_is_not_questioned` — passed
+- **BR-013**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_skills_use_only_approved_facts_and_hash_changes_with_them` — passed
+- **BR-014**
+  - `tests/integration/requirements/test_pipeline.py::test_estimate_uses_points_rates_and_plans_sprints` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_estimation_defaults_rates_priorities_and_confidence` — passed
 - **BR-017**
   - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
   - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
@@ -714,6 +806,19 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **BR-027**
   - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
   - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
+- **BR-028**
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ACCEPTANCE_CRITERIA.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ARCHITECTURE.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[BACKLOG.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[BRD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ERD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ESTIMATES.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[FRD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[NFR.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[RISKS.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[SPRINT_PLAN.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[TEST_CASES.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[openapi.yaml]` — passed
 - **BR-029**
   - `tests/integration/cli/test_cli.py::test_config_path_lists_workspace` — passed
   - `tests/integration/projects/test_project_service.py::test_create_in_workspace` — passed
@@ -888,12 +993,60 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
   - `tests/integration/jobs/test_coding_job.py::test_standard_project_jobs_may_use_cloud_local_only_never` — passed
   - `tests/integration/jobs/test_coding_job.py::test_unusable_agent_output_blocks_instead_of_failing` — passed
+- **FR-007**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/api/test_requirements_api.py::test_requirements_api_errors` — passed
+  - `tests/integration/api/test_requirements_api.py::test_requirements_api_flow` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_a_stack_named_in_the_brief_is_honoured_without_asking` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_changing_approved_requirements_creates_an_impact_task_and_blocks_coding` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_completion_creates_traceable_drafts_with_provenance` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_estimate_uses_points_rates_and_plans_sprints` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_interview_asks_targeted_questions_and_survives_restart` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_each_pack_scaffolds_its_structure_offline[java-spring-boot]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_each_pack_scaffolds_its_structure_offline[java-vaadin]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_each_pack_scaffolds_its_structure_offline[node-nestjs]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_each_pack_scaffolds_its_structure_offline[php-laravel]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_each_pack_scaffolds_its_structure_offline[python-django]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_each_pack_scaffolds_its_structure_offline[python-fastapi]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_each_pack_scaffolds_its_structure_offline[react-typescript]` — passed
+- **FR-008**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/api/test_requirements_api.py::test_requirements_api_errors` — passed
+  - `tests/integration/api/test_requirements_api.py::test_requirements_api_flow` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_completion_creates_traceable_drafts_with_provenance` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_cascade_with_exclusions_records_each_decision` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_a_draft_replaces_it_without_change_control` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_an_approved_item_versions_it_and_marks_downstream_stale` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_keys_are_allocated_per_type_and_story` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_traceability_tree_links_evidence_and_gaps` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ACCEPTANCE_CRITERIA.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ARCHITECTURE.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[BACKLOG.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[BRD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ERD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ESTIMATES.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[FRD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[NFR.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[RISKS.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[SPRINT_PLAN.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[TEST_CASES.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[openapi.yaml]` — passed
+- **FR-009**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/api/test_requirements_api.py::test_requirements_api_errors` — passed
+  - `tests/integration/api/test_requirements_api.py::test_requirements_api_flow` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_an_approved_item_versions_it_and_marks_downstream_stale` — passed
 - **FR-010**
   - `tests/integration/api/test_approvals_api.py::test_approval_endpoints_require_auth` — passed
   - `tests/integration/api/test_approvals_api.py::test_audit_list_and_verify` — passed
   - `tests/integration/api/test_approvals_api.py::test_list_and_approve_returns_single_use_token` — passed
   - `tests/integration/api/test_approvals_api.py::test_reject_returns_no_token_and_cannot_decide_twice` — passed
   - `tests/integration/api/test_approvals_api.py::test_unknown_approval_and_bad_body` — passed
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/api/test_requirements_api.py::test_requirements_api_errors` — passed
+  - `tests/integration/api/test_requirements_api.py::test_requirements_api_flow` — passed
   - `tests/integration/approvals/test_approval_service.py::test_action_hash_is_canonical` — passed
   - `tests/integration/approvals/test_approval_service.py::test_cannot_decide_twice_or_after_expiry` — passed
   - `tests/integration/approvals/test_approval_service.py::test_changed_action_invalidates_approval` — passed
@@ -910,6 +1063,11 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/approvals/test_approval_service.py::test_token_signed_by_another_node_key_is_rejected` — passed
   - `tests/integration/approvals/test_approval_service.py::test_unapproved_or_rejected_cannot_be_consumed` — passed
   - `tests/integration/persistence/test_repositories.py::test_approvals_filter_by_status` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_cascade_with_exclusions_records_each_decision` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_a_draft_replaces_it_without_change_control` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_an_approved_item_versions_it_and_marks_downstream_stale` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_keys_are_allocated_per_type_and_story` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_traceability_tree_links_evidence_and_gaps` — passed
   - `tests/integration/tools/test_runtime.py::test_approval_required_moves_job_to_waiting_for_approval` — passed
   - `tests/integration/tools/test_runtime.py::test_approved_action_executes_once_with_token` — passed
   - `tests/unit/domain/test_models.py::test_approval_requires_sha256_payload_hash_and_future_expiry` — passed
@@ -1330,12 +1488,29 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_project_service.py::test_register_existing_directory` — passed
   - `tests/integration/tools/test_runtime.py::test_read_runs_without_approval_and_is_not_audited_as_decision` — passed
   - `tests/unit/domain/test_models.py::test_audit_event_captures_actor_action_decision_and_metadata` — passed
+- **FR-029**
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ACCEPTANCE_CRITERIA.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ARCHITECTURE.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[BACKLOG.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[BRD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ERD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ESTIMATES.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[FRD.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[NFR.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[RISKS.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[SPRINT_PLAN.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[TEST_CASES.md]` — passed
+  - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[openapi.yaml]` — passed
+- **FR-030**
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_skills_use_only_approved_facts_and_hash_changes_with_them` — passed
 - **NFR-MNT-004**
   - `tests/unit/ai/test_adapters.py::test_anthropic_chat_stream_use_beta_surface_only_with_fallback` — passed
   - `tests/unit/ai/test_adapters.py::test_anthropic_guard_runs_before_the_sdk_is_touched` — passed
   - `tests/unit/ai/test_adapters.py::test_anthropic_refusal_is_surfaced` — passed
   - `tests/unit/ai/test_adapters.py::test_build_params_shapes_request_for_current_models` — passed
   - `tests/unit/ai/test_adapters.py::test_factory_builds_enabled_providers_with_keyring_keys` — passed
+  - `tests/unit/ai/test_adapters.py::test_local_runtimes_get_a_longer_default_timeout` — passed
   - `tests/unit/ai/test_adapters.py::test_ollama_chat_usage_speed_and_num_ctx` — passed
   - `tests/unit/ai/test_adapters.py::test_ollama_errors_map_to_provider_errors` — passed
   - `tests/unit/ai/test_adapters.py::test_ollama_json_in_content_tool_calls_and_native_tool_calls` — passed
@@ -1343,6 +1518,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_adapters.py::test_openai_compatible_chat_and_stream` — passed
   - `tests/unit/ai/test_adapters.py::test_openai_compatible_cloud_guard_blocks_before_any_request` — passed
   - `tests/unit/ai/test_adapters.py::test_remote_ollama_is_cloud_and_refuses_local_only` — passed
+  - `tests/unit/ai/test_adapters.py::test_slow_local_generation_is_a_clear_non_retryable_timeout` — passed
 - **NFR-OBS-001**
   - `tests/integration/api/test_routes.py::test_correlation_id_echoed_or_generated` — passed
   - `tests/unit/observability/test_logging.py::test_log_events_carry_correlation_job_and_step_ids` — passed
@@ -1380,6 +1556,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_adapters.py::test_anthropic_refusal_is_surfaced` — passed
   - `tests/unit/ai/test_adapters.py::test_build_params_shapes_request_for_current_models` — passed
   - `tests/unit/ai/test_adapters.py::test_factory_builds_enabled_providers_with_keyring_keys` — passed
+  - `tests/unit/ai/test_adapters.py::test_local_runtimes_get_a_longer_default_timeout` — passed
   - `tests/unit/ai/test_adapters.py::test_ollama_chat_usage_speed_and_num_ctx` — passed
   - `tests/unit/ai/test_adapters.py::test_ollama_errors_map_to_provider_errors` — passed
   - `tests/unit/ai/test_adapters.py::test_ollama_json_in_content_tool_calls_and_native_tool_calls` — passed
@@ -1387,6 +1564,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_adapters.py::test_openai_compatible_chat_and_stream` — passed
   - `tests/unit/ai/test_adapters.py::test_openai_compatible_cloud_guard_blocks_before_any_request` — passed
   - `tests/unit/ai/test_adapters.py::test_remote_ollama_is_cloud_and_refuses_local_only` — passed
+  - `tests/unit/ai/test_adapters.py::test_slow_local_generation_is_a_clear_non_retryable_timeout` — passed
 - **NFR-PRV-003**
   - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
   - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
@@ -1939,6 +2117,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
   - `tests/integration/jobs/test_coding_job.py::test_standard_project_jobs_may_use_cloud_local_only_never` — passed
   - `tests/integration/jobs/test_coding_job.py::test_unusable_agent_output_blocks_instead_of_failing` — passed
+- **US-021**
+  - `tests/integration/requirements/test_pipeline.py::test_a_stack_named_in_the_brief_is_honoured_without_asking` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_completion_creates_traceable_drafts_with_provenance` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[A FastAPI service with PostgreSQL in Docker-python-fastapi-extra0]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[A React dashboard-react-typescript-extra6]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[A Spring Boot REST API on Kubernetes-java-spring-boot-extra3]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[A small tool for our team-None-extra7]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[Django admin for the warehouse-python-django-extra1]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[Laravel shop-php-laravel-extra5]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[Our springboard project (not a stack)-None-extra8]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[React/TypeScript front end and a NestJS backend with MongoDB-node-nestjs-extra4]` — passed
+  - `tests/unit/requirements/test_packs_estimation_skills.py::test_explicit_stack_detection[Spring Boot + Vaadin back office-java-vaadin-extra2]` — passed
 - **US-022**
   - `tests/integration/jobs/test_coding_job.py::test_failing_tests_are_diagnosed_and_repaired` — passed
   - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
@@ -1951,6 +2141,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **US-024**
   - `tests/e2e/test_node_daemon.py::test_cli_ask_against_live_node_and_real_local_model` — passed
   - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
+- **US-030**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_interview_asks_targeted_questions_and_survives_restart` — passed
+- **US-031**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_cascade_with_exclusions_records_each_decision` — passed
+- **US-032**
+  - `tests/integration/requirements/test_pipeline.py::test_changing_approved_requirements_creates_an_impact_task_and_blocks_coding` — passed
+  - `tests/integration/requirements/test_requirements_service.py::test_editing_an_approved_item_versions_it_and_marks_downstream_stale` — passed
+- **US-033**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
+  - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
 - **US-040**
   - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
   - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed

@@ -91,6 +91,20 @@ uv run panos job start -p repo --cmd python --cmd manage.py --cmd test "run the 
 uv run panos job pause|resume|cancel job_…
 ```
 
+Start a new project from a brief (M6). Panos asks questions first, drafts a traceable specification and backlog, proposes a stack (or uses the one you named), and only scaffolds after you approve it:
+
+```bash
+uv run panos new -n shop "an online shop for our handmade products"   # → clarifying questions
+uv run panos interview answer itv_… q1 "card payments only"            # or --skip
+uv run panos interview complete itv_…           # draft BRD/FRD/NFR/backlog/APIs/data + stack ADR
+uv run panos req list -p shop                   # review; edit with `panos req edit`
+uv run panos req approve -p shop BR-001 --exclude FR-002   # cascades to descendants
+uv run panos req approve -p shop ADR-001        # the stack must be approved before scaffolding
+uv run panos req trace -p shop                  # BR → FR → stories → ACs → tests, with gaps
+uv run panos project estimate shop              # points, hours, cost, sprint plan
+uv run panos project scaffold shop --open       # skeleton + docs/requirements + .claude/skills, opens the IDE
+```
+
 The `justfile` wraps the same commands (`just check`). CI runs them on Windows, macOS and Linux for Python 3.12 and 3.14 (`.github/workflows/ci.yml`).
 
 Runtime data never lives in the repository. It is stored in per-user directories; `panos config path` shows them. The default project workspace is `~/Panos/Projects`.

@@ -1,0 +1,11 @@
+# {{ project }} — Test Cases
+
+{% include "_header.md.j2" %}
+
+| Test | Verifies | Title | Status |
+|---|---|---|---|
+{% for tc in t.get("TC", []) %}
+| {{ tc.key }} | {{ tc.parent_key or "-" }} | {{ tc.title }} | v{{ tc.version }} {{ tc.status.value }}{% if tc.stale %} STALE{% endif %} |
+{% else %}
+| - | - | _None yet._ | - |
+{% endfor %}

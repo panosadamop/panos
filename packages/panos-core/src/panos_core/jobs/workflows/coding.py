@@ -29,6 +29,7 @@ from panos_core.agents import (
     Plan,
     Review,
 )
+from panos_core.agents.contract import REQ_ID_RE
 from panos_core.ai.context import RetrievedItem
 from panos_core.domain import Project
 from panos_core.domain.enums import StepStatus
@@ -99,6 +100,15 @@ class CodingWorkflow:
     # ------------------------------------------------------------------ phases
     async def _analyze(self, ctx: JobContext) -> None:
         project = _project(ctx)
+        service = ctx.services.requirements
+        if service is not None:
+            # Requirements named in the objective must be approved and not stale.
+            problems = await service.check_ready(project.id, REQ_ID_RE.findall(ctx.job.objective))
+            if problems:
+                raise Blocked(
+                    "requirements are not ready for implementation: " + "; ".join(problems),
+                    {"requirements": problems},
+                )
         async with ctx.step("orchestrator", "Analyze repository (fresh snapshot)") as step:
             snapshot = await ctx.services.analysis.analyze(project, actor="agent:planner")
             ctx.state["snapshot_id"] = snapshot.id

@@ -77,6 +77,7 @@ class OpenAICompatibleProvider(AdapterBase):
         self.locality = locality
         self._registry = registry
         headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
+        self._timeout_s = timeout_s
         self._client = client or httpx.AsyncClient(
             base_url=base_url.rstrip("/"),
             headers=headers,
@@ -139,6 +140,12 @@ class OpenAICompatibleProvider(AdapterBase):
             r = await self._client.post(
                 "/v1/chat/completions", json=self._payload(request, model, stream=False)
             )
+        except httpx.TimeoutException as exc:
+            raise ProviderError(
+                f"{self.id} timed out after {self._timeout_s:g} s (generation too slow for "
+                "this hardware; raise ai.providers[].timeout_s or use a faster model)",
+                retryable=False,
+            ) from exc
         except httpx.TransportError as exc:
             raise ProviderUnavailableError(f"{self.id} unreachable: {exc}") from exc
         if r.status_code >= 400:
@@ -194,6 +201,12 @@ class OpenAICompatibleProvider(AdapterBase):
                             acc["function"]["name"] += fn.get("name") or ""
                             acc["function"]["arguments"] += fn.get("arguments") or ""
                         stop = choice.get("finish_reason") or stop
+        except httpx.TimeoutException as exc:
+            raise ProviderError(
+                f"{self.id} timed out after {self._timeout_s:g} s (generation too slow for "
+                "this hardware; raise ai.providers[].timeout_s or use a faster model)",
+                retryable=False,
+            ) from exc
         except httpx.TransportError as exc:
             raise ProviderUnavailableError(f"{self.id} unreachable: {exc}") from exc
         response = self._finish(
@@ -216,6 +229,12 @@ class OpenAICompatibleProvider(AdapterBase):
             r = await self._client.post(
                 "/v1/embeddings", json={"model": model, "input": list(texts)}
             )
+        except httpx.TimeoutException as exc:
+            raise ProviderError(
+                f"{self.id} timed out after {self._timeout_s:g} s (generation too slow for "
+                "this hardware; raise ai.providers[].timeout_s or use a faster model)",
+                retryable=False,
+            ) from exc
         except httpx.TransportError as exc:
             raise ProviderUnavailableError(f"{self.id} unreachable: {exc}") from exc
         if r.status_code >= 400:

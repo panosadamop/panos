@@ -77,6 +77,7 @@ class OllamaProvider(AdapterBase):
         self.locality = locality
         self._registry = registry
         self._on_speed = on_speed
+        self._timeout_s = timeout_s
         self._client = client or httpx.AsyncClient(
             base_url=base_url.rstrip("/"),
             timeout=httpx.Timeout(timeout_s, connect=5.0),
@@ -139,6 +140,12 @@ class OllamaProvider(AdapterBase):
             r = await self._client.post(
                 "/api/chat", json=self._payload(request, model, stream=False)
             )
+        except httpx.TimeoutException as exc:
+            raise ProviderError(
+                f"ollama timed out after {self._timeout_s:g} s (generation too slow for "
+                "this hardware; raise ai.providers[].timeout_s or use a faster model)",
+                retryable=False,
+            ) from exc
         except httpx.TransportError as exc:
             raise ProviderUnavailableError(f"ollama unreachable: {exc}") from exc
         if r.status_code >= 400:
@@ -169,6 +176,12 @@ class OllamaProvider(AdapterBase):
                         yield StreamEvent(type="text", text=piece)
                     if chunk.get("done"):
                         last = chunk
+        except httpx.TimeoutException as exc:
+            raise ProviderError(
+                f"ollama timed out after {self._timeout_s:g} s (generation too slow for "
+                "this hardware; raise ai.providers[].timeout_s or use a faster model)",
+                retryable=False,
+            ) from exc
         except httpx.TransportError as exc:
             raise ProviderUnavailableError(f"ollama unreachable: {exc}") from exc
         response = self._response(request, model, last, "".join(parts))
@@ -184,6 +197,12 @@ class OllamaProvider(AdapterBase):
             r = await self._client.post(
                 "/api/embed", json={"model": model, "input": list(texts), "keep_alive": "10m"}
             )
+        except httpx.TimeoutException as exc:
+            raise ProviderError(
+                f"ollama timed out after {self._timeout_s:g} s (generation too slow for "
+                "this hardware; raise ai.providers[].timeout_s or use a faster model)",
+                retryable=False,
+            ) from exc
         except httpx.TransportError as exc:
             raise ProviderUnavailableError(f"ollama unreachable: {exc}") from exc
         if r.status_code >= 400:

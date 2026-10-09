@@ -248,3 +248,37 @@ Report: [`docs/planning/reports/M4.md`](docs/planning/reports/M4.md). M3 and M4 
 **Results:** 792 passed, 1 skipped; coverage 87.6 %; ruff, mypy (245 files) and import-linter clean. Two test-only races fixed along the way (wait helper on the wrong runner; process liveness check).
 
 Report: [`docs/planning/reports/M5.md`](docs/planning/reports/M5.md). M5 not committed. Awaiting approval for M6 and a commit decision.
+
+### 9. Commit of M5, then M6 — Requirements pipeline
+
+**Owner:** "approve both", in answer to "approve M6?" and "commit M5?".
+
+**Claude:**
+- Committed M5 as `839319d`.
+- Implemented M6:
+  - versioned requirements with stable per-project keys (16 types);
+  - cascade approval with exclusions and per-item records;
+  - trace links and evidence;
+  - traceability query with gaps;
+  - change control: transitive stale marking, an impact-analysis job that waits for the user, and coding jobs blocked on unapproved/stale requirements;
+  - persisted, resumable interview (Business Analyst questions, answers as provenance, skips as assumptions);
+  - spec generation into drafts;
+  - stack packs (7 frameworks + 4 add-ons) with explicit-stack detection and a mandatory approved stack ADR;
+  - offline scaffolding;
+  - Markdown/OpenAPI documents (golden-tested);
+  - estimation and sprint plan;
+  - versioned Claude skills from approved facts;
+  - API and CLI (`panos new`, `interview`, `req`, `project estimate|docs|skills|scaffold`).
+
+**Found and fixed while testing:**
+- Golden review: missing blank lines before headings; pack conventions showing raw `{{ package }}`.
+- A failed model call left a half-created project behind. The project is now created only after the brief has been analysed.
+
+**Live run with local models:**
+- qwen2.5-coder:7b asked 10 good questions in about 2 minutes. They are now capped at 8, as instructed.
+- The full specification exceeded the 300 s HTTP timeout and was reported as "ollama unreachable". Now: local runtimes default to a 30-minute timeout, and timeouts are a clear, non-retried error.
+- Rerun: 8 questions in 95 s, then a valid 27-item specification in 205 s that reflects the answers and the requested stack. The content is thin, so drafts need review before approval.
+
+**Results:** 845 passed, 1 skipped; coverage 88.2 %; ruff, mypy (267 files) and import-linter clean; OpenAPI and registry up to date.
+
+Report: [`docs/planning/reports/M6.md`](docs/planning/reports/M6.md). M6 not committed. Awaiting approval for M7 and a commit decision.
