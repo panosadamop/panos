@@ -117,9 +117,28 @@ def _redact_entropy(text: str) -> str:
     )
 
 
-def redact_text(text: str, *, entropy: bool = True) -> str:
-    """Replace known secret patterns and, unless disabled, high-entropy tokens."""
-    for pattern, replacement in _VALUE_PATTERNS:
+_GENERIC_ASSIGNMENT: Final = _VALUE_PATTERNS[-1]
+# Prompt mode: only *quoted literal* assignments (password = "hunter2"), so that code such
+# as ``token = request.token`` reaches the model intact.
+_QUOTED_ASSIGNMENT: Final = (
+    re.compile(
+        r"(?i)\b((?:pass(?:word|wd)?|secret|token|api[_-]?key|access[_-]?key)\w*\s*[=:]\s*)"
+        r"([\"'])[^\"'\s]{4,}\2"
+    ),
+    r"\1\2" + REDACTED + r"\2",
+)
+
+
+def redact_text(text: str, *, entropy: bool = True, code_safe: bool = False) -> str:
+    """Replace known secret patterns and, unless disabled, high-entropy tokens.
+
+    ``code_safe`` (used for prompts) limits key/value redaction to quoted literals so
+    source code is not corrupted; known credential formats are always redacted.
+    """
+    patterns = _VALUE_PATTERNS
+    if code_safe:
+        patterns = (*_VALUE_PATTERNS[:-1], _QUOTED_ASSIGNMENT)
+    for pattern, replacement in patterns:
         text = pattern.sub(replacement, text)
     return _redact_entropy(text) if entropy else text
 

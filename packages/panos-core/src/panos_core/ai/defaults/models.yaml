@@ -1,0 +1,35 @@
+# Model capability registry (ADR-009). Matched to configured providers by `kind`.
+#
+# tiers (AI_ROUTING.md): local_light · local_capable · local_large · cloud_light ·
+#                        cloud_efficient · cloud_premium · embedding
+# context     : tokens Panos will use (for Ollama this is the num_ctx we request, kept
+#               moderate because CPU prompt evaluation is slow on the reference machine)
+# tool_use    : native | json_in_content | none
+# prompt_tps / gen_tps : measured on the reference machine (S-1, CPU-only Ryzen 7 7735U);
+#               refreshed at runtime from Ollama timing data.
+# cost_*      : USD per 1M tokens (Anthropic first-party prices, cached 2026-09-25).
+
+version: 1
+models:
+  # ---------------------------------------------------------------- local (Ollama)
+  - {kind: ollama, name: "qwen2.5:3b", tier: local_light, context: 8192, max_output: 4096,
+     tool_use: native, vision: false, languages: [en, el], prompt_tps: 62, gen_tps: 11.5}
+  - {kind: ollama, name: "qwen2.5-coder:7b", tier: local_capable, context: 8192,
+     max_output: 4096, tool_use: json_in_content, vision: false, languages: [en, el],
+     prompt_tps: 30, gen_tps: 5.8}
+  - {kind: ollama, name: "qwen2.5-coder:14b", tier: local_large, context: 8192,
+     max_output: 4096, tool_use: json_in_content, vision: false, languages: [en, el],
+     prompt_tps: 12.5, gen_tps: 2.8}
+  - {kind: ollama, name: "nomic-embed-text", tier: embedding, context: 8192, embed_dim: 768,
+     query_prefix: "search_query: ", doc_prefix: "search_document: "}
+
+  # ---------------------------------------------------------------- cloud (Anthropic)
+  - {kind: anthropic, name: claude-haiku-4-5, tier: cloud_light, context: 200000,
+     max_output: 32000, tool_use: native, vision: true, languages: [en, el],
+     cost_in: 1.0, cost_out: 5.0, prompt_tps: 2000, gen_tps: 150}
+  - {kind: anthropic, name: claude-sonnet-5-5, tier: cloud_efficient, context: 1000000,
+     max_output: 64000, tool_use: native, vision: true, languages: [en, el],
+     cost_in: 2.0, cost_out: 10.0, prompt_tps: 2000, gen_tps: 80}
+  - {kind: anthropic, name: claude-opus-5-5, tier: cloud_premium, context: 1000000,
+     max_output: 64000, tool_use: native, vision: true, languages: [en, el],
+     cost_in: 4.0, cost_out: 20.0, prompt_tps: 1500, gen_tps: 60}

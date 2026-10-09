@@ -22,3 +22,18 @@ Chroma, Qdrant or LanceDB (extra services or dependencies; can be added later be
 
 ## Consequences
 `sqlite-vec` is pre-1.0; the port isolates the risk.
+
+## Implementation notes (M3, 2026-10-09)
+
+- **Lexical index delivered:** SQLite FTS5 in `knowledge.db`, a derived cache versioned with `PRAGMA user_version`. A mismatched version is rebuilt, never migrated.
+- **Accent- and case-insensitive matching, including Greek.** FTS5's `remove_diacritics` folds only Latin-script accents, so Panos indexes and queries a normalized form (NFD, combining marks removed, casefolded; ς→σ). The original chunk text is stored alongside it (`raw`, unindexed), so snippets show the real text.
+- Free-text queries are converted into quoted terms joined with AND, with a prefix match on the last term. FTS5 operators typed by users or models are therefore treated as plain terms.
+- Provenance per hit: URI, line range, content hash, privacy mode and index time. A project's privacy mode is re-applied to all its sources on every index run.
+- Vectors (`sqlite-vec` + local embeddings) and RRF fusion remain M4 scope.
+
+## Implementation notes (M4, 2026-10-09)
+
+- Schema v4 adds `chunk_embedding(chunk_id, model, dim, vec float32 BLOB)`, cascading with its chunk. Embeddings are keyed per model and computed incrementally (`project index --semantic`).
+- Vector search uses `sqlite-vec`'s `vec_distance_cosine`, with a pure-Python cosine fallback if the extension cannot be loaded. Hybrid search fuses the lexical (bm25) and vector rankings with reciprocal rank fusion (k = 60).
+- Without embeddings, or if the embedding model is unavailable, search silently degrades to lexical.
+- `nomic-embed-text` (768 dims) via Ollama, with its `search_query:` / `search_document:` prefixes, replaces fastembed. It avoids a second ONNX runtime, and the model was already pulled in S-1.

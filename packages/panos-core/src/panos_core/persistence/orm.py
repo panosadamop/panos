@@ -3,7 +3,19 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, ForeignKey, Index, Integer, MetaData, String, Text, UniqueConstraint
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    MetaData,
+    String,
+    Text,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from panos_core.persistence.types import UTCDateTime
@@ -47,6 +59,9 @@ class ProjectRow(Base):
     preferred_ide: Mapped[str | None] = mapped_column(String(128))
     status: Mapped[str] = mapped_column(String(16))
     created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+    policy_overrides: Mapped[dict[str, Any]] = mapped_column(JSON, server_default="{}")
+    ai_policy: Mapped[dict[str, Any]] = mapped_column(JSON, server_default="{}")
+    knowledge_enabled: Mapped[bool] = mapped_column(Boolean, server_default=text("1"))
 
 
 class JobRow(Base):
@@ -130,4 +145,90 @@ class CheckpointRow(Base):
     job_id: Mapped[str | None] = mapped_column(ForeignKey("job.id"))
     type: Mapped[str] = mapped_column(String(32))
     reference: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class RepositorySnapshotRow(Base):
+    __tablename__ = "repository_snapshot"
+    __table_args__ = (Index("ix_repository_snapshot_project", "project_id", "indexed_at"),)
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str] = mapped_column(ForeignKey("project.id", ondelete="CASCADE"))
+    commit_hash: Mapped[str | None] = mapped_column(String(64))
+    stack_json: Mapped[dict[str, Any]] = mapped_column(JSON)
+    commands_json: Mapped[dict[str, Any]] = mapped_column(JSON)
+    structure_json: Mapped[dict[str, Any]] = mapped_column(JSON)
+    clarifications_json: Mapped[list[str]] = mapped_column(JSON)
+    confidence: Mapped[float] = mapped_column(Float)
+    indexed_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class ApplicationRow(Base):
+    __tablename__ = "application"
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    key: Mapped[str] = mapped_column(String(128), unique=True)
+    name: Mapped[str] = mapped_column(String(255))
+    kind: Mapped[str] = mapped_column(String(32))
+    executable: Mapped[str] = mapped_column(Text)
+    version: Mapped[str | None] = mapped_column(String(64))
+    source: Mapped[str] = mapped_column(String(64))
+    aliases: Mapped[list[str]] = mapped_column(JSON)
+    available: Mapped[bool] = mapped_column(Boolean)
+    discovered_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class UserPreferenceRow(Base):
+    __tablename__ = "user_preference"
+    __table_args__ = (UniqueConstraint("scope", "key"),)
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    key: Mapped[str] = mapped_column(String(255))
+    value: Mapped[Any] = mapped_column(JSON)
+    scope: Mapped[str] = mapped_column(String(64))
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class ConversationRow(Base):
+    __tablename__ = "conversation"
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str | None] = mapped_column(ForeignKey("project.id", ondelete="SET NULL"))
+    title: Mapped[str] = mapped_column(Text)
+    privacy: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class ConversationMessageRow(Base):
+    __tablename__ = "conversation_message"
+    __table_args__ = (Index("ix_conversation_message_conv", "conversation_id", "created_at"),)
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    conversation_id: Mapped[str] = mapped_column(ForeignKey("conversation.id", ondelete="CASCADE"))
+    role: Mapped[str] = mapped_column(String(16))
+    content: Mapped[str] = mapped_column(Text)
+    privacy: Mapped[str] = mapped_column(String(16))
+    provider: Mapped[str | None] = mapped_column(String(64))
+    model: Mapped[str | None] = mapped_column(String(128))
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class AIUsageRow(Base):
+    __tablename__ = "ai_usage"
+    __table_args__ = (Index("ix_ai_usage_created_at", "created_at"),)
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    provider: Mapped[str] = mapped_column(String(64))
+    model: Mapped[str] = mapped_column(String(128))
+    locality: Mapped[str] = mapped_column(String(8))
+    task: Mapped[str] = mapped_column(String(32))
+    privacy: Mapped[str] = mapped_column(String(16))
+    input_tokens: Mapped[int] = mapped_column(Integer)
+    output_tokens: Mapped[int] = mapped_column(Integer)
+    cost_usd: Mapped[float] = mapped_column(Float)
+    latency_ms: Mapped[int] = mapped_column(Integer)
+    project_id: Mapped[str | None] = mapped_column(String(36))
+    conversation_id: Mapped[str | None] = mapped_column(String(36))
+    job_id: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(UTCDateTime)

@@ -15,21 +15,31 @@ from panos_core.domain.errors import DomainError, EntityNotFoundError
 from panos_core.domain.ids import new_id
 from panos_core.domain.models import (
     ActionApproval,
+    AIUsage,
+    Application,
     AuditEvent,
     Checkpoint,
+    Conversation,
+    ConversationMessage,
     Job,
     JobBudget,
     JobStep,
     Node,
     Project,
+    RepositorySnapshot,
+    UserPreference,
 )
 
 __all__ = [
+    "AIUsage",
     "ActionApproval",
+    "Application",
     "ApprovalStatus",
     "AuditEvent",
     "Checkpoint",
     "CheckpointType",
+    "Conversation",
+    "ConversationMessage",
     "DomainError",
     "EntityNotFoundError",
     "Job",
@@ -43,6 +53,8 @@ __all__ = [
     "PrivacyMode",
     "Project",
     "ProjectStatus",
+    "RepositorySnapshot",
     "StepStatus",
+    "UserPreference",
     "new_id",
 ]

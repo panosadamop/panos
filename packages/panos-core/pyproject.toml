@@ -17,8 +17,15 @@ dependencies = [
     "keyring>=25.5",
     "bashlex>=0.18",
     "psutil>=6.1",
+    "pathspec>=0.12",
+    "httpx>=0.28",
+    "sqlite-vec>=0.1.6",
     "pywin32>=308; sys_platform == 'win32'",
 ]
+
+[project.optional-dependencies]
+# Cloud provider SDKs are optional: a local-only installation needs none of them.
+anthropic = ["anthropic>=1.0"]
 
 [build-system]
 requires = ["hatchling>=1.25"]

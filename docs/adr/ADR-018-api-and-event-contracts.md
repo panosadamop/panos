@@ -19,3 +19,9 @@ Hand-written TS types (drift); GraphQL (unneeded complexity).
 
 ## Consequences
 Schema changes are visible in review via generated diffs.
+
+## Implementation notes (M4, 2026-10-09)
+
+- **Event envelope:** `{v: 1, type, id, ts, correlation_id, job_id?, payload}`. In-process `EventBus` with bounded per-subscriber queues; a slow subscriber loses its oldest events.
+- **`/api/v1/ws/events`:** Host/Origin checks run in the middleware before the handshake. Then the client must send `{"type":"auth","token":…}` within 5 s; otherwise the socket closes with 1008. Event types so far: `conversation.message`, `conversation.delta`.
+- **`POST /conversation/messages`:** with `stream: true`, returns NDJSON (`start`, `route`, `text`…, `reply` | `error`). Without it, returns one JSON reply. Privacy refusals are `503` problems with `reason: "no_route"` and the rejected candidates.

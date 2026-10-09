@@ -57,7 +57,9 @@ def test_audit_list_and_verify(client: TestClient) -> None:
     approval_id = _request_approval(client)
     client.post(f"/api/v1/approvals/{approval_id}/decision", json={"decision": "approve"})
     events = client.get("/api/v1/audit", params={"limit": 10}).json()["events"]
-    assert [e["event_type"] for e in events[:2]] == ["approval.decided", "approval.requested"]
+    # Startup app discovery audits concurrently, so look at approval events only.
+    approval_events = [e["event_type"] for e in events if e["event_type"].startswith("approval.")]
+    assert approval_events[:2] == ["approval.decided", "approval.requested"]
     assert all(len(e["hash"]) == 64 for e in events)
     filtered = client.get("/api/v1/audit", params={"event_type": "approval.decided"}).json()
     assert len(filtered["events"]) == 1

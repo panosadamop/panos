@@ -45,6 +45,14 @@ rules:
 
   # --- applications ------------------------------------------------------------------
   - {action: app.launch,           level: P1, description: Launch an approved installed application}
+  - {action: app.discover,         level: P0, description: Discover supported installed applications}
+  - {action: app.focus,            level: P1, description: Bring an application window to the front}
+  - {action: os.open_path,         level: P1, description: Open a project file/folder with its default handler (never executables)}
+  - {action: window.read,          level: P0, description: Read active-window metadata (title/process; no pixels)}
+
+  # --- knowledge --------------------------------------------------------------------
+  - {action: knowledge.search,     level: P0, description: Search the local knowledge index}
+  - {action: knowledge.index,      level: P1, description: (Re)index project files into the local knowledge index}
 
   # --- integrations ------------------------------------------------------------------
   - {action: pm.read,              level: P0, description: Read Jira/Azure DevOps}

@@ -1,20 +1,23 @@
 """``panos`` command."""
 
 import json
-from collections.abc import Callable
-from typing import Annotated, Any, NoReturn
+from typing import Annotated, NoReturn
 
 import httpx
 import typer
 
+from panos_cli.ai import ai_app, ask
 from panos_cli.client import NodeClient, NodeNotRunningError
+from panos_cli.common import (
+    EXIT_ALREADY_RUNNING,
+    EXIT_ERROR,
+    call,
+    not_running,
+)
+from panos_cli.projects import apps_app, project_app
 from panos_core import API_VERSION, __version__
 from panos_core.config import load_settings
 from panos_core.config.settings import default_config_file
-
-EXIT_NOT_RUNNING = 1
-EXIT_ALREADY_RUNNING = 3
-EXIT_ERROR = 4
 
 app = typer.Typer(
     name="panos",
@@ -82,11 +85,7 @@ def status(
 
 
 def _not_running(message: str, as_json: bool) -> NoReturn:
-    if as_json:
-        typer.echo(json.dumps({"running": False, "detail": message}))
-    else:
-        typer.echo(f"Panos node is not running: {message}")
-    raise typer.Exit(EXIT_NOT_RUNNING)
+    not_running(message, as_json)
 
 
 @config_app.command("show")
@@ -118,24 +117,13 @@ audit_app = typer.Typer(help="Inspect the audit log.", no_args_is_help=True)
 approvals_app = typer.Typer(help="Review and decide pending approvals.", no_args_is_help=True)
 app.add_typer(audit_app, name="audit")
 app.add_typer(approvals_app, name="approvals")
+app.add_typer(project_app, name="project")
+app.add_typer(apps_app, name="apps")
+app.add_typer(ai_app, name="ai")
+app.command("ask")(ask)
 
 
-def _call(fn: Callable[[NodeClient], dict[str, Any]]) -> dict[str, Any]:
-    """Run a request against the running node, mapping errors to exit codes."""
-    try:
-        client = NodeClient.from_settings(load_settings())
-    except NodeNotRunningError as exc:
-        _not_running(str(exc), False)
-    try:
-        return fn(client)
-    except NodeNotRunningError as exc:
-        _not_running(str(exc), False)
-    except httpx.HTTPStatusError as exc:
-        detail = exc.response.json().get("detail", "") if exc.response.content else ""
-        typer.echo(f"error: {exc.response.status_code} {detail}", err=True)
-        raise typer.Exit(EXIT_ERROR) from exc
-    finally:
-        client.close()
+_call = call
 
 
 @audit_app.command("list")

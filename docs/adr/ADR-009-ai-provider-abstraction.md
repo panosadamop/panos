@@ -46,3 +46,28 @@ LiteLLM (broad, but a large dependency in the privacy-critical path); LangChain 
 - Qwen2.5 Greek prose is weak. Greek user-facing replies under local-only policy will have grammatical errors until a Greek-capable local model is evaluated.
 - **Follow-ups (M4):** Ollama with `OLLAMA_IGPU_ENABLE=1` plus an AMD driver update; an MoE model (e.g. qwen3-30b-a3b); a Greek-capable local model; fastembed vs `nomic-embed-text`.
 - Model licences: Qwen2.5 3B is research/non-commercial and 7B/14B are Apache-2.0, acceptable for personal use (D-6).
+
+## Implementation notes (M4, 2026-10-09)
+
+- **Ports:** `ChatProvider` (`chat`, `stream`, `embed`, `health`, `close`) with provider-neutral types (`panos_core.ai.types`).
+- **Adapters:**
+  - Ollama uses the native API, for timings that feed the registry's speed EMA.
+  - OpenAI-compatible covers llama.cpp, LM Studio, vLLM and OpenAI via SSE.
+  - Anthropic uses the official SDK (optional extra `panos-core[anthropic]`).
+  - A scripted mock is used in tests.
+  - Locality comes from the endpoint: loopback is local; a private IP is local only with `trusted_lan`; any DNS name other than localhost is cloud.
+- **Anthropic specifics:**
+  - Sampling parameters and forced `tool_choice` are never sent.
+  - Thinking is adaptive (default); depth is set with `output_config.effort` (not for Haiku 4.5).
+  - The server-side refusal fallback (`fallbacks: "default"`, beta `server-side-fallback-2026-07-01`) is on by default for Sonnet/Opus 5.5 (`ai.anthropic_refusal_fallback`).
+  - `stop_reason: "refusal"` is surfaced.
+- **Tier mapping (AI_ROUTING):** `cloud_light` = Claude Haiku 4.5, `cloud_efficient` = Claude Sonnet 5.5, `cloud_premium` = Claude Opus 5.5. Local tiers are qwen2.5 3B/7B/14B; embeddings use `nomic-embed-text` via Ollama. Registry: `panos_core/ai/defaults/models.yaml`.
+- **Router:**
+  - hard filters: privacy → health → tier suitability → tools/vision → context fit → premium gate → per-request cost → monthly budget;
+  - ordering: tier preference for the task family, then estimated latency (measured tokens/s), then cost;
+  - every decision carries reasons and rejected candidates (`POST /ai/route`, `panos ai route`).
+- **Gateway:** the single path to a model.
+  - It redacts for cloud and meters usage (`ai_usage` table, migration 0004).
+  - A retryable failure (e.g. cloud unreachable) marks the provider unhealthy and re-routes once, giving offline fallback to local models without loops.
+  - Health is cached for 60 s. Local runtimes must list the model (it is pulled); cloud providers are trusted to serve registry models.
+- **Keys:** stored in the OS keyring as `ai.<provider>.api_key` via `panos ai set-key` (hidden prompt or `--stdin`, never argv). They are never read from the environment.

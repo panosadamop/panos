@@ -1,0 +1,6 @@
+{
+  "name": "svc",
+  "scripts": {"test": "jest", "build": "nest build", "lint": "eslint ."},
+  "dependencies": {"@nestjs/core": "^10.0.0", "mongoose": "^8.0.0"},
+  "devDependencies": {"jest": "^29.0.0", "typescript": "^5.6.0"}
+}

@@ -1,0 +1,13 @@
+[project]
+name = "orders"
+version = "0.1.0"
+dependencies = ["fastapi>=0.115", "sqlalchemy>=2.0", "asyncpg>=0.29"]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.8", "mypy>=1.13"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

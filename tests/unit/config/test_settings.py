@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -36,7 +37,7 @@ def test_ensure_directories_creates_workspace_and_dirs() -> None:
 def test_precedence_override_beats_env_beats_toml_beats_default(
     isolated_env: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    config_file = isolated_env / "config" / "config.toml"
+    config_file = Path(os.environ["PANOS_CONFIG_FILE"])
     config_file.parent.mkdir(parents=True, exist_ok=True)
     config_file.write_text('log_level = "WARNING"\nlog_json_console = true\n', encoding="utf-8")
 
@@ -50,7 +51,7 @@ def test_precedence_override_beats_env_beats_toml_beats_default(
 
 
 def test_unknown_settings_are_rejected(isolated_env: Path) -> None:
-    config_file = isolated_env / "config" / "config.toml"
+    config_file = Path(os.environ["PANOS_CONFIG_FILE"])
     config_file.parent.mkdir(parents=True, exist_ok=True)
     config_file.write_text("not_a_setting = 1\n", encoding="utf-8")
     with pytest.raises(ValidationError):

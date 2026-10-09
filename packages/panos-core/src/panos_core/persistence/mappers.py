@@ -5,6 +5,7 @@ from panos_core.domain.enums import (
     CheckpointType,
     JobStatus,
     NodeStatus,
+    PermissionLevel,
     PolicyDecision,
     PrivacyMode,
     ProjectStatus,
@@ -12,6 +13,7 @@ from panos_core.domain.enums import (
 )
 from panos_core.domain.models import (
     ActionApproval,
+    Application,
     AuditEvent,
     Checkpoint,
     Job,
@@ -19,15 +21,20 @@ from panos_core.domain.models import (
     JobStep,
     Node,
     Project,
+    RepositorySnapshot,
+    UserPreference,
 )
 from panos_core.persistence.orm import (
     ActionApprovalRow,
+    ApplicationRow,
     AuditEventRow,
     CheckpointRow,
     JobRow,
     JobStepRow,
     NodeRow,
     ProjectRow,
+    RepositorySnapshotRow,
+    UserPreferenceRow,
 )
 
 
@@ -55,6 +62,8 @@ def project_to_row(p: Project, row: ProjectRow | None = None) -> ProjectRow:
     row.name, row.path, row.node_id = p.name, p.path, p.node_id
     row.privacy_mode, row.preferred_ide = p.privacy_mode, p.preferred_ide
     row.status, row.created_at = p.status, p.created_at
+    row.policy_overrides = {k: int(v) for k, v in p.policy_overrides.items()}
+    row.ai_policy, row.knowledge_enabled = dict(p.ai_policy), p.knowledge_enabled
     return row
 
 
@@ -68,6 +77,9 @@ def project_from_row(r: ProjectRow) -> Project:
         preferred_ide=r.preferred_ide,
         status=ProjectStatus(r.status),
         created_at=r.created_at,
+        policy_overrides={k: PermissionLevel(v) for k, v in (r.policy_overrides or {}).items()},
+        ai_policy=dict(r.ai_policy or {}),
+        knowledge_enabled=bool(r.knowledge_enabled),
     )
 
 
@@ -216,3 +228,58 @@ def checkpoint_from_row(r: CheckpointRow) -> Checkpoint:
         reference=r.reference,
         created_at=r.created_at,
     )
+
+
+def snapshot_to_row(s: RepositorySnapshot) -> RepositorySnapshotRow:
+    return RepositorySnapshotRow(
+        id=s.id,
+        project_id=s.project_id,
+        commit_hash=s.commit_hash,
+        stack_json=s.stack,
+        commands_json=s.commands,
+        structure_json=s.structure,
+        clarifications_json=list(s.clarifications),
+        confidence=s.confidence,
+        indexed_at=s.indexed_at,
+    )
+
+
+def snapshot_from_row(r: RepositorySnapshotRow) -> RepositorySnapshot:
+    return RepositorySnapshot(
+        id=r.id,
+        project_id=r.project_id,
+        commit_hash=r.commit_hash,
+        stack=dict(r.stack_json or {}),
+        commands={k: [list(c) for c in v] for k, v in (r.commands_json or {}).items()},
+        structure=dict(r.structure_json or {}),
+        clarifications=list(r.clarifications_json or []),
+        confidence=r.confidence,
+        indexed_at=r.indexed_at,
+    )
+
+
+def application_to_row(a: Application, row: ApplicationRow | None = None) -> ApplicationRow:
+    row = row or ApplicationRow(id=a.id)
+    row.key, row.name, row.kind, row.executable = a.key, a.name, a.kind, a.executable
+    row.version, row.source, row.aliases = a.version, a.source, list(a.aliases)
+    row.available, row.discovered_at = a.available, a.discovered_at
+    return row
+
+
+def application_from_row(r: ApplicationRow) -> Application:
+    return Application(
+        id=r.id,
+        key=r.key,
+        name=r.name,
+        kind=r.kind,
+        executable=r.executable,
+        version=r.version,
+        source=r.source,
+        aliases=list(r.aliases or []),
+        available=r.available,
+        discovered_at=r.discovered_at,
+    )
+
+
+def preference_from_row(r: UserPreferenceRow) -> UserPreference:
+    return UserPreference(id=r.id, key=r.key, value=r.value, scope=r.scope, updated_at=r.updated_at)

@@ -6,12 +6,17 @@ from typing import Self
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from panos_core.persistence.repositories import (
+    SqlApplicationRepository,
     SqlApprovalRepository,
     SqlAuditRepository,
     SqlCheckpointRepository,
+    SqlConversationRepository,
     SqlJobRepository,
     SqlNodeRepository,
+    SqlPreferenceRepository,
     SqlProjectRepository,
+    SqlSnapshotRepository,
+    SqlUsageRepository,
 )
 
 
@@ -31,6 +36,11 @@ class SqlUnitOfWork:
         self.approvals = SqlApprovalRepository(s)
         self.audit = SqlAuditRepository(s)
         self.checkpoints = SqlCheckpointRepository(s)
+        self.snapshots = SqlSnapshotRepository(s)
+        self.applications = SqlApplicationRepository(s)
+        self.preferences = SqlPreferenceRepository(s)
+        self.conversations = SqlConversationRepository(s)
+        self.ai_usage = SqlUsageRepository(s)
         return self
 
     async def __aexit__(

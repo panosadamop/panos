@@ -142,3 +142,73 @@ Report: [`docs/planning/reports/M1.md`](docs/planning/reports/M1.md).
 - ruff, mypy and import-linter clean.
 
 Report: [`docs/planning/reports/M2.md`](docs/planning/reports/M2.md). Awaiting approval for M3. No commits made.
+
+## 2026-10-09 — Session 1 (continued)
+
+### 6. Commit and M3 — Projects and repository intelligence
+
+**Owner:** "yes", in answer to "approve M3?" and "commit M0–M2?". Claude treated it as approval of both.
+
+**Claude:**
+- Committed M0–M2 as `f53b847` (217 files) under the owner's Git identity.
+- Inventoried the machine's installed apps (read-only), then implemented M3:
+  - project registry (refuses roots, home and system dirs), with persisted per-project policy overrides and an audited privacy change;
+  - stack/build/test detection for 10 stacks (fixture repos);
+  - repository snapshot (outline, conventions, docs, Git state, confidence and clarification questions);
+  - typed Git tools with option-injection protection;
+  - desktop adapter contract plus the Windows production adapter (13 apps discovered on this machine);
+  - app catalog/allowlist and preferred-IDE resolution;
+  - app, window and knowledge tools;
+  - FTS5 knowledge index with Greek accent-insensitive search;
+  - routers package, and the CLI `project` and `apps` commands.
+
+**Live demo on the real machine:**
+- register, analyze, index, search and open (dry run → PyCharm) on the Panos repo itself;
+- the demo found two quality bugs (fixture-driven false infrastructure detection; unreadable normalized snippets), both fixed.
+
+**Other bugs fixed:**
+- app-discovery race (UNIQUE violation);
+- Greek search not matching (FTS5 folds only Latin accents);
+- Edge's version-specific path.
+
+**Results:**
+- 656 passed, 1 skipped; coverage 85.6 %.
+- ruff, mypy and import-linter clean.
+
+Report: [`docs/planning/reports/M3.md`](docs/planning/reports/M3.md). M3 not committed. Awaiting approval for M4.
+
+### 7. M4 — AI layer, privacy routing, conversation
+
+**Owner:** "approved" (M4). Claude treated it as approval of M4 only. M3 stays uncommitted until the owner explicitly approves a commit.
+
+**Claude:**
+- Built the provider-neutral AI layer:
+  - ports and types with privacy labels;
+  - adapters for Ollama, OpenAI-compatible, Anthropic (official SDK; current-model rules: no sampling params, adaptive thinking + `effort`, refusal fallback) and mock;
+  - model registry with S-1 speeds;
+  - explainable router with hard privacy filter, budgets and offline fallback;
+  - single gateway (redaction, metering, audit);
+  - context builder with forgery-proof untrusted envelopes.
+- Added the conversation service:
+  - sticky taint; unscoped conversations are LOCAL_ONLY;
+  - rule-based Greek/English intents that run through the tool runtime with no model;
+  - retrieval with sources;
+  - streaming over NDJSON and `/ws/events`.
+- Added vectors: sqlite-vec + nomic-embed-text, hybrid RRF search.
+- CLI: `panos ask`, `panos ai …`.
+- **Exit-criterion evidence:** router property test; adapter-guard tests (I/O never reached); full-stack spy suite with a planted local-only marker and an injection attempt.
+
+**Bugs found and fixed:**
+- Cloud providers list dated model IDs, so a model-name filter would have hidden Claude.
+- Search lost lexical results when the embedding model was down.
+- CLI sent `semantic=` (empty) → 422.
+- Starlette TestClient is built on `httpx2`. CLI tests bridge through a real `httpx` transport.
+- A pre-existing audit test raced with startup app discovery.
+
+**Live:**
+- `panos ask` through a real node to local qwen: about 35 s, `LOCAL_ONLY`.
+- Retrieval smoke with real embeddings: hybrid 3/5 top-1 vs lexical 0/5; Greek→English cross-lingual weak (follow-up).
+
+**Results:** 752 passed, 1 skipped; coverage 86.9 %; ruff, mypy (219 files) and import-linter clean; OpenAPI and registry up to date.
+
+Report: [`docs/planning/reports/M4.md`](docs/planning/reports/M4.md). M3 and M4 not committed. Awaiting approval for M5 and a commit decision.

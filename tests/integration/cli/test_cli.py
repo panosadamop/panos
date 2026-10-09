@@ -3,7 +3,8 @@ import json
 import pytest
 from typer.testing import CliRunner
 
-from panos_cli.main import EXIT_NOT_RUNNING, app
+from panos_cli.common import EXIT_NOT_RUNNING
+from panos_cli.main import app
 from panos_core import __version__
 from panos_core.config import PanosSettings
 from panos_core.config.runtime import write_runtime_file
@@ -65,6 +66,9 @@ def test_no_args_shows_help() -> None:
         ["audit", "verify"],
         ["approvals", "list"],
         ["approvals", "approve", "apr_x"],
+        ["ask", "hello"],
+        ["ai", "providers"],
+        ["ai", "usage"],
     ],
 )
 def test_node_commands_report_not_running(settings: PanosSettings, args: list[str]) -> None:

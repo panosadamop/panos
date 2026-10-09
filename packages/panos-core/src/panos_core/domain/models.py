@@ -16,6 +16,7 @@ from panos_core.domain.enums import (
     CheckpointType,
     JobStatus,
     NodeStatus,
+    PermissionLevel,
     PolicyDecision,
     PrivacyMode,
     ProjectStatus,
@@ -46,6 +47,12 @@ ApprovalId = Annotated[str, _id_of("approval")]
 AuditId = Annotated[str, _id_of("audit")]
 NodeId = Annotated[str, _id_of("node")]
 CheckpointId = Annotated[str, _id_of("checkpoint")]
+SnapshotId = Annotated[str, _id_of("snapshot")]
+ApplicationId = Annotated[str, _id_of("application")]
+PreferenceId = Annotated[str, _id_of("preference")]
+ConversationId = Annotated[str, _id_of("conversation")]
+MessageId = Annotated[str, _id_of("message")]
+UsageId = Annotated[str, _id_of("usage")]
 AwareDatetime = Annotated[datetime, AfterValidator(_aware)]
 NonEmptyStr = Annotated[str, Field(min_length=1, max_length=10_000)]
 Sha256Hex = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
@@ -75,9 +82,14 @@ class Project(Entity):
     path: NonEmptyStr
     node_id: NodeId
     privacy_mode: PrivacyMode = PrivacyMode.LOCAL_ONLY
-    preferred_ide: str | None = None
+    preferred_ide: str | None = None  # application key, e.g. "jetbrains.pycharm"
     status: ProjectStatus = ProjectStatus.ACTIVE
     created_at: AwareDatetime = Field(default_factory=utc_now)
+    # Per-project permission overrides (ADR-005): may tighten; loosening limited by policy.
+    policy_overrides: dict[str, PermissionLevel] = Field(default_factory=dict)
+    # Free-form AI policy settings (budgets, model preferences); interpreted in M4.
+    ai_policy: dict[str, Any] = Field(default_factory=dict)
+    knowledge_enabled: bool = True
 
     @model_validator(mode="after")
     def _path_is_absolute(self) -> Self:
@@ -178,4 +190,97 @@ class Checkpoint(Entity):
     job_id: JobId | None = None
     type: CheckpointType = CheckpointType.SHADOW_GIT
     reference: NonEmptyStr
+    created_at: AwareDatetime = Field(default_factory=utc_now)
+
+
+class RepositorySnapshot(Entity):
+    """Result of repository onboarding (FR-005, AC-US012-01..03).
+
+    ``stack`` holds languages/frameworks/package managers; ``commands`` the discovered
+    build/test/lint commands; ``structure`` the file/module map, conventions, docs and
+    Git state; ``clarifications`` the questions to resolve before material changes.
+    """
+
+    id: SnapshotId = Field(default_factory=lambda: new_id("snapshot"))
+    project_id: ProjectId
+    commit_hash: str | None = None
+    stack: dict[str, Any] = Field(default_factory=dict)
+    commands: dict[str, list[list[str]]] = Field(default_factory=dict)
+    structure: dict[str, Any] = Field(default_factory=dict)
+    clarifications: list[str] = Field(default_factory=list)
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    indexed_at: AwareDatetime = Field(default_factory=utc_now)
+
+    @property
+    def needs_clarification(self) -> bool:
+        return bool(self.clarifications)
+
+    def allowlisted_commands(self) -> tuple[tuple[str, ...], ...]:
+        """Discovered format/lint/type-check/test/build commands (PERMISSIONS: P1)."""
+        kinds = ("test", "lint", "format", "typecheck", "build")
+        return tuple(tuple(c) for k in kinds for c in self.commands.get(k, []) if c)
+
+
+class Application(Entity):
+    """A discovered, supported installed application (FR-003)."""
+
+    id: ApplicationId = Field(default_factory=lambda: new_id("application"))
+    key: NonEmptyStr  # catalog key, e.g. "jetbrains.pycharm"
+    name: NonEmptyStr
+    kind: NonEmptyStr  # "ide", "editor" or "browser"
+    executable: NonEmptyStr
+    version: str | None = None
+    source: NonEmptyStr  # where it was discovered (registry, app-paths, programs-dir...)
+    aliases: list[str] = Field(default_factory=list)
+    available: bool = True
+    discovered_at: AwareDatetime = Field(default_factory=utc_now)
+
+
+class UserPreference(Entity):
+    id: PreferenceId = Field(default_factory=lambda: new_id("preference"))
+    key: NonEmptyStr
+    value: Any = None
+    scope: NonEmptyStr = "user"
+    updated_at: AwareDatetime = Field(default_factory=utc_now)
+
+
+class Conversation(Entity):
+    """A conversation with Panos (FR-002). ``privacy`` is *sticky* (ADR-008): once any
+    LOCAL_ONLY content enters the conversation it stays LOCAL_ONLY for good."""
+
+    id: ConversationId = Field(default_factory=lambda: new_id("conversation"))
+    project_id: ProjectId | None = None
+    title: str = ""
+    privacy: PrivacyMode = PrivacyMode.LOCAL_ONLY
+    created_at: AwareDatetime = Field(default_factory=utc_now)
+    updated_at: AwareDatetime = Field(default_factory=utc_now)
+
+
+class ConversationMessage(Entity):
+    id: MessageId = Field(default_factory=lambda: new_id("message"))
+    conversation_id: ConversationId
+    role: Annotated[str, Field(pattern=r"^(user|assistant|system)$")]
+    content: str
+    privacy: PrivacyMode
+    provider: str | None = None
+    model: str | None = None
+    created_at: AwareDatetime = Field(default_factory=utc_now)
+
+
+class AIUsage(Entity):
+    """One model call, metered for cost and audit (FR-023, NFR-OBS-002)."""
+
+    id: UsageId = Field(default_factory=lambda: new_id("usage"))
+    provider: NonEmptyStr
+    model: NonEmptyStr
+    locality: Annotated[str, Field(pattern=r"^(local|cloud)$")]
+    task: NonEmptyStr
+    privacy: PrivacyMode
+    input_tokens: int = Field(default=0, ge=0)
+    output_tokens: int = Field(default=0, ge=0)
+    cost_usd: float = Field(default=0.0, ge=0)
+    latency_ms: int = Field(default=0, ge=0)
+    project_id: ProjectId | None = None
+    conversation_id: ConversationId | None = None
+    job_id: JobId | None = None
     created_at: AwareDatetime = Field(default_factory=utc_now)

@@ -70,13 +70,42 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 6. **(M2)** New shell action classes extend PERMISSIONS.md: `shell.read` P0, `build.test` P1, `shell.write` P2, `shell.delete` P3, `shell.unknown` P3, `net.fetch` P2, `net.upload` P3, `git.mutate.local` P1, `git.destructive` P3. `net.upload` is P3, not P4, because the spec fixes only *browser* uploads at P4.
 7. **(M2)** Per-project policy overrides are passed in `ToolContext` until the project registry persists them (M3).
 
-## 5a. Security incidents
+8. **(M3)** No tree-sitter yet: symbol outlines use Python `ast` plus regexes (names only). A full parser is deferred to M5.
+9. **(M3)** The knowledge index (`knowledge.db`) uses `PRAGMA user_version` rather than Alembic. It is a rebuildable cache.
+10. **(M3)** The application catalog is the "approved application" allowlist. There is no user-editable list yet.
+11. **(M4)** Embeddings use `nomic-embed-text` via Ollama instead of fastembed (no second ONNX runtime; the model was already pulled in S-1). *(ADR-017 note)*
+12. **(M4)** Tokens stream over the HTTP response (NDJSON) *and* as `conversation.delta` events on `/ws/events`. The CLI uses NDJSON; the desktop app can use either.
+13. **(M4)** The WebSocket lives at `/api/v1/ws/events` (versioned like the rest of the API), not at the bare `/ws/events` in API.md.
+14. **(M4)** Intent classification is rule-based (English + Greek), not a local LLM call. Simple commands answer in milliseconds; everything else goes to the router. An LLM classifier can be added behind the same `Intent` type.
+15. **(M4)** Budget escalation uses the *cheaper fallback* path only (over-budget cloud candidates are filtered out). Approval-gated escalation arrives with jobs in M5.
+16. **(M4)** No vision port yet (the `VISION` task type exists; image content does not). Screenshots/vision come with M7.
+
+## 5a. Design points added in M3
+
+- **Project registration refuses dangerously broad scopes** (filesystem roots, home, system dirs, Panos data dirs), because a project defines the tools' working scope.
+- **Discovered format/lint/type-check/test/build commands become P1** for that project; everything else keeps its classification.
+- **`open_path` never opens executables.** App launch arguments are limited to the project path or an http(s) URL in a browser.
+- **Git tools block option injection.** Revisions may not start with `-`; paths always follow `--`.
+- **Search normalizes text** (Greek tonos/case) for matching but shows the original text.
+- Fixture and sample directories don't shape the detected stack.
+
+## 5a-bis. Design points added in M4
+
+- **Unscoped conversations are LOCAL_ONLY by default** (`ai.unscoped_privacy`). Talking to Panos without a project never reaches the cloud unless the owner changes that setting.
+- **Sticky taint applies per conversation, not per project.** A new conversation in a project that is now STANDARD may use the cloud. A tainted conversation's history is never sent.
+- **Cloud adapters refuse unredacted requests.** Redaction can therefore not be skipped by calling an adapter directly.
+- **Remote Ollama or OpenAI-compatible servers are cloud** unless they are on loopback or on an IP explicitly marked `trusted_lan`. DNS names other than localhost are always cloud.
+- **API keys never come from the environment or argv.** Only the keyring, via `panos ai set-key` (hidden prompt / `--stdin`).
+- **Chat routing for STANDARD content prefers Claude Sonnet 5.5** (AI_ROUTING "cloud_efficient"), then local models. The router reports expected cost; per-request ($0.50) and monthly ($20) caps are on by default.
+- **The Anthropic refusal fallback is on by default** (server-side, Sonnet/Opus 5.5). If Claude declines a request, the API can retry it on a fallback model. Turn it off with `ai.anthropic_refusal_fallback = false`.
+
+## 5b. Security incidents
 
 | Date | Event | Handling |
 |---|---|---|
 | 2026-10-08 | **Microsoft Defender flagged two test command lines** (threat 2147948670). They contained attack-shaped strings (a download-and-execute and an HTTP-POST upload, used only as parser input), and the PowerShell parser used `-EncodedCommand`. The processes were blocked; nothing malicious ran. | Parser switched to stdin (`-Command -`). Attack-shaped strings are kept off command lines; test corpora use benign equivalents. **The owner may want to inform IT security**, since alerts on a managed laptop may be visible to them. |
 
-## 5b. Accepted residual risks (M2)
+## 5c. Accepted residual risks (M2)
 
 - Allowlisted build/test commands run repository code (ADR-007).
 - Windows Job Object assignment race at process start; the psutil fallback covers it.
@@ -100,10 +129,20 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 ## 7. Open follow-ups
 
 - [ ] Add a Git remote so CI runs on macOS/Linux. Commits need explicit owner approval.
-- [ ] Decide whether to commit M0–M2 (not yet approved).
+- [x] Commit M0–M2 — done 2026-10-09 (`f53b847`).
+- [ ] Decide whether to commit M3.
+- [ ] Coverage under-reports async API handlers run in TestClient's portal thread. Investigate (e.g. an httpx `ASGITransport` client) if API-layer coverage numbers matter.
+- [ ] Honour nested `.gitignore` files in the walker/indexer.
+- [x] Secret redaction before cloud prompts (M4, `code_safe` redaction in the gateway). The *index* itself still stores raw text locally; that is by design for a local cache.
+- [ ] Decide whether to commit M4 (and M3).
+- [ ] Retrieval uses FTS snippets (~matched lines), not whole chunks. Pass full chunk text to the model when context budgets allow.
+- [ ] An LLM-based intent classifier on the local light tier, for paraphrased commands the rules miss.
+- [ ] Approval-gated budget escalation (M5, with jobs).
+- [ ] Greek-capable local model evaluation is still open (qwen2.5 Greek prose is weak).
+- [ ] Multilingual embeddings: in the live smoke, `nomic-embed-text` got 3/5 top-1 overall but missed Greek-query → English-content cases. Evaluate `bge-m3` or `multilingual-e5` via Ollama (the registry allows a model swap; vectors are keyed per model).
 - [ ] Optionally tell IT security about the 2026-10-08 Defender detections (test strings, not malware).
 - [ ] Ollama iGPU test (`OLLAMA_IGPU_ENABLE=1`) after an AMD driver update.
-- [ ] Evaluate a Greek-capable local LLM and an MoE model (M4).
+- [ ] Evaluate a Greek-capable local LLM and an MoE model (carried over from M4).
 - [ ] CT2 MKL A/B and whisper.cpp + Vulkan for STT latency (M7).
 - [ ] Train and validate the "Panos" / "Hey Panos" wake word (M7-07a).
 - [ ] Optionally install the Windows Greek speech voice ("Stefanos").

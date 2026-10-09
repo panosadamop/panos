@@ -55,6 +55,30 @@ uv run python scripts/trace_registry.py --check
 uv run python scripts/export_openapi.py --check
 ```
 
+Try it on a real project (in a second terminal while `panos serve` runs):
+
+```bash
+uv run panos project add C:\path\to\repo        # registers as LOCAL_ONLY
+uv run panos project analyze repo                # stack, build/test commands, Git state
+uv run panos project index repo                  # local full-text index
+uv run panos project search repo "payment retry"
+uv run panos apps list                           # discovered IDEs, editors, browsers
+uv run panos project open repo                   # opens in the preferred IDE (--dry-run to preview)
+```
+
+Talk to Panos (M4). It uses local models via [Ollama](https://ollama.com) and, for STANDARD projects, Claude if you add a key:
+
+```bash
+ollama pull qwen2.5-coder:7b; ollama pull qwen2.5:3b; ollama pull nomic-embed-text
+uv run panos ai providers                        # health of ollama / anthropic
+uv run panos ask -v "list projects"              # simple commands: answered without a model
+uv run panos project index repo --semantic       # add local embeddings (hybrid search)
+uv run panos ask -p repo "what does OrderService do?"   # LOCAL_ONLY project → local model only
+uv run panos ai set-key anthropic                # optional: Claude for STANDARD projects (hidden prompt)
+uv run panos ai route --privacy STANDARD "explain this design"   # which model and why
+uv run panos ai usage                            # tokens and cost this month
+```
+
 The `justfile` wraps the same commands (`just check`). CI runs them on Windows, macOS and Linux for Python 3.12 and 3.14 (`.github/workflows/ci.yml`).
 
 Runtime data never lives in the repository. It is stored in per-user directories; `panos config path` shows them. The default project workspace is `~/Panos/Projects`.

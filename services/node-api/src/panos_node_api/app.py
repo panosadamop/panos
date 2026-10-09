@@ -7,10 +7,11 @@ from fastapi import FastAPI
 
 from panos_core import API_VERSION, __version__
 from panos_core.config import PanosSettings
-from panos_node_api.container import build_container
+from panos_core.platform.desktop import DesktopAdapter
+from panos_node_api.container import AIOverride, build_container
 from panos_node_api.correlation import CorrelationIdMiddleware
 from panos_node_api.problems import install_problem_handlers
-from panos_node_api.routes import router
+from panos_node_api.routers import api_router
 from panos_node_api.security import AuthConfig, LoopbackSecurityMiddleware
 
 
@@ -19,6 +20,8 @@ def create_app(
     auth: AuthConfig,
     *,
     on_shutdown: Callable[[], None] | None = None,
+    desktop: DesktopAdapter | None = None,
+    ai: AIOverride | None = None,
 ) -> FastAPI:
     """Build the node API.
 
@@ -32,8 +35,9 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        container = await build_container(settings)
+        container = await build_container(settings, desktop=desktop, ai=ai)
         app.state.container = container
+        app.state.auth = auth  # /ws/events authenticates in its first message
         try:
             yield
         finally:
@@ -50,7 +54,7 @@ def create_app(
         openapi_url=None,
     )
     install_problem_handlers(app)
-    app.include_router(router)
+    app.include_router(api_router)
     # Starlette wraps in reverse order: the last middleware added is the outermost.
     app.add_middleware(LoopbackSecurityMiddleware, config=auth)
     app.add_middleware(CorrelationIdMiddleware)

@@ -31,7 +31,7 @@ panos/
 │   │       ├── orchestration/  agents/  jobs/  checkpoints/
 │   │       ├── tools/  policy/  approvals/  audit/  secrets/  redaction/
 │   │       ├── ai/  knowledge/  voice/
-│   │       ├── projects/  repository/
+│   │       ├── projects/  repository/  apps/   # registry, analysis, app catalog
 │   │       ├── requirements/  traceability/  estimation/  skills/  documents/
 │   │       ├── notifications/  nodes/  integrations/
 │   │       ├── persistence/  config/  observability/   # persistence/migrations = Alembic (ADR-004)

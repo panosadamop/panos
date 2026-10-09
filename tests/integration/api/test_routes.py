@@ -7,6 +7,7 @@ from panos_core.domain.ids import is_valid_id
 from panos_core.nodes import current_platform
 from panos_node_api import create_app
 from panos_node_api.security import AuthConfig
+from tests.fakes import FakeDesktop
 from tests.integration.api.conftest import BASE_URL, TOKEN
 
 
@@ -36,7 +37,10 @@ def test_capabilities_describe_node_and_features(client: TestClient) -> None:
     body = client.get("/api/v1/capabilities").json()
     assert body["api_version"] == API_VERSION
     assert body["node"]["platform"] == current_platform()
-    assert set(body["features"]) == {"health", "capabilities", "approvals", "audit"}
+    assert {"health", "capabilities", "approvals", "audit", "projects", "apps"} <= set(
+        body["features"]
+    )
+    assert body["desktop"]["launch"] == "supported"
     assert "shell.run" in body["tools"]
     assert "fs.write" in body["tools"]
     assert not any(t.startswith("email") for t in body["tools"])
@@ -49,7 +53,7 @@ def test_node_identity_stable_across_app_restarts(
     ids = []
     for _ in range(2):
         with TestClient(
-            create_app(settings, auth),
+            create_app(settings, auth, desktop=FakeDesktop()),
             base_url=BASE_URL,
             headers={"Authorization": f"Bearer {TOKEN}"},
         ) as c:

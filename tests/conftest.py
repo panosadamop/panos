@@ -11,6 +11,9 @@ from panos_core.persistence import UnitOfWorkFactory, create_engine, run_migrati
 
 pytest_plugins = ["tests.plugins.req_coverage"]
 
+# Fixture repositories contain their own (fake) test files: never collect them.
+collect_ignore_glob = ["fixtures/*"]
+
 _DIR_ENV = {
     "PANOS_DATA_DIR": "data",
     "PANOS_CONFIG_DIR": "config",
@@ -21,12 +24,18 @@ _DIR_ENV = {
 
 
 @pytest.fixture(autouse=True)
-def isolated_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+def isolated_env(
+    tmp_path: Path, tmp_path_factory: pytest.TempPathFactory, monkeypatch: pytest.MonkeyPatch
+) -> Path:
     """Point all Panos directories and the config file at a temp dir; never touch real ones."""
     home = tmp_path / "panos-home"
     for name, sub in _DIR_ENV.items():
         monkeypatch.setenv(name, str(home / sub))
-    monkeypatch.setenv("PANOS_CONFIG_FILE", str(home / "config" / "config.toml"))
+    # No real model providers in tests (no Ollama/cloud traffic); tests inject mocks.
+    # The file lives outside tmp_path, which some tests use as a project directory.
+    config_file = tmp_path_factory.mktemp("panos-config") / "config.toml"
+    config_file.write_text("[ai]\nproviders = []\n", encoding="utf-8")
+    monkeypatch.setenv("PANOS_CONFIG_FILE", str(config_file))
     # Never touch the real OS credential store from tests.
     monkeypatch.setenv("PANOS_SECRET_BACKEND", "memory")
     for var in ("PANOS_LOG_LEVEL", "PANOS_ALLOWED_ORIGINS", "PANOS_LOG_JSON_CONSOLE"):

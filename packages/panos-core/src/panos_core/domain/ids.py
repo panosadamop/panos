@@ -15,6 +15,12 @@ PREFIXES: Final = {
     "audit": "aud",
     "node": "nod",
     "checkpoint": "chk",
+    "snapshot": "snp",
+    "application": "app",
+    "preference": "prf",
+    "conversation": "cnv",
+    "message": "msg",
+    "usage": "use",
 }
 
 _ID_RE: Final = re.compile(r"^[a-z]{3}_[0-9a-f]{32}$")

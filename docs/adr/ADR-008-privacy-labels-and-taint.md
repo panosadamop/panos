@@ -22,3 +22,15 @@ Router-only enforcement (a single point of failure); per-message classification 
 
 ## Consequences
 Some conversations will be locked to local models after touching a local-only file; the UI shows the taint state. Property-based tests assert that no cloud adapter call happens for any tainted context.
+
+## Implementation notes (M4, 2026-10-09)
+
+- **Labels everywhere:** every `Message` carries `privacy` (default `LOCAL_ONLY`, fail-safe) and `trust`. A `ChatRequest`'s label is the maximum of its messages; a retrieval bundle's label is the maximum of its chunks; an assistant reply inherits the request's label.
+- **Sticky conversations:** a conversation starts with its project's mode (unscoped: `ai.unscoped_privacy`, default `LOCAL_ONLY`). Each turn re-applies the project's *current* mode, which can only tighten the label, never relax it. Relaxing a project later does not untaint existing conversations.
+- **Enforcement points (both active):**
+  1. the router's first hard filter;
+  2. `AdapterBase._guard` / `_guard_texts`, called first in every adapter method (chat, stream, embed). It applies to any endpoint classified as cloud, including an Ollama/OpenAI-compatible server that is not on loopback or an explicitly trusted LAN. Cloud adapters also refuse requests the gateway has not redacted (`redacted=False`).
+- **Audit:** cloud calls are recorded as `ai.cloud_call` (provider, model, label, tokens, cost; no content). Adapter refusals are recorded as `ai.egress_blocked`.
+- **Redaction for cloud:** known credential formats plus quoted key/value literals (`code_safe` mode). Identifiers such as `token = request.token` and hashes are kept, so code is not corrupted.
+- **Embeddings follow labels:** `LOCAL_ONLY` chunks can only be embedded by a local model.
+- **Tests:** a Hypothesis property test over random candidate sets; a full-stack suite with an always-healthy, preferred cloud spy (`tests/security/test_local_only_egress.py`); direct adapter-guard tests (the HTTP route or SDK is never touched).

@@ -1,49 +1,87 @@
 # Requirement test coverage
 
-_Generated 2026-10-08 12:03 UTC by `pytest --req-report`. Do not edit by hand._
+_Generated 2026-10-09 08:51 UTC by `pytest --req-report`. Do not edit by hand._
 
 A requirement counts as *covered* when at least one test is tagged with it. Coverage grows milestone by milestone; untested requirements belong to later milestones.
 
 | Type | Total | Covered | Passing |
 |---|---|---|---|
-| BR | 29 | 7 | 7 |
-| FR | 30 | 9 | 9 |
-| NFR | 31 | 6 | 6 |
+| BR | 29 | 13 | 13 |
+| FR | 30 | 15 | 15 |
+| NFR | 31 | 15 | 15 |
 | EPIC | 7 | 0 | 0 |
-| US | 30 | 2 | 2 |
-| AC | 90 | 13 | 13 |
+| US | 30 | 6 | 6 |
+| AC | 90 | 26 | 26 |
 
 ## Covered requirements
 
 | ID | Title | Status | Tests |
 |---|---|---|---|
 | BR-001 | Unified assistant | passed | 2 |
-| BR-004 | Local-only privacy | passed | 1 |
-| BR-017 | Git governance | passed | 65 |
+| BR-002 | Cross-platform | passed | 4 |
+| BR-003 | Hybrid AI | passed | 20 |
+| BR-004 | Local-only privacy | passed | 13 |
+| BR-006 | Desktop productivity | passed | 16 |
+| BR-008 | Technology breadth | passed | 13 |
+| BR-011 | Existing projects | passed | 6 |
+| BR-017 | Git governance | passed | 77 |
 | BR-018 | Docker governance | passed | 59 |
 | BR-019 | Email boundary | passed | 9 |
 | BR-022 | Browser boundary | passed | 4 |
-| BR-029 | Workspace | passed | 3 |
-| FR-004 | Project registry | passed | 53 |
+| BR-027 | Offline operation | passed | 2 |
+| BR-029 | Workspace | passed | 4 |
+| FR-002 | Conversation | passed | 19 |
+| FR-003 | Application registry | passed | 29 |
+| FR-004 | Project registry | passed | 69 |
+| FR-005 | Repository onboarding | passed | 35 |
 | FR-010 | Approval model | passed | 24 |
 | FR-011 | Tool execution | passed | 58 |
-| FR-012 | Terminal | passed | 160 |
-| FR-013 | Git | passed | 35 |
+| FR-012 | Terminal | passed | 161 |
+| FR-013 | Git | passed | 47 |
 | FR-014 | Docker/Kubernetes | passed | 28 |
+| FR-019 | Knowledge ingestion | passed | 6 |
+| FR-020 | Knowledge retrieval | passed | 21 |
+| FR-021 | AI routing | passed | 23 |
 | FR-022 | Long-running jobs | passed | 14 |
-| FR-023 | Limits | passed | 1 |
-| FR-028 | Audit | passed | 16 |
+| FR-023 | Limits | passed | 3 |
+| FR-028 | Audit | passed | 18 |
+| NFR-MNT-004 | No provider-specific behavior in domain services. *Enforced by impo... | passed | 12 |
 | NFR-OBS-001 | Structured logs with correlation/job/step IDs. | passed | 3 |
+| NFR-OBS-002 | Metrics for latency, failures, AI tokens/cost, tool outcomes and qu... | passed | 1 |
+| NFR-PERF-002 | Simple local commands should not require a cloud round trip. | passed | 15 |
+| NFR-PERF-004 | Indexing runs incrementally after initial project ingestion. | passed | 2 |
+| NFR-PORT-002 | Windows/macOS/Linux behavior lives behind adapter contracts. *One c... | passed | 4 |
+| NFR-PORT-003 | AI/STT/TTS/vector/integration providers are pluggable. | passed | 12 |
+| NFR-PRV-003 | Knowledge sources retain provenance and access scope. | passed | 15 |
+| NFR-PRV-004 | Project privacy policy overrides model preference/cost. | passed | 1 |
 | NFR-REL-001 | Persist job state before consequential steps. | passed | 2 |
-| NFR-SEC-001 | Least privilege by default. | passed | 131 |
-| NFR-SEC-002 | No unrestricted LLM shell/desktop access. | passed | 228 |
-| NFR-SEC-003 | Encrypt credentials/secrets at rest using OS-backed secure storage ... | passed | 3 |
-| NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 72 |
-| US-011 | I can register a project anywhere on disk. | passed | 1 |
+| NFR-SEC-001 | Least privilege by default. | passed | 134 |
+| NFR-SEC-002 | No unrestricted LLM shell/desktop access. | passed | 235 |
+| NFR-SEC-003 | Encrypt credentials/secrets at rest using OS-backed secure storage ... | passed | 4 |
+| NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 76 |
+| NFR-SEC-005 | Local-only content must be technically blocked from cloud-provider ... | passed | 17 |
+| US-005 | I can mark a project or folder local-only, and Panos never sends it... | passed | 7 |
+| US-010 | I can ask Panos to open an installed supported IDE/browser. | passed | 9 |
+| US-011 | I can register a project anywhere on disk. | passed | 11 |
+| US-012 | Panos analyzes an existing repository before major changes. | passed | 8 |
+| US-024 | I can use voice, coding, requirements and repository analysis witho... | passed | 2 |
 | US-052 | I can pause/resume/cancel a job. | passed | 3 |
-| AC-US005-01 | A project or folder can be marked local-only; newly created or regi... | passed | 1 |
-| AC-US011-02 | Registration stores the privacy mode, preferred IDE, AI policy and ... | passed | 1 |
-| AC-US011-03 | Registering a path that does not exist, is not accessible, or is al... | passed | 1 |
+| AC-US005-01 | A project or folder can be marked local-only; newly created or regi... | passed | 3 |
+| AC-US005-02 | While a request involves local-only content (files, retrieval chunk... | passed | 13 |
+| AC-US005-03 | A blocked cloud route is enforced both in routing and at the cloud ... | passed | 6 |
+| AC-US005-04 | If no eligible local model can handle the request, Panos says so in... | passed | 5 |
+| AC-US005-05 | Changing a project's privacy mode requires an explicit user action ... | passed | 2 |
+| AC-US010-01 | Panos lists discovered supported IDEs and browsers, including JetBr... | passed | 2 |
+| AC-US010-02 | The user can open an application by name or configured alias, and a... | passed | 4 |
+| AC-US010-03 | An application that is not installed or not supported produces a cl... | passed | 1 |
+| AC-US010-04 | Launches use native APIs or application CLIs, not mouse or keyboard... | passed | 1 |
+| AC-US011-01 | A project can be created in `~/Panos/Projects` or registered from a... | passed | 3 |
+| AC-US011-02 | Registration stores the privacy mode, preferred IDE, AI policy and ... | passed | 2 |
+| AC-US011-03 | Registering a path that does not exist, is not accessible, or is al... | passed | 4 |
+| AC-US012-01 | Panos detects primary languages/frameworks and build/test commands. | passed | 16 |
+| AC-US012-02 | It records a repository snapshot before material modification. | passed | 1 |
+| AC-US012-03 | Failure to understand critical project structure causes clarificati... | passed | 1 |
+| AC-US024-02 | Offline state is detected and routing selects only local models wit... | passed | 2 |
 | AC-US040-02 | No commit is created without valid approval for the exact proposed ... | passed | 64 |
 | AC-US041-01 | Panos may inspect Docker configuration without approval. | passed | 29 |
 | AC-US041-02 | Any Docker execution request enters WAITING_FOR_APPROVAL. | passed | 47 |
@@ -58,11 +96,87 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 ## Tests per requirement
 
 - **AC-US005-01**
+  - `tests/integration/projects/test_project_service.py::test_register_existing_directory` — passed
+  - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
   - `tests/unit/domain/test_models.py::test_new_project_defaults_to_local_only` — passed
+- **AC-US005-02**
+  - `tests/integration/ai/test_gateway.py::test_embeddings_follow_labels` — passed
+  - `tests/integration/ai/test_gateway.py::test_local_only_goes_local_and_cloud_never_sees_it` — passed
+  - `tests/integration/api/test_conversation_api.py::test_conversation_privacy_is_sticky` — passed
+  - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
+  - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
+  - `tests/security/test_local_only_egress.py::test_prompt_injection_in_retrieved_content_cannot_reroute` — passed
+  - `tests/security/test_local_only_egress.py::test_route_dry_run_and_egress_audit_trail` — passed
+  - `tests/security/test_local_only_egress.py::test_taint_survives_project_relaxation_and_history_never_leaks` — passed
+  - `tests/security/test_local_only_egress.py::test_unscoped_conversations_default_to_local_only` — passed
+  - `tests/security/test_local_only_egress.py::test_without_a_local_model_local_only_work_is_refused_not_sent` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_max_label_local_only_dominates` — passed
+  - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
+  - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
+- **AC-US005-03**
+  - `tests/integration/ai/test_gateway.py::test_adapter_refusal_is_audited_as_egress_blocked` — passed
+  - `tests/security/test_local_only_egress.py::test_route_dry_run_and_egress_audit_trail` — passed
+  - `tests/unit/ai/test_adapters.py::test_anthropic_guard_runs_before_the_sdk_is_touched` — passed
+  - `tests/unit/ai/test_adapters.py::test_openai_compatible_cloud_guard_blocks_before_any_request` — passed
+  - `tests/unit/ai/test_adapters.py::test_remote_ollama_is_cloud_and_refuses_local_only` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_cloud_egress_assertions` — passed
+- **AC-US005-04**
+  - `tests/integration/ai/test_gateway.py::test_local_only_without_local_model_is_refused_with_explanation` — passed
+  - `tests/integration/api/test_conversation_api.py::test_ai_endpoints` — passed
+  - `tests/integration/api/test_conversation_api.py::test_no_local_model_gives_explained_503_and_never_uses_cloud` — passed
+  - `tests/security/test_local_only_egress.py::test_without_a_local_model_local_only_work_is_refused_not_sent` — passed
+  - `tests/unit/ai/test_router.py::test_no_local_model_means_explained_refusal_not_cloud` — passed
+- **AC-US005-05**
+  - `tests/integration/api/test_projects_api.py::test_privacy_change_requires_confirmation` — passed
+  - `tests/integration/projects/test_project_service.py::test_privacy_change_is_explicit_and_audited` — passed
+- **AC-US010-01**
+  - `tests/integration/api/test_projects_api.py::test_apps_list_launch_and_preferences` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_discovered_apps_are_listed_and_unavailable_ones_dropped` — passed
+- **AC-US010-02**
+  - `tests/e2e/test_node_daemon.py::test_cli_project_register_analyze_index_search_open` — passed
+  - `tests/integration/api/test_projects_api.py::test_open_project_preview_and_launch` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_project_open_launches_preferred_ide_with_project_path` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_resolve_by_alias_and_clear_errors` — passed
+- **AC-US010-03**
+  - `tests/integration/projects/test_apps_and_desktop.py::test_resolve_by_alias_and_clear_errors` — passed
+- **AC-US010-04**
+  - `tests/integration/projects/test_apps_and_desktop.py::test_project_open_launches_preferred_ide_with_project_path` — passed
+- **AC-US011-01**
+  - `tests/integration/api/test_projects_api.py::test_register_list_get_and_conflicts` — passed
+  - `tests/integration/projects/test_project_service.py::test_create_in_workspace` — passed
+  - `tests/integration/projects/test_project_service.py::test_register_existing_directory` — passed
 - **AC-US011-02**
   - `tests/integration/persistence/test_repositories.py::test_project_round_trip_preserves_policy_fields` — passed
+  - `tests/integration/projects/test_project_service.py::test_register_existing_directory` — passed
 - **AC-US011-03**
+  - `tests/integration/api/test_projects_api.py::test_register_list_get_and_conflicts` — passed
   - `tests/integration/persistence/test_repositories.py::test_same_path_cannot_be_registered_twice` — passed
+  - `tests/integration/projects/test_project_service.py::test_dangerously_broad_locations_are_refused` — passed
+  - `tests/integration/projects/test_project_service.py::test_duplicates_and_missing_paths_rejected` — passed
+- **AC-US012-01**
+  - `tests/e2e/test_node_daemon.py::test_cli_project_register_analyze_index_search_open` — passed
+  - `tests/integration/api/test_projects_api.py::test_analyze_and_snapshot` — passed
+  - `tests/integration/projects/test_analysis.py::test_analysis_snapshot_is_persisted_with_git_state` — passed
+  - `tests/unit/repository/test_detectors.py::test_detected_commands_are_classified_as_safe_once_allowlisted` — passed
+  - `tests/unit/repository/test_detectors.py::test_django_with_pip` — passed
+  - `tests/unit/repository/test_detectors.py::test_fixture_and_sample_content_does_not_shape_the_stack` — passed
+  - `tests/unit/repository/test_detectors.py::test_go_rust_dotnet` — passed
+  - `tests/unit/repository/test_detectors.py::test_gradle_kotlin_multi_project` — passed
+  - `tests/unit/repository/test_detectors.py::test_infrastructure_only_repo` — passed
+  - `tests/unit/repository/test_detectors.py::test_laravel` — passed
+  - `tests/unit/repository/test_detectors.py::test_malicious_xml_entities_are_not_expanded` — passed
+  - `tests/unit/repository/test_detectors.py::test_nestjs_with_npm_and_mongo` — passed
+  - `tests/unit/repository/test_detectors.py::test_python_fastapi_with_uv` — passed
+  - `tests/unit/repository/test_detectors.py::test_react_vite_with_pnpm_scripts` — passed
+  - `tests/unit/repository/test_detectors.py::test_spring_boot_vaadin_maven_wrapper` — passed
+  - `tests/unit/repository/test_detectors.py::test_unknown_stack_has_no_manifests_or_commands` — passed
+- **AC-US012-02**
+  - `tests/integration/projects/test_analysis.py::test_analysis_snapshot_is_persisted_with_git_state` — passed
+- **AC-US012-03**
+  - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
+- **AC-US024-02**
+  - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
+  - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
 - **AC-US040-02**
   - `tests/integration/approvals/test_approval_service.py::test_action_hash_is_canonical` — passed
   - `tests/integration/approvals/test_approval_service.py::test_cannot_decide_twice_or_after_expiry` — passed
@@ -258,9 +372,97 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **BR-001**
   - `tests/e2e/test_node_daemon.py::test_serve_status_and_authenticated_health` — passed
   - `tests/integration/api/test_routes.py::test_health_reports_ok_with_node_identity` — passed
+- **BR-002**
+  - `tests/contract/test_desktop_contract.py::test_capabilities_declare_every_operation` — passed
+  - `tests/contract/test_desktop_contract.py::test_discovery_returns_catalogued_existing_apps` — passed
+  - `tests/contract/test_desktop_contract.py::test_unsupported_capabilities_raise_typed_error` — passed
+  - `tests/contract/test_desktop_contract.py::test_windows_discovers_edge` — passed
+- **BR-003**
+  - `tests/integration/ai/test_gateway.py::test_adapter_refusal_is_audited_as_egress_blocked` — passed
+  - `tests/integration/ai/test_gateway.py::test_budget_exhaustion_routes_locally` — passed
+  - `tests/integration/ai/test_gateway.py::test_embeddings_follow_labels` — passed
+  - `tests/integration/ai/test_gateway.py::test_health_cache_and_candidates_require_pulled_local_models` — passed
+  - `tests/integration/ai/test_gateway.py::test_local_only_goes_local_and_cloud_never_sees_it` — passed
+  - `tests/integration/ai/test_gateway.py::test_local_only_without_local_model_is_refused_with_explanation` — passed
+  - `tests/integration/ai/test_gateway.py::test_non_retryable_errors_propagate` — passed
+  - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
+  - `tests/integration/ai/test_gateway.py::test_standard_goes_to_cloud_redacted_metered_and_audited` — passed
+  - `tests/integration/ai/test_gateway.py::test_stream_yields_decision_then_events_and_meters` — passed
+  - `tests/integration/api/test_conversation_api.py::test_standard_project_uses_cloud_with_redaction` — passed
+  - `tests/unit/ai/test_router.py::test_for_chat_derives_privacy_and_size` — passed
+  - `tests/unit/ai/test_router.py::test_hard_filters_capability_context_budget_premium` — passed
+  - `tests/unit/ai/test_router.py::test_light_tasks_prefer_local_light_then_latency` — passed
+  - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
+  - `tests/unit/ai/test_router.py::test_no_local_model_means_explained_refusal_not_cloud` — passed
+  - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
+  - `tests/unit/ai/test_router.py::test_registry_defaults_and_speed_ema` — passed
+  - `tests/unit/ai/test_router.py::test_standard_chat_prefers_efficient_cloud_and_explains` — passed
+  - `tests/unit/ai/test_router.py::test_task_families` — passed
 - **BR-004**
+  - `tests/integration/ai/test_gateway.py::test_local_only_goes_local_and_cloud_never_sees_it` — passed
+  - `tests/integration/api/test_conversation_api.py::test_conversation_privacy_is_sticky` — passed
+  - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
+  - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
+  - `tests/security/test_local_only_egress.py::test_prompt_injection_in_retrieved_content_cannot_reroute` — passed
+  - `tests/security/test_local_only_egress.py::test_route_dry_run_and_egress_audit_trail` — passed
+  - `tests/security/test_local_only_egress.py::test_taint_survives_project_relaxation_and_history_never_leaks` — passed
+  - `tests/security/test_local_only_egress.py::test_unscoped_conversations_default_to_local_only` — passed
+  - `tests/security/test_local_only_egress.py::test_without_a_local_model_local_only_work_is_refused_not_sent` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_max_label_local_only_dominates` — passed
+  - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
+  - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
   - `tests/unit/domain/test_models.py::test_new_project_defaults_to_local_only` — passed
+- **BR-006**
+  - `tests/contract/test_desktop_contract.py::test_windows_discovers_edge` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_discovered_apps_are_listed_and_unavailable_ones_dropped` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_are_unique_across_entries` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[Edge-browser.edge]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[IntelliJ IDEA-jetbrains.idea]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[PyCharm-jetbrains.pycharm]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[chrome-browser.chrome]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[code-vscode]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[firefox-browser.firefox]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[intellij-jetbrains.idea]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[jetbrains.webstorm-jetbrains.webstorm]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[pycharm-jetbrains.pycharm]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[subl-sublime]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[vs code-vscode]` — passed
+  - `tests/unit/apps/test_catalog.py::test_catalog_covers_required_families` — passed
+  - `tests/unit/apps/test_catalog.py::test_unknown_apps_are_not_resolvable` — passed
+- **BR-008**
+  - `tests/unit/repository/test_detectors.py::test_detected_commands_are_classified_as_safe_once_allowlisted` — passed
+  - `tests/unit/repository/test_detectors.py::test_django_with_pip` — passed
+  - `tests/unit/repository/test_detectors.py::test_fixture_and_sample_content_does_not_shape_the_stack` — passed
+  - `tests/unit/repository/test_detectors.py::test_go_rust_dotnet` — passed
+  - `tests/unit/repository/test_detectors.py::test_gradle_kotlin_multi_project` — passed
+  - `tests/unit/repository/test_detectors.py::test_infrastructure_only_repo` — passed
+  - `tests/unit/repository/test_detectors.py::test_laravel` — passed
+  - `tests/unit/repository/test_detectors.py::test_malicious_xml_entities_are_not_expanded` — passed
+  - `tests/unit/repository/test_detectors.py::test_nestjs_with_npm_and_mongo` — passed
+  - `tests/unit/repository/test_detectors.py::test_python_fastapi_with_uv` — passed
+  - `tests/unit/repository/test_detectors.py::test_react_vite_with_pnpm_scripts` — passed
+  - `tests/unit/repository/test_detectors.py::test_spring_boot_vaadin_maven_wrapper` — passed
+  - `tests/unit/repository/test_detectors.py::test_unknown_stack_has_no_manifests_or_commands` — passed
+- **BR-011**
+  - `tests/integration/projects/test_analysis.py::test_analysis_snapshot_is_persisted_with_git_state` — passed
+  - `tests/integration/projects/test_analysis.py::test_conflicting_build_systems_are_questioned` — passed
+  - `tests/integration/projects/test_analysis.py::test_discovered_commands_run_without_approval_others_still_ask` — passed
+  - `tests/integration/projects/test_analysis.py::test_remote_urls_are_redacted` — passed
+  - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
+  - `tests/integration/projects/test_analysis.py::test_workspace_declared_monorepo_is_not_questioned` — passed
 - **BR-017**
+  - `tests/integration/projects/test_git_tools.py::test_create_branch_is_local_p1` — passed
+  - `tests/integration/projects/test_git_tools.py::test_diff_with_numstat_and_path_filter` — passed
+  - `tests/integration/projects/test_git_tools.py::test_log_branches_show_blame` — passed
+  - `tests/integration/projects/test_git_tools.py::test_non_repository_is_refused` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args3]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args4]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args5]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.diff-args0]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.log-args1]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.show-args2]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_paths_outside_project_are_refused` — passed
+  - `tests/integration/projects/test_git_tools.py::test_status` — passed
   - `tests/security/test_approval_bypass.py::test_approval_cannot_cross_tools` — passed
   - `tests/security/test_approval_bypass.py::test_approval_for_one_command_cannot_run_another` — passed
   - `tests/security/test_approval_bypass.py::test_arguments_are_never_shell_interpreted` — passed
@@ -401,12 +603,82 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **BR-027**
+  - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
+  - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
 - **BR-029**
   - `tests/integration/cli/test_cli.py::test_config_path_lists_workspace` — passed
+  - `tests/integration/projects/test_project_service.py::test_create_in_workspace` — passed
   - `tests/unit/config/test_settings.py::test_default_workspace_is_home_panos_projects` — passed
   - `tests/unit/config/test_settings.py::test_ensure_directories_creates_workspace_and_dirs` — passed
+- **FR-002**
+  - `tests/e2e/test_node_daemon.py::test_cli_ask_against_live_node_and_real_local_model` — passed
+  - `tests/integration/api/test_cli_ai.py::test_ai_commands` — passed
+  - `tests/integration/api/test_cli_ai.py::test_ask_streams_answer_and_reports_routing` — passed
+  - `tests/integration/api/test_cli_ai.py::test_ask_without_local_model_explains` — passed
+  - `tests/integration/api/test_conversation_api.py::test_ai_endpoints` — passed
+  - `tests/integration/api/test_conversation_api.py::test_api_keys_are_stored_in_secret_store_and_audited_without_value` — passed
+  - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
+  - `tests/integration/api/test_conversation_api.py::test_conversation_errors` — passed
+  - `tests/integration/api/test_conversation_api.py::test_conversation_privacy_is_sticky` — passed
+  - `tests/integration/api/test_conversation_api.py::test_fast_path_commands_need_no_model` — passed
+  - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
+  - `tests/integration/api/test_conversation_api.py::test_no_local_model_gives_explained_503_and_never_uses_cloud` — passed
+  - `tests/integration/api/test_conversation_api.py::test_standard_project_uses_cloud_with_redaction` — passed
+  - `tests/integration/api/test_conversation_api.py::test_streaming_errors_are_events` — passed
+  - `tests/integration/api/test_conversation_api.py::test_streaming_ndjson` — passed
+  - `tests/integration/api/test_conversation_api.py::test_ws_auth_timeout` — passed
+  - `tests/integration/api/test_conversation_api.py::test_ws_events_carry_streamed_tokens` — passed
+  - `tests/integration/api/test_conversation_api.py::test_ws_events_require_first_message_auth` — passed
+  - `tests/integration/api/test_conversation_api.py::test_ws_events_stream_conversation_events` — passed
+- **FR-003**
+  - `tests/integration/api/test_projects_api.py::test_analyze_and_snapshot` — passed
+  - `tests/integration/api/test_projects_api.py::test_apps_list_launch_and_preferences` — passed
+  - `tests/integration/api/test_projects_api.py::test_create_in_workspace` — passed
+  - `tests/integration/api/test_projects_api.py::test_index_and_search` — passed
+  - `tests/integration/api/test_projects_api.py::test_open_project_preview_and_launch` — passed
+  - `tests/integration/api/test_projects_api.py::test_policy_override_endpoint` — passed
+  - `tests/integration/api/test_projects_api.py::test_privacy_change_requires_confirmation` — passed
+  - `tests/integration/api/test_projects_api.py::test_register_list_get_and_conflicts` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_app_launch_argument_restrictions` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_discovered_apps_are_listed_and_unavailable_ones_dropped` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_open_path_refuses_executables` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_preferred_ide_resolution_order` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_project_open_launches_preferred_ide_with_project_path` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_resolve_by_alias_and_clear_errors` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_window_metadata_and_unsupported_capabilities` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_are_unique_across_entries` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[Edge-browser.edge]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[IntelliJ IDEA-jetbrains.idea]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[PyCharm-jetbrains.pycharm]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[chrome-browser.chrome]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[code-vscode]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[firefox-browser.firefox]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[intellij-jetbrains.idea]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[jetbrains.webstorm-jetbrains.webstorm]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[pycharm-jetbrains.pycharm]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[subl-sublime]` — passed
+  - `tests/unit/apps/test_catalog.py::test_aliases_resolve[vs code-vscode]` — passed
+  - `tests/unit/apps/test_catalog.py::test_catalog_covers_required_families` — passed
+  - `tests/unit/apps/test_catalog.py::test_unknown_apps_are_not_resolvable` — passed
 - **FR-004**
+  - `tests/integration/api/test_projects_api.py::test_analyze_and_snapshot` — passed
+  - `tests/integration/api/test_projects_api.py::test_apps_list_launch_and_preferences` — passed
+  - `tests/integration/api/test_projects_api.py::test_create_in_workspace` — passed
+  - `tests/integration/api/test_projects_api.py::test_index_and_search` — passed
+  - `tests/integration/api/test_projects_api.py::test_open_project_preview_and_launch` — passed
+  - `tests/integration/api/test_projects_api.py::test_policy_override_endpoint` — passed
+  - `tests/integration/api/test_projects_api.py::test_privacy_change_requires_confirmation` — passed
+  - `tests/integration/api/test_projects_api.py::test_register_list_get_and_conflicts` — passed
   - `tests/integration/persistence/test_repositories.py::test_project_round_trip_preserves_policy_fields` — passed
+  - `tests/integration/projects/test_project_service.py::test_create_in_workspace` — passed
+  - `tests/integration/projects/test_project_service.py::test_dangerously_broad_locations_are_refused` — passed
+  - `tests/integration/projects/test_project_service.py::test_duplicates_and_missing_paths_rejected` — passed
+  - `tests/integration/projects/test_project_service.py::test_invalid_names_rejected` — passed
+  - `tests/integration/projects/test_project_service.py::test_lookup_by_id_or_name` — passed
+  - `tests/integration/projects/test_project_service.py::test_policy_overrides_tighten_and_refuse_illegal_loosening` — passed
+  - `tests/integration/projects/test_project_service.py::test_privacy_change_is_explicit_and_audited` — passed
+  - `tests/integration/projects/test_project_service.py::test_register_existing_directory` — passed
   - `tests/integration/tools/test_fs_tools.py::test_delete_modified_tracked_file_is_p3` — passed
   - `tests/integration/tools/test_fs_tools.py::test_delete_tracked_clean_file_is_p2` — passed
   - `tests/integration/tools/test_fs_tools.py::test_delete_untracked_or_directory_is_p3` — passed
@@ -459,6 +731,42 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\evil. -trailing]` — passed
   - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\nul.txt-reserved]` — passed
   - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[trailing.-trailing]` — passed
+- **FR-005**
+  - `tests/integration/api/test_projects_api.py::test_analyze_and_snapshot` — passed
+  - `tests/integration/api/test_projects_api.py::test_apps_list_launch_and_preferences` — passed
+  - `tests/integration/api/test_projects_api.py::test_create_in_workspace` — passed
+  - `tests/integration/api/test_projects_api.py::test_index_and_search` — passed
+  - `tests/integration/api/test_projects_api.py::test_open_project_preview_and_launch` — passed
+  - `tests/integration/api/test_projects_api.py::test_policy_override_endpoint` — passed
+  - `tests/integration/api/test_projects_api.py::test_privacy_change_requires_confirmation` — passed
+  - `tests/integration/api/test_projects_api.py::test_register_list_get_and_conflicts` — passed
+  - `tests/integration/projects/test_analysis.py::test_analysis_snapshot_is_persisted_with_git_state` — passed
+  - `tests/integration/projects/test_analysis.py::test_conflicting_build_systems_are_questioned` — passed
+  - `tests/integration/projects/test_analysis.py::test_discovered_commands_run_without_approval_others_still_ask` — passed
+  - `tests/integration/projects/test_analysis.py::test_remote_urls_are_redacted` — passed
+  - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
+  - `tests/integration/projects/test_analysis.py::test_workspace_declared_monorepo_is_not_questioned` — passed
+  - `tests/unit/repository/test_detectors.py::test_detected_commands_are_classified_as_safe_once_allowlisted` — passed
+  - `tests/unit/repository/test_detectors.py::test_django_with_pip` — passed
+  - `tests/unit/repository/test_detectors.py::test_fixture_and_sample_content_does_not_shape_the_stack` — passed
+  - `tests/unit/repository/test_detectors.py::test_go_rust_dotnet` — passed
+  - `tests/unit/repository/test_detectors.py::test_gradle_kotlin_multi_project` — passed
+  - `tests/unit/repository/test_detectors.py::test_infrastructure_only_repo` — passed
+  - `tests/unit/repository/test_detectors.py::test_laravel` — passed
+  - `tests/unit/repository/test_detectors.py::test_malicious_xml_entities_are_not_expanded` — passed
+  - `tests/unit/repository/test_detectors.py::test_nestjs_with_npm_and_mongo` — passed
+  - `tests/unit/repository/test_detectors.py::test_python_fastapi_with_uv` — passed
+  - `tests/unit/repository/test_detectors.py::test_react_vite_with_pnpm_scripts` — passed
+  - `tests/unit/repository/test_detectors.py::test_spring_boot_vaadin_maven_wrapper` — passed
+  - `tests/unit/repository/test_detectors.py::test_unknown_stack_has_no_manifests_or_commands` — passed
+  - `tests/unit/repository/test_structure_and_walk.py::test_outline_never_contains_source_bodies` — passed
+  - `tests/unit/repository/test_structure_and_walk.py::test_outline_python_typescript_java_php` — passed
+  - `tests/unit/repository/test_structure_and_walk.py::test_parse_log` — passed
+  - `tests/unit/repository/test_structure_and_walk.py::test_parse_status_initial_and_detached` — passed
+  - `tests/unit/repository/test_structure_and_walk.py::test_parse_status_v2` — passed
+  - `tests/unit/repository/test_structure_and_walk.py::test_tree_docs_conventions_packages` — passed
+  - `tests/unit/repository/test_structure_and_walk.py::test_walk_honours_gitignore_and_skips_vendor_dirs` — passed
+  - `tests/unit/repository/test_structure_and_walk.py::test_walk_respects_max_files` — passed
 - **FR-010**
   - `tests/integration/api/test_approvals_api.py::test_approval_endpoints_require_auth` — passed
   - `tests/integration/api/test_approvals_api.py::test_audit_list_and_verify` — passed
@@ -544,6 +852,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[pkg.install-2]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[pm.write-3]` — passed
 - **FR-012**
+  - `tests/integration/projects/test_analysis.py::test_discovered_commands_run_without_approval_others_still_ask` — passed
   - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
   - `tests/integration/tools/test_shell_tool.py::test_cwd_must_stay_in_project` — passed
   - `tests/integration/tools/test_shell_tool.py::test_docker_execution_waits_for_approval_and_rejection_runs_nothing` — passed
@@ -705,6 +1014,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_project_allowlist_marks_discovered_commands_build_test` — passed
   - `tests/unit/shell/test_classifier.py::test_wrappers_are_transparent` — passed
 - **FR-013**
+  - `tests/integration/projects/test_git_tools.py::test_create_branch_is_local_p1` — passed
+  - `tests/integration/projects/test_git_tools.py::test_diff_with_numstat_and_path_filter` — passed
+  - `tests/integration/projects/test_git_tools.py::test_log_branches_show_blame` — passed
+  - `tests/integration/projects/test_git_tools.py::test_non_repository_is_refused` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args3]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args4]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args5]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.diff-args0]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.log-args1]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.show-args2]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_paths_outside_project_are_refused` — passed
+  - `tests/integration/projects/test_git_tools.py::test_status` — passed
   - `tests/integration/tools/test_shell_tool.py::test_git_status_runs_and_captures_output` — passed
   - `tests/unit/shell/test_classifier.py::test_git[argv0-git.read]` — passed
   - `tests/unit/shell/test_classifier.py::test_git[argv1-git.read]` — passed
@@ -769,6 +1090,59 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv7-docker.inspect]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
+- **FR-019**
+  - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
+  - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
+  - `tests/integration/projects/test_knowledge.py::test_search_tool_reports_privacy_label` — passed
+  - `tests/unit/knowledge/test_vectors.py::test_removed_files_drop_their_embeddings` — passed
+  - `tests/unit/knowledge/test_vectors.py::test_vectors_are_incremental_and_hybrid_search_fuses_rankings[False]` — passed
+  - `tests/unit/knowledge/test_vectors.py::test_vectors_are_incremental_and_hybrid_search_fuses_rankings[True]` — passed
+- **FR-020**
+  - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
+  - `tests/integration/api/test_projects_api.py::test_index_and_search` — passed
+  - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
+  - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
+  - `tests/integration/projects/test_knowledge.py::test_search_tool_reports_privacy_label` — passed
+  - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
+  - `tests/unit/knowledge/test_index.py::test_binary_and_oversized_files_are_skipped` — passed
+  - `tests/unit/knowledge/test_index.py::test_chunking_tracks_line_ranges` — passed
+  - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[!!!-None]` — passed
+  - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[\u03a0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03af\u03b5\u03c2-"\u03c0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03b9\u03b5\u03c3"*]` — passed
+  - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[payment retry-"payment" AND "retry"*]` — passed
+  - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[weird "quotes" AND OR NEAR(-"weird" AND "quotes" AND "and" AND "or" AND "near"*]` — passed
+  - `tests/unit/knowledge/test_index.py::test_greek_search_ignores_accents_and_case` — passed
+  - `tests/unit/knowledge/test_index.py::test_incremental_update_and_removal` — passed
+  - `tests/unit/knowledge/test_index.py::test_privacy_label_follows_project_mode` — passed
+  - `tests/unit/knowledge/test_index.py::test_projects_are_isolated` — passed
+  - `tests/unit/knowledge/test_index.py::test_schema_version_mismatch_rebuilds` — passed
+  - `tests/unit/knowledge/test_index.py::test_search_returns_provenance` — passed
+  - `tests/unit/knowledge/test_vectors.py::test_removed_files_drop_their_embeddings` — passed
+  - `tests/unit/knowledge/test_vectors.py::test_vectors_are_incremental_and_hybrid_search_fuses_rankings[False]` — passed
+  - `tests/unit/knowledge/test_vectors.py::test_vectors_are_incremental_and_hybrid_search_fuses_rankings[True]` — passed
+- **FR-021**
+  - `tests/integration/ai/test_gateway.py::test_adapter_refusal_is_audited_as_egress_blocked` — passed
+  - `tests/integration/ai/test_gateway.py::test_budget_exhaustion_routes_locally` — passed
+  - `tests/integration/ai/test_gateway.py::test_embeddings_follow_labels` — passed
+  - `tests/integration/ai/test_gateway.py::test_health_cache_and_candidates_require_pulled_local_models` — passed
+  - `tests/integration/ai/test_gateway.py::test_local_only_goes_local_and_cloud_never_sees_it` — passed
+  - `tests/integration/ai/test_gateway.py::test_local_only_without_local_model_is_refused_with_explanation` — passed
+  - `tests/integration/ai/test_gateway.py::test_non_retryable_errors_propagate` — passed
+  - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
+  - `tests/integration/ai/test_gateway.py::test_standard_goes_to_cloud_redacted_metered_and_audited` — passed
+  - `tests/integration/ai/test_gateway.py::test_stream_yields_decision_then_events_and_meters` — passed
+  - `tests/integration/api/test_cli_ai.py::test_ai_commands` — passed
+  - `tests/integration/api/test_cli_ai.py::test_ask_streams_answer_and_reports_routing` — passed
+  - `tests/integration/api/test_cli_ai.py::test_ask_without_local_model_explains` — passed
+  - `tests/integration/api/test_conversation_api.py::test_ai_endpoints` — passed
+  - `tests/unit/ai/test_router.py::test_for_chat_derives_privacy_and_size` — passed
+  - `tests/unit/ai/test_router.py::test_hard_filters_capability_context_budget_premium` — passed
+  - `tests/unit/ai/test_router.py::test_light_tasks_prefer_local_light_then_latency` — passed
+  - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
+  - `tests/unit/ai/test_router.py::test_no_local_model_means_explained_refusal_not_cloud` — passed
+  - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
+  - `tests/unit/ai/test_router.py::test_registry_defaults_and_speed_ema` — passed
+  - `tests/unit/ai/test_router.py::test_standard_chat_prefers_efficient_cloud_and_explains` — passed
+  - `tests/unit/ai/test_router.py::test_task_families` — passed
 - **FR-022**
   - `tests/integration/persistence/test_job_service.py::test_invalid_transitions_are_refused_and_not_persisted` — passed
   - `tests/integration/persistence/test_job_service.py::test_missing_job` — passed
@@ -785,6 +1159,8 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/jobs/test_state_machine.py::test_no_self_transitions` — passed
   - `tests/unit/jobs/test_state_machine.py::test_terminal_states_have_no_exits` — passed
 - **FR-023**
+  - `tests/integration/ai/test_gateway.py::test_budget_exhaustion_routes_locally` — passed
+  - `tests/integration/ai/test_gateway.py::test_standard_goes_to_cloud_redacted_metered_and_audited` — passed
   - `tests/unit/domain/test_models.py::test_job_budget_supports_runtime_cost_token_and_repair_limits` — passed
 - **FR-028**
   - `tests/e2e/test_node_daemon.py::test_cli_audit_and_approvals_against_live_node` — passed
@@ -801,12 +1177,84 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/audit/test_audit_chain.py::test_tampering_is_detected[UPDATE audit_event SET metadata_json='{"i": 99}' WHERE seq=2-content hash mismatch]` — passed
   - `tests/integration/persistence/test_job_service.py::test_transitions_are_persisted_timestamped_and_audited` — passed
   - `tests/integration/persistence/test_repositories.py::test_audit_log_appends_and_filters_newest_first` — passed
+  - `tests/integration/projects/test_project_service.py::test_privacy_change_is_explicit_and_audited` — passed
+  - `tests/integration/projects/test_project_service.py::test_register_existing_directory` — passed
   - `tests/integration/tools/test_runtime.py::test_read_runs_without_approval_and_is_not_audited_as_decision` — passed
   - `tests/unit/domain/test_models.py::test_audit_event_captures_actor_action_decision_and_metadata` — passed
+- **NFR-MNT-004**
+  - `tests/unit/ai/test_adapters.py::test_anthropic_chat_stream_use_beta_surface_only_with_fallback` — passed
+  - `tests/unit/ai/test_adapters.py::test_anthropic_guard_runs_before_the_sdk_is_touched` — passed
+  - `tests/unit/ai/test_adapters.py::test_anthropic_refusal_is_surfaced` — passed
+  - `tests/unit/ai/test_adapters.py::test_build_params_shapes_request_for_current_models` — passed
+  - `tests/unit/ai/test_adapters.py::test_factory_builds_enabled_providers_with_keyring_keys` — passed
+  - `tests/unit/ai/test_adapters.py::test_ollama_chat_usage_speed_and_num_ctx` — passed
+  - `tests/unit/ai/test_adapters.py::test_ollama_errors_map_to_provider_errors` — passed
+  - `tests/unit/ai/test_adapters.py::test_ollama_json_in_content_tool_calls_and_native_tool_calls` — passed
+  - `tests/unit/ai/test_adapters.py::test_ollama_stream_embed_health_and_errors` — passed
+  - `tests/unit/ai/test_adapters.py::test_openai_compatible_chat_and_stream` — passed
+  - `tests/unit/ai/test_adapters.py::test_openai_compatible_cloud_guard_blocks_before_any_request` — passed
+  - `tests/unit/ai/test_adapters.py::test_remote_ollama_is_cloud_and_refuses_local_only` — passed
 - **NFR-OBS-001**
   - `tests/integration/api/test_routes.py::test_correlation_id_echoed_or_generated` — passed
   - `tests/unit/observability/test_logging.py::test_log_events_carry_correlation_job_and_step_ids` — passed
   - `tests/unit/observability/test_logging.py::test_stdlib_logs_are_structured_and_redacted` — passed
+- **NFR-OBS-002**
+  - `tests/integration/ai/test_gateway.py::test_standard_goes_to_cloud_redacted_metered_and_audited` — passed
+- **NFR-PERF-002**
+  - `tests/e2e/test_node_daemon.py::test_cli_ask_against_live_node_and_real_local_model` — passed
+  - `tests/integration/api/test_conversation_api.py::test_fast_path_commands_need_no_model` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[Panos, show my projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf IntelliJ-open_app-IntelliJ]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf \u03ad\u03c1\u03b3\u03bf orders-api-open_project-orders-api]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b4\u03b5\u03af\u03be\u03b5 \u03bc\u03bf\u03c5 \u03c4\u03b1 projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c6\u03c4\u03b9\u03ac\u03be\u03b5 \u03ad\u03bd\u03b1 REST endpoint-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[implement the login endpoint-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[list projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open project orders-api-open_project-orders-api]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open the pod bay doors and explain why-open_app-the pod bay doors and explain why]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open vscode-open_app-vscode]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[show installed apps-list_apps-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[status-status-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[what does the OrderService do?-chat-None]` — passed
+- **NFR-PERF-004**
+  - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
+  - `tests/unit/knowledge/test_index.py::test_incremental_update_and_removal` — passed
+- **NFR-PORT-002**
+  - `tests/contract/test_desktop_contract.py::test_capabilities_declare_every_operation` — passed
+  - `tests/contract/test_desktop_contract.py::test_discovery_returns_catalogued_existing_apps` — passed
+  - `tests/contract/test_desktop_contract.py::test_unsupported_capabilities_raise_typed_error` — passed
+  - `tests/contract/test_desktop_contract.py::test_windows_discovers_edge` — passed
+- **NFR-PORT-003**
+  - `tests/unit/ai/test_adapters.py::test_anthropic_chat_stream_use_beta_surface_only_with_fallback` — passed
+  - `tests/unit/ai/test_adapters.py::test_anthropic_guard_runs_before_the_sdk_is_touched` — passed
+  - `tests/unit/ai/test_adapters.py::test_anthropic_refusal_is_surfaced` — passed
+  - `tests/unit/ai/test_adapters.py::test_build_params_shapes_request_for_current_models` — passed
+  - `tests/unit/ai/test_adapters.py::test_factory_builds_enabled_providers_with_keyring_keys` — passed
+  - `tests/unit/ai/test_adapters.py::test_ollama_chat_usage_speed_and_num_ctx` — passed
+  - `tests/unit/ai/test_adapters.py::test_ollama_errors_map_to_provider_errors` — passed
+  - `tests/unit/ai/test_adapters.py::test_ollama_json_in_content_tool_calls_and_native_tool_calls` — passed
+  - `tests/unit/ai/test_adapters.py::test_ollama_stream_embed_health_and_errors` — passed
+  - `tests/unit/ai/test_adapters.py::test_openai_compatible_chat_and_stream` — passed
+  - `tests/unit/ai/test_adapters.py::test_openai_compatible_cloud_guard_blocks_before_any_request` — passed
+  - `tests/unit/ai/test_adapters.py::test_remote_ollama_is_cloud_and_refuses_local_only` — passed
+- **NFR-PRV-003**
+  - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
+  - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
+  - `tests/integration/projects/test_knowledge.py::test_search_tool_reports_privacy_label` — passed
+  - `tests/unit/knowledge/test_index.py::test_binary_and_oversized_files_are_skipped` — passed
+  - `tests/unit/knowledge/test_index.py::test_chunking_tracks_line_ranges` — passed
+  - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[!!!-None]` — passed
+  - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[\u03a0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03af\u03b5\u03c2-"\u03c0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03b9\u03b5\u03c3"*]` — passed
+  - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[payment retry-"payment" AND "retry"*]` — passed
+  - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[weird "quotes" AND OR NEAR(-"weird" AND "quotes" AND "and" AND "or" AND "near"*]` — passed
+  - `tests/unit/knowledge/test_index.py::test_greek_search_ignores_accents_and_case` — passed
+  - `tests/unit/knowledge/test_index.py::test_incremental_update_and_removal` — passed
+  - `tests/unit/knowledge/test_index.py::test_privacy_label_follows_project_mode` — passed
+  - `tests/unit/knowledge/test_index.py::test_projects_are_isolated` — passed
+  - `tests/unit/knowledge/test_index.py::test_schema_version_mismatch_rebuilds` — passed
+  - `tests/unit/knowledge/test_index.py::test_search_returns_provenance` — passed
+- **NFR-PRV-004**
+  - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
 - **NFR-REL-001**
   - `tests/integration/persistence/test_migrations.py::test_database_uses_wal_journal` — passed
   - `tests/integration/tools/test_runtime.py::test_job_step_persisted_with_outcome` — passed
@@ -832,6 +1280,9 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/api/test_security.py::test_wrong_token_is_401[Bearer test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
   - `tests/integration/api/test_security.py::test_wrong_token_is_401[bearer test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
   - `tests/integration/api/test_security.py::test_wrong_token_is_401[test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_paths_outside_project_are_refused` — passed
+  - `tests/integration/projects/test_project_service.py::test_dangerously_broad_locations_are_refused` — passed
+  - `tests/integration/projects/test_project_service.py::test_policy_overrides_tighten_and_refuse_illegal_loosening` — passed
   - `tests/integration/tools/test_fs_tools.py::test_delete_modified_tracked_file_is_p3` — passed
   - `tests/integration/tools/test_fs_tools.py::test_delete_tracked_clean_file_is_p2` — passed
   - `tests/integration/tools/test_fs_tools.py::test_delete_untracked_or_directory_is_p3` — passed
@@ -943,6 +1394,13 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\nul.txt-reserved]` — passed
   - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[trailing.-trailing]` — passed
 - **NFR-SEC-002**
+  - `tests/integration/projects/test_analysis.py::test_discovered_commands_run_without_approval_others_still_ask` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args3]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args4]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args5]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.diff-args0]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.log-args1]` — passed
+  - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.show-args2]` — passed
   - `tests/integration/tools/test_runtime.py::test_approval_required_moves_job_to_waiting_for_approval` — passed
   - `tests/integration/tools/test_runtime.py::test_approved_action_executes_once_with_token` — passed
   - `tests/integration/tools/test_runtime.py::test_default_registry_has_no_email_send_capability` — passed
@@ -1172,11 +1630,16 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_project_allowlist_marks_discovered_commands_build_test` — passed
   - `tests/unit/shell/test_classifier.py::test_wrappers_are_transparent` — passed
 - **NFR-SEC-003**
+  - `tests/integration/api/test_conversation_api.py::test_api_keys_are_stored_in_secret_store_and_audited_without_value` — passed
   - `tests/unit/secrets/test_store.py::test_keyring_store_refuses_insecure_backend` — passed
   - `tests/unit/secrets/test_store.py::test_memory_store_round_trip` — passed
   - `tests/unit/secrets/test_store.py::test_node_key_created_once_and_stable` — passed
 - **NFR-SEC-004**
+  - `tests/integration/ai/test_gateway.py::test_standard_goes_to_cloud_redacted_metered_and_audited` — passed
+  - `tests/integration/api/test_conversation_api.py::test_api_keys_are_stored_in_secret_store_and_audited_without_value` — passed
+  - `tests/integration/api/test_conversation_api.py::test_standard_project_uses_cloud_with_redaction` — passed
   - `tests/integration/audit/test_audit_chain.py::test_metadata_is_redacted_before_hashing` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_cloud_redaction_removes_secrets_but_keeps_code` — passed
   - `tests/unit/observability/test_logging.py::test_secrets_are_redacted_in_log_file` — passed
   - `tests/unit/observability/test_logging.py::test_stdlib_logs_are_structured_and_redacted` — passed
   - `tests/unit/redaction/test_redaction.py::test_azure_connection_string_key_redacted` — passed
@@ -1248,8 +1711,66 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_environment.py::test_sensitive_names[NPM_TOKEN]` — passed
   - `tests/unit/shell/test_environment.py::test_sensitive_names[OPENAI_API_KEY]` — passed
   - `tests/unit/shell/test_environment.py::test_sensitive_names[PANOS_TOKEN]` — passed
+- **NFR-SEC-005**
+  - `tests/integration/ai/test_gateway.py::test_embeddings_follow_labels` — passed
+  - `tests/integration/ai/test_gateway.py::test_local_only_goes_local_and_cloud_never_sees_it` — passed
+  - `tests/integration/api/test_conversation_api.py::test_conversation_privacy_is_sticky` — passed
+  - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
+  - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
+  - `tests/security/test_local_only_egress.py::test_prompt_injection_in_retrieved_content_cannot_reroute` — passed
+  - `tests/security/test_local_only_egress.py::test_route_dry_run_and_egress_audit_trail` — passed
+  - `tests/security/test_local_only_egress.py::test_taint_survives_project_relaxation_and_history_never_leaks` — passed
+  - `tests/security/test_local_only_egress.py::test_unscoped_conversations_default_to_local_only` — passed
+  - `tests/security/test_local_only_egress.py::test_without_a_local_model_local_only_work_is_refused_not_sent` — passed
+  - `tests/unit/ai/test_adapters.py::test_anthropic_guard_runs_before_the_sdk_is_touched` — passed
+  - `tests/unit/ai/test_adapters.py::test_openai_compatible_cloud_guard_blocks_before_any_request` — passed
+  - `tests/unit/ai/test_adapters.py::test_remote_ollama_is_cloud_and_refuses_local_only` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_cloud_egress_assertions` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_envelopes_cannot_be_forged_from_inside` — passed
+  - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
+  - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
+- **US-005**
+  - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
+  - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
+  - `tests/security/test_local_only_egress.py::test_prompt_injection_in_retrieved_content_cannot_reroute` — passed
+  - `tests/security/test_local_only_egress.py::test_route_dry_run_and_egress_audit_trail` — passed
+  - `tests/security/test_local_only_egress.py::test_taint_survives_project_relaxation_and_history_never_leaks` — passed
+  - `tests/security/test_local_only_egress.py::test_unscoped_conversations_default_to_local_only` — passed
+  - `tests/security/test_local_only_egress.py::test_without_a_local_model_local_only_work_is_refused_not_sent` — passed
+- **US-010**
+  - `tests/integration/api/test_projects_api.py::test_apps_list_launch_and_preferences` — passed
+  - `tests/integration/api/test_projects_api.py::test_open_project_preview_and_launch` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_app_launch_argument_restrictions` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_discovered_apps_are_listed_and_unavailable_ones_dropped` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_open_path_refuses_executables` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_preferred_ide_resolution_order` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_project_open_launches_preferred_ide_with_project_path` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_resolve_by_alias_and_clear_errors` — passed
+  - `tests/integration/projects/test_apps_and_desktop.py::test_window_metadata_and_unsupported_capabilities` — passed
 - **US-011**
+  - `tests/e2e/test_node_daemon.py::test_cli_project_register_analyze_index_search_open` — passed
+  - `tests/integration/api/test_projects_api.py::test_register_list_get_and_conflicts` — passed
   - `tests/integration/persistence/test_repositories.py::test_project_round_trip_preserves_policy_fields` — passed
+  - `tests/integration/projects/test_project_service.py::test_create_in_workspace` — passed
+  - `tests/integration/projects/test_project_service.py::test_dangerously_broad_locations_are_refused` — passed
+  - `tests/integration/projects/test_project_service.py::test_duplicates_and_missing_paths_rejected` — passed
+  - `tests/integration/projects/test_project_service.py::test_invalid_names_rejected` — passed
+  - `tests/integration/projects/test_project_service.py::test_lookup_by_id_or_name` — passed
+  - `tests/integration/projects/test_project_service.py::test_policy_overrides_tighten_and_refuse_illegal_loosening` — passed
+  - `tests/integration/projects/test_project_service.py::test_privacy_change_is_explicit_and_audited` — passed
+  - `tests/integration/projects/test_project_service.py::test_register_existing_directory` — passed
+- **US-012**
+  - `tests/e2e/test_node_daemon.py::test_cli_project_register_analyze_index_search_open` — passed
+  - `tests/integration/api/test_projects_api.py::test_analyze_and_snapshot` — passed
+  - `tests/integration/projects/test_analysis.py::test_analysis_snapshot_is_persisted_with_git_state` — passed
+  - `tests/integration/projects/test_analysis.py::test_conflicting_build_systems_are_questioned` — passed
+  - `tests/integration/projects/test_analysis.py::test_discovered_commands_run_without_approval_others_still_ask` — passed
+  - `tests/integration/projects/test_analysis.py::test_remote_urls_are_redacted` — passed
+  - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
+  - `tests/integration/projects/test_analysis.py::test_workspace_declared_monorepo_is_not_questioned` — passed
+- **US-024**
+  - `tests/e2e/test_node_daemon.py::test_cli_ask_against_live_node_and_real_local_model` — passed
+  - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
 - **US-052**
   - `tests/integration/persistence/test_job_service.py::test_invalid_transitions_are_refused_and_not_persisted` — passed
   - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed

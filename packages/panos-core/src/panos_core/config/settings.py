@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import platformdirs
-from pydantic import Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic_settings import (
     BaseSettings,
     PydanticBaseSettingsSource,
@@ -56,6 +56,46 @@ def default_config_file() -> Path:
     return Path(override) if override else _default_config_dir() / "config.toml"
 
 
+ProviderKind = Literal["ollama", "openai_compatible", "openai", "anthropic", "mock"]
+
+
+class ProviderSettings(BaseModel):
+    """One AI provider endpoint (ADR-009). API keys live in the OS keyring, never here."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    id: str = Field(pattern=r"^[a-z0-9][a-z0-9_\-]{0,40}$")
+    kind: ProviderKind
+    base_url: str | None = None
+    enabled: bool = True
+    # A LAN endpoint counts as *local* only if the user explicitly trusts it (ADR-009).
+    trusted_lan: bool = False
+    timeout_s: float = Field(default=300.0, gt=0)
+
+
+def _default_providers() -> list[ProviderSettings]:
+    return [
+        ProviderSettings(id="ollama", kind="ollama", base_url="http://127.0.0.1:11434"),
+        ProviderSettings(id="anthropic", kind="anthropic", enabled=True),
+    ]
+
+
+class AISettings(BaseModel):
+    """AI routing configuration (AI_ROUTING.md, ADR-008/009)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    providers: list[ProviderSettings] = Field(default_factory=_default_providers)
+    # Privacy for conversations not scoped to a project. Fail-safe default (ADR-024).
+    unscoped_privacy: Literal["LOCAL_ONLY", "STANDARD"] = "LOCAL_ONLY"
+    # Cost controls (FR-023, AI_ROUTING "Budget controls"); None = unlimited.
+    max_cost_per_request_usd: float | None = Field(default=0.50, ge=0)
+    monthly_budget_usd: float | None = Field(default=20.0, ge=0)
+    allow_premium: bool = True
+    # Anthropic server-side refusal fallback (recommended for Opus/Sonnet 5.5, Fable).
+    anthropic_refusal_fallback: bool = True
+
+
 class PanosSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="PANOS_",
@@ -76,6 +116,7 @@ class PanosSettings(BaseSettings):
     log_level: LogLevel = "INFO"
     log_json_console: bool = False
     allowed_origins: tuple[str, ...] = DEFAULT_ALLOWED_ORIGINS
+    ai: AISettings = Field(default_factory=AISettings)
 
     @field_validator("data_dir", "config_dir", "log_dir", "runtime_dir", "workspace_dir")
     @classmethod

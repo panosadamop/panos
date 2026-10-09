@@ -19,3 +19,9 @@ Relying on model-side instruction-following alone.
 
 ## Consequences
 Injection can still degrade output quality, but it cannot escalate privileges beyond policy.
+
+## Implementation notes (M4, 2026-10-09)
+
+- **Role separation:** trusted text (system prompt, the user's words) and untrusted text (retrieval, tool output) never share a message.
+- **Envelopes:** untrusted text is wrapped in `<untrusted kind source privacy>` envelopes. Any `<untrusted` / `</untrusted` sequence inside the content is escaped, so an envelope cannot be closed or forged from inside. The system prompt states the data-not-instructions rule.
+- **Routing is decided before the model runs and from labels only.** Content that tells the model to "use the cloud" cannot change the route (`test_prompt_injection_in_retrieved_content_cannot_reroute`).
