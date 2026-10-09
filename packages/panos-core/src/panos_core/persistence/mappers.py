@@ -87,6 +87,8 @@ def job_to_row(j: Job, row: JobRow | None = None) -> JobRow:
     row = row or JobRow(id=j.id)
     row.project_id, row.node_id, row.objective = j.project_id, j.node_id, j.objective
     row.status, row.budget = j.status, j.budget.model_dump()
+    row.kind, row.input, row.state, row.result = j.kind, dict(j.input), dict(j.state), j.result
+    row.status_reason = j.status_reason
     row.created_at, row.started_at, row.completed_at = j.created_at, j.started_at, j.completed_at
     return row
 
@@ -99,6 +101,11 @@ def job_from_row(r: JobRow) -> Job:
         objective=r.objective,
         status=JobStatus(r.status),
         budget=JobBudget.model_validate(r.budget or {}),
+        kind=r.kind or "coding",
+        input=dict(r.input or {}),
+        state=dict(r.state or {}),
+        result=r.result,
+        status_reason=r.status_reason or "",
         created_at=r.created_at,
         started_at=r.started_at,
         completed_at=r.completed_at,

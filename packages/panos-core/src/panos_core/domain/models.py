@@ -118,6 +118,12 @@ class Job(Entity):
     objective: NonEmptyStr
     status: JobStatus = JobStatus.QUEUED
     budget: JobBudget = Field(default_factory=JobBudget)
+    # Workflow that runs the job, its input, resumable progress and final report (ADR-011).
+    kind: Annotated[str, Field(pattern=r"^[a-z][a-z0-9_.-]{0,63}$")] = "coding"
+    input: dict[str, Any] = Field(default_factory=dict)
+    state: dict[str, Any] = Field(default_factory=dict)
+    result: dict[str, Any] | None = None
+    status_reason: str = ""
     created_at: AwareDatetime = Field(default_factory=utc_now)
     started_at: AwareDatetime | None = None
     completed_at: AwareDatetime | None = None

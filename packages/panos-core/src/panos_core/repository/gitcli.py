@@ -7,6 +7,7 @@ Remote URLs are redacted because they can embed credentials.
 import os
 import re
 import shutil
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -28,7 +29,11 @@ def git_available() -> bool:
 
 
 async def run_git(
-    root: Path, *args: str, timeout_s: float = _TIMEOUT_S, cancel: CancelToken | None = None
+    root: Path,
+    *args: str,
+    timeout_s: float = _TIMEOUT_S,
+    cancel: CancelToken | None = None,
+    env_extra: Mapping[str, str] | None = None,
 ) -> str:
     git = shutil.which("git")
     if git is None:
@@ -43,6 +48,7 @@ async def run_git(
             "LC_ALL": "C",
         }
     )
+    env.update(env_extra or {})
     result = await run_process(
         [git, "--no-pager", *args],
         cwd=root,

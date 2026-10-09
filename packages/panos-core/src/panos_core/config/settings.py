@@ -96,6 +96,19 @@ class AISettings(BaseModel):
     anthropic_refusal_fallback: bool = True
 
 
+class JobSettings(BaseModel):
+    """Default job limits (FR-023, AC-US050-02); a job's own budget overrides them."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    max_runtime_s: int = Field(default=3600, gt=0)
+    max_cost_usd: float = Field(default=2.0, ge=0)
+    max_tokens: int = Field(default=2_000_000, gt=0)
+    max_repair_attempts: int = Field(default=3, ge=0)
+    max_concurrent: int = Field(default=2, ge=1, le=16)
+    checkpoint_retention: int = Field(default=20, ge=1)
+
+
 class PanosSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="PANOS_",
@@ -117,6 +130,7 @@ class PanosSettings(BaseSettings):
     log_json_console: bool = False
     allowed_origins: tuple[str, ...] = DEFAULT_ALLOWED_ORIGINS
     ai: AISettings = Field(default_factory=AISettings)
+    jobs: JobSettings = Field(default_factory=JobSettings)
 
     @field_validator("data_dir", "config_dir", "log_dir", "runtime_dir", "workspace_dir")
     @classmethod

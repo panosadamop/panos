@@ -19,3 +19,11 @@ LangGraph (its own checkpoint and state semantics would duplicate and compete wi
 
 ## Consequences
 More code to own, but every transition is testable and auditable. Frameworks can still be wrapped later behind the agent contract if needed.
+
+## Implementation notes (M5, 2026-10-09)
+
+- **Agent contract** (`panos_core/agents`): `AgentTask` = objective, approved facts, permissions, labelled untrusted context, handoff, role inputs. `AgentRole` = instructions + output model.
+- Models answer with one JSON object. It is validated against the role's Pydantic model, with **exactly one corrective retry**; then the call fails closed.
+- **Handoffs** carry requirement IDs (also extracted from the objective and the result), decisions, assumptions, open questions and provenance. They are merged across agents without duplicates.
+- **Roles delivered:** Planner, Developer, Reviewer, QA. Business Analyst, Architect, DevOps and Project Planner arrive with their workflows (M6/M8).
+- **Agents never act.** The coding workflow turns their results into `fs.*`, `shell.run` and `git.commit` tool calls through the tool runtime (policy, approvals, audit).

@@ -16,6 +16,7 @@ from panos_core.ai.registry import ModelRegistry
 from panos_core.approvals import ApprovalService
 from panos_core.apps.service import AppService
 from panos_core.audit import AuditService
+from panos_core.checkpoints import CheckpointService
 from panos_core.config import PanosSettings, ensure_directories
 from panos_core.conversation import ConversationService
 from panos_core.conversation.service import ContextFactory
@@ -23,9 +24,13 @@ from panos_core.domain.enums import PrivacyMode
 from panos_core.domain.models import Node, Project
 from panos_core.events import EventBus
 from panos_core.jobs import JobService
+from panos_core.jobs.context import JobContextFactory, JobServices
+from panos_core.jobs.runner import JobRunner
+from panos_core.jobs.workflows import CodingWorkflow, CommandWorkflow
 from panos_core.knowledge import KnowledgeIndex, KnowledgeService
 from panos_core.knowledge.service import Embedder
 from panos_core.nodes import ensure_local_node
+from panos_core.notifications import EventChannel, LogChannel, NotificationService
 from panos_core.observability import get_logger
 from panos_core.persistence import UnitOfWorkFactory, create_engine, run_migrations
 from panos_core.platform.desktop import DesktopAdapter, default_desktop
@@ -36,6 +41,7 @@ from panos_core.repository import AnalysisService
 from panos_core.secrets import SecretStore, create_secret_store, get_or_create_node_key
 from panos_core.tools import ToolContext, ToolRegistry, ToolRuntime
 from panos_core.tools.builtin import build_default_registry
+from panos_core.tools.contract import CancelToken
 
 log = get_logger(__name__)
 
@@ -63,6 +69,9 @@ class NodeContainer:
     gateway: AIGateway
     events: EventBus
     conversations: ConversationService
+    checkpoints: CheckpointService
+    notifications: NotificationService
+    runner: JobRunner
     started_monotonic: float = field(default_factory=time.monotonic)
     background: list[asyncio.Task[object]] = field(default_factory=list)
 
@@ -83,6 +92,7 @@ class NodeContainer:
         await self.gateway.refresh_health(force=True)
 
     async def close(self) -> None:
+        await self.runner.close()  # running jobs are recovered as interrupted on next start
         for task in self.background:
             task.cancel()
             with contextlib.suppress(asyncio.CancelledError, Exception):
@@ -96,6 +106,19 @@ def _context_factory(uow_factory: UnitOfWorkFactory, node_id: str) -> ContextFac
         if project is None:
             return ToolContext(actor=actor, node_id=node_id)
         return await project_tool_context(uow_factory, project, actor=actor, node_id=node_id)
+
+    return context_for
+
+
+def _job_context_factory(uow_factory: UnitOfWorkFactory, node_id: str) -> JobContextFactory:
+    async def context_for(
+        project: Project | None, *, actor: str, job_id: str, cancel: CancelToken
+    ) -> ToolContext:
+        if project is None:
+            return ToolContext(actor=actor, node_id=node_id, job_id=job_id, cancel=cancel)
+        return await project_tool_context(
+            uow_factory, project, actor=actor, node_id=node_id, job_id=job_id, cancel=cancel
+        )
 
     return context_for
 
@@ -185,6 +208,25 @@ async def build_container(
     )
     knowledge.attach_embedder(_embedder(gateway))
     events = EventBus()
+    checkpoints = CheckpointService(uow_factory, audit, settings)
+    notifications = NotificationService([EventChannel(events), LogChannel()])
+    runner = JobRunner(
+        JobServices(
+            jobs=jobs,
+            tools=tools,
+            gateway=gateway,
+            checkpoints=checkpoints,
+            analysis=analysis,
+            uow_factory=uow_factory,
+            settings=settings.jobs,
+            context_for=_job_context_factory(uow_factory, node.id),
+        ),
+        [CodingWorkflow(), CommandWorkflow()],
+        events,
+        project_lookup=projects.get,
+    )
+    runner.add_listener(notifications.on_job_status)
+    approvals.add_listener(runner.on_approval)
     container = NodeContainer(
         settings=settings,
         engine=engine,
@@ -217,7 +259,16 @@ async def build_container(
             node.id,
             _context_factory(uow_factory, node.id),
         ),
+        checkpoints=checkpoints,
+        notifications=notifications,
+        runner=runner,
     )
+    await runner.recover()  # ADR-011: interrupted jobs become PAUSED; queued jobs start
+
+    async def start_coding_job(objective: str, project: Project, actor: str) -> str:
+        return (await runner.submit(objective, project=project, actor=actor)).id
+
+    container.conversations.attach_job_starter(start_coding_job)
     # Discovery reads the registry/filesystem; run it after startup so /health is not delayed.
     container.background.append(asyncio.create_task(_refresh_apps(apps)))
     log.info(

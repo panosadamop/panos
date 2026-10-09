@@ -212,3 +212,39 @@ Report: [`docs/planning/reports/M3.md`](docs/planning/reports/M3.md). M3 not com
 **Results:** 752 passed, 1 skipped; coverage 86.9 %; ruff, mypy (219 files) and import-linter clean; OpenAPI and registry up to date.
 
 Report: [`docs/planning/reports/M4.md`](docs/planning/reports/M4.md). M3 and M4 not committed. Awaiting approval for M5 and a commit decision.
+
+### 8. Commit of M3–M4, then M5 — Orchestration and coding
+
+**Owner:** "approve both", in answer to "approve M5?" and "commit M3 and M4?".
+
+**Claude:**
+- Committed M3+M4 as one commit, `58de356` (173 files). The two milestones share files (domain, persistence, container), so a clean split was not possible.
+- Implemented M5:
+  - asyncio job runner (recovery to PAUSED, pause at safe points, resume from persisted state, cancel with process-tree kill, approval-driven resume, limits);
+  - shadow-Git checkpoints with exact-byte rollback;
+  - agent contract plus Planner, Developer, Reviewer and QA roles;
+  - coding workflow with bounded repair loop;
+  - `git.commit` bound to the exact staged tree (temporary index);
+  - `docker.inspect`;
+  - notifications;
+  - `/jobs` API and `panos job` CLI;
+  - work requests in chat start jobs.
+
+**Evidence:**
+- Fixture-repo jobs with scripted agents: plan → checkpoint → edits → `python manage.py test` → review → commit approval.
+- Tests for approve, reject and change-after-approval (invalidated).
+- Repair success, and repair exhaustion (BLOCKED, never COMPLETED).
+- Rollback that leaves the user's HEAD, index and stash unchanged.
+- Hard-kill e2e on the real node: job recovered as PAUSED/interrupted, and the tool's child process died with the node.
+
+**Live run with local Ollama models:**
+- The full pipeline ran in about 6 minutes.
+- qwen2.5-coder:7b produced a wrong edit, and its repair reply used raw newlines inside JSON strings. The job ended FAILED.
+- Fixed: the JSON parser now accepts raw newlines in strings, and unusable model output now blocks the job (resumable) instead of failing it.
+- Two more live runs: the job ended BLOCKED with clear reasons (missing import, then an edit anchor not in the file).
+- Further fixes: model-output errors now include a reply excerpt, and a fix that cannot be applied now counts as a failed repair attempt.
+- Conclusion: the 7B local model cannot finish even a trivial feature unattended; the pipeline itself behaves correctly.
+
+**Results:** 792 passed, 1 skipped; coverage 87.6 %; ruff, mypy (245 files) and import-linter clean. Two test-only races fixed along the way (wait helper on the wrong runner; process liveness check).
+
+Report: [`docs/planning/reports/M5.md`](docs/planning/reports/M5.md). M5 not committed. Awaiting approval for M6 and a commit decision.

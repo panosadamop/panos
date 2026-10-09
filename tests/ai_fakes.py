@@ -1,10 +1,14 @@
-"""Mock AI providers and a matching model registry for tests (no network)."""
+"""Mock AI providers, a matching model registry and scripted agents (no network)."""
 
+import json
+import re
+from collections import defaultdict
 from dataclasses import dataclass, field
+from typing import Any
 
 from panos_core.ai.adapters.mock import MockProvider, Responder
 from panos_core.ai.registry import ModelInfo, ModelRegistry
-from panos_core.ai.types import Locality
+from panos_core.ai.types import ChatRequest, Locality, Role
 
 LOCAL_CHAT = "mock-local-chat"
 LOCAL_EMBED = "mock-embed"
@@ -68,3 +72,88 @@ class MockAI:
     def respond(self, responder: Responder) -> None:
         self.local.responder = responder
         self.cloud.responder = responder
+
+
+_ROLE_RE = re.compile(r"You are the (\w+) agent")
+
+MULTIPLY_PLAN = {
+    "summary": "Add multiply() to calc.py with a unit test",
+    "steps": [
+        {"description": "Implement multiply", "files": ["calc.py"]},
+        {"description": "Test multiply", "files": ["tests/test_calc.py"]},
+    ],
+    "files_to_read": ["calc.py", "tests/test_calc.py"],
+    "decisions": ["keep the module-level function style"],
+    "assumptions": ["integers only"],
+}
+
+
+def multiply_change(body: str = "a * b") -> dict[str, Any]:
+    return {
+        "summary": "Add multiply",
+        "commit_message": "feat(calc): add multiply",
+        "edits": [
+            {
+                "path": "calc.py",
+                "action": "edit",
+                "search": "    return a + b\n",
+                "replace": f"    return a + b\n\n\ndef multiply(a: int, b: int) -> int:\n"
+                f"    return {body}\n",
+            },
+            {
+                "path": "tests/test_multiply.py",
+                "action": "create",
+                "content": "import unittest\n\nfrom calc import multiply\n\n\n"
+                "class MultiplyTest(unittest.TestCase):\n"
+                "    def test_multiply(self) -> None:\n"
+                "        self.assertEqual(multiply(3, 4), 12)\n",
+            },
+        ],
+    }
+
+
+FIX_MULTIPLY = {
+    "summary": "Fix multiply",
+    "edits": [
+        {
+            "path": "calc.py",
+            "action": "edit",
+            "search": "    return a + b + 1\n",
+            "replace": "    return a * b\n",
+        }
+    ],
+}
+APPROVE = {"verdict": "approve", "summary": "Looks correct and tested.", "findings": []}
+DIAGNOSIS = {
+    "summary": "multiply returns the wrong value",
+    "likely_cause": "wrong operator",
+    "files": ["calc.py"],
+}
+
+
+class ScriptedAgents:
+    """A responder that answers per agent role from queues (falls back to defaults)."""
+
+    def __init__(self, **scripts: list[Any]) -> None:
+        self.queues: dict[str, list[Any]] = defaultdict(list)
+        for role, items in scripts.items():
+            self.queues[role.lower()] = list(items)
+        self.defaults: dict[str, Any] = {
+            "planner": MULTIPLY_PLAN,
+            "developer": multiply_change(),
+            "reviewer": APPROVE,
+            "qa": DIAGNOSIS,
+        }
+        self.calls: list[tuple[str, ChatRequest]] = []
+
+    def __call__(self, request: ChatRequest, model: str) -> str:
+        system = next((m.content for m in request.messages if m.role == Role.SYSTEM), "")
+        match = _ROLE_RE.search(system)
+        role = match.group(1).lower() if match else "chat"
+        self.calls.append((role, request))
+        queue = self.queues[role]
+        item = queue.pop(0) if queue else self.defaults.get(role, "ok")
+        return item if isinstance(item, str) else json.dumps(item)
+
+    def roles(self) -> list[str]:
+        return [role for role, _ in self.calls]

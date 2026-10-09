@@ -74,6 +74,11 @@ class JobRow(Base):
     objective: Mapped[str] = mapped_column(Text)
     status: Mapped[str] = mapped_column(String(32))
     budget: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    kind: Mapped[str] = mapped_column(String(64), default="coding")
+    input: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    state: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    result: Mapped[dict[str, Any] | None] = mapped_column(JSON)
+    status_reason: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(UTCDateTime)
     started_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
     completed_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
@@ -139,6 +144,7 @@ class AuditEventRow(Base):
 
 class CheckpointRow(Base):
     __tablename__ = "checkpoint"
+    __table_args__ = (Index("ix_checkpoint_job_id", "job_id"),)
 
     id: Mapped[str] = mapped_column(ID, primary_key=True)
     project_id: Mapped[str] = mapped_column(ForeignKey("project.id"))

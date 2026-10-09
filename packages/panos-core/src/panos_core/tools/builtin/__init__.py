@@ -15,6 +15,7 @@ from panos_core.tools.builtin.desktop import (
     SnapshotSource,
     WindowActiveTool,
 )
+from panos_core.tools.builtin.docker import DockerInspectTool
 from panos_core.tools.builtin.fs import FS_TOOLS
 from panos_core.tools.builtin.git import GIT_TOOLS
 from panos_core.tools.builtin.shell import ShellTool
@@ -31,6 +32,7 @@ def default_tools(
     tools: list[Tool[Any, Any]] = [
         *(cls() for cls in FS_TOOLS),
         ShellTool(),
+        DockerInspectTool(),
         *(cls() for cls in GIT_TOOLS),
     ]
     if apps is not None:

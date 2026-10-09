@@ -12,7 +12,7 @@
 import base64
 import hashlib
 import hmac
-from collections.abc import Mapping, Sequence
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from datetime import timedelta
 from typing import Any, NoReturn
 
@@ -24,9 +24,14 @@ from panos_core.domain.clock import utc_now
 from panos_core.domain.enums import ApprovalStatus
 from panos_core.domain.errors import DomainError
 from panos_core.domain.models import ActionApproval
+from panos_core.observability import get_logger
 from panos_core.persistence.unit_of_work import UnitOfWorkFactory
 
+log = get_logger(__name__)
+
 DEFAULT_TTL = timedelta(minutes=30)
+# (approval, token or None if rejected) -> None
+DecisionListener = Callable[[ActionApproval, str | None], Awaitable[None]]
 
 
 def action_hash(action_type: str, target: str, payload: Mapping[str, Any]) -> str:
@@ -63,6 +68,11 @@ class ApprovalService:
         self._audit = audit
         self._key = node_key
         self._ttl = default_ttl
+        self._listeners: list[DecisionListener] = []
+
+    def add_listener(self, listener: DecisionListener) -> None:
+        """Called after every decision (e.g. to resume the job that waits for it)."""
+        self._listeners.append(listener)
 
     # ------------------------------------------------------------------ request
     async def request(
@@ -141,9 +151,15 @@ class ApprovalService:
             job_id=approval.job_id,
             metadata={"approval_id": approval.id, "decision": approval.status, "comment": comment},
         )
-        return ApprovalDecision(
+        decision = ApprovalDecision(
             approval=approval, token=self._issue_token(approval) if approve else None
         )
+        for listener in self._listeners:
+            try:
+                await listener(approval, decision.token)
+            except Exception:
+                log.exception("approval_listener_failed", approval_id=approval.id)
+        return decision
 
     # ------------------------------------------------------------------ consume
     async def consume(

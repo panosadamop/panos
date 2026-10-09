@@ -79,6 +79,18 @@ uv run panos ai route --privacy STANDARD "explain this design"   # which model a
 uv run panos ai usage                            # tokens and cost this month
 ```
 
+Let Panos do the work (M5). Jobs run in the background. They plan, checkpoint, edit, run the project's own format/lint/test commands, repair failures a bounded number of times and review the result, and they **ask before committing**:
+
+```bash
+uv run panos job start -p repo "add input validation to the signup endpoint"
+uv run panos job watch job_…                    # follow until it finishes or needs you
+uv run panos approvals list                      # the commit waits for your approval
+uv run panos approvals approve apr_…             # commits exactly the approved tree
+uv run panos job rollback job_…                  # restore the checkpoint (your .git is untouched)
+uv run panos job start -p repo --cmd python --cmd manage.py --cmd test "run the tests"
+uv run panos job pause|resume|cancel job_…
+```
+
 The `justfile` wraps the same commands (`just check`). CI runs them on Windows, macOS and Linux for Python 3.12 and 3.14 (`.github/workflows/ci.yml`).
 
 Runtime data never lives in the repository. It is stored in per-user directories; `panos config path` shows them. The default project workspace is `~/Panos/Projects`.

@@ -1,14 +1,17 @@
 """Typed Git tools (FR-013, BR-017).
 
-Read tools are ``git.read`` (P0). Branch creation is ``git.mutate.local`` (P1). Commits,
-pushes and other history changes are *not* exposed here: they go through the shell
-classifier and approval flow (M5 adds a dedicated commit-approval tool).
+Read tools are ``git.read`` (P0). Branch creation is ``git.mutate.local`` (P1).
+``git.commit`` (P3) binds its approval to the exact staged tree: the plan computes the tree
+the commit would record (in a temporary index, never the user's), and execution refuses if
+the tree or ``HEAD`` changed since approval (M5-07). Pushes and other history changes go
+through the shell classifier and approval flow.
 
 Option injection is prevented: revisions are validated (no leading ``-``) and paths are
 always passed after ``--``, so ``--output=...`` style arguments cannot reach Git.
 """
 
 import re
+import tempfile
 from pathlib import Path
 from typing import Annotated, ClassVar, Final
 
@@ -17,6 +20,7 @@ from pydantic import AfterValidator, BaseModel, ConfigDict, Field, field_validat
 from panos_core.repository import gitcli
 from panos_core.tools.contract import (
     ActionPlan,
+    CancelToken,
     PlanRejectedError,
     SideEffect,
     Tool,
@@ -439,6 +443,117 @@ class GitCreateBranchTool(Tool[GitCreateBranchInput, GitCreateBranchOutput]):
         return GitCreateBranchOutput(name=inp.name, switched=inp.switch)
 
 
+# ===================================================================== git.commit
+class GitCommitInput(_Model):
+    message: str = Field(min_length=1, max_length=5000)
+    paths: list[str] = Field(min_length=1, max_length=2000)
+
+    @field_validator("message")
+    @classmethod
+    def _message(cls, v: str) -> str:
+        if "\x00" in v or not v.strip():
+            raise ValueError("invalid commit message")
+        return v.strip()
+
+
+class GitCommitOutput(_Model):
+    commit: str
+    tree: str
+    files: int
+    tree_matches_approval: bool
+
+
+async def staged_tree(root: Path, paths: list[str], cancel: CancelToken) -> tuple[str, str, str]:
+    """(HEAD, tree, stat) of a commit of ``paths`` on top of HEAD, computed in a temporary
+    index so the user's index is never touched."""
+    with tempfile.TemporaryDirectory(prefix="panos-index-") as tmp:
+        env = {"GIT_INDEX_FILE": str(Path(tmp) / "index")}
+        try:
+            head = (
+                await gitcli.run_git(root, "rev-parse", "--verify", "-q", "HEAD", cancel=cancel)
+            ).strip()
+        except gitcli.GitError:
+            head = ""
+        try:
+            await gitcli.run_git(
+                root, "read-tree", *([head] if head else ["--empty"]), cancel=cancel, env_extra=env
+            )
+            await gitcli.run_git(root, "add", "-A", "--", *paths, cancel=cancel, env_extra=env)
+            tree = (await gitcli.run_git(root, "write-tree", cancel=cancel, env_extra=env)).strip()
+            stat = (
+                await gitcli.run_git(
+                    root,
+                    "diff",
+                    "--cached",
+                    "--stat",
+                    "--no-color",
+                    *([head] if head else ["--root"]),
+                    cancel=cancel,
+                    env_extra=env,
+                )
+                if head
+                else "(initial commit)"
+            )
+        except gitcli.GitError as exc:
+            raise PlanRejectedError(f"cannot stage the proposed commit: {exc}") from exc
+    return head, tree, stat
+
+
+class GitCommitTool(Tool[GitCommitInput, GitCommitOutput]):
+    spec: ClassVar[ToolSpec] = ToolSpec(
+        name="git.commit",
+        version="1",
+        description="Commit the given paths. Always requires approval of the exact tree.",
+        input_model=GitCommitInput,
+        output_model=GitCommitOutput,
+        capabilities=frozenset({"git.commit"}),
+        side_effect=SideEffect.LOCAL,
+        timeout_s=300,
+        cancellable=False,
+        idempotent=False,
+        privacy=_PRIVACY,
+    )
+
+    async def plan(self, inp: GitCommitInput, ctx: ToolContext) -> ActionPlan:
+        root = await _repo_root(ctx)
+        paths = sorted({p for raw in inp.paths if (p := _rel_path(root, raw)) not in (None, ".")})
+        if not paths:
+            raise PlanRejectedError("no paths to commit")
+        head, tree, stat = await staged_tree(root, paths, ctx.cancel)
+        if head:
+            parent_tree = (await _git(root, ctx, "rev-parse", f"{head}^{{tree}}")).strip()
+            if parent_tree == tree:
+                raise PlanRejectedError("nothing to commit for the given paths")
+        stat_lines = stat.strip().splitlines()
+        return ActionPlan(
+            action="git.commit",
+            target=str(root),
+            summary=f"Commit {len(paths)} path(s): {inp.message.splitlines()[0][:120]}\n"
+            + "\n".join(stat_lines[-25:]),
+            payload={"message": inp.message, "paths": paths, "head": head, "tree": tree},
+            facts={"diffstat": stat_lines[-1] if stat_lines else ""},
+        )
+
+    async def _execute(
+        self, inp: GitCommitInput, ctx: ToolContext, plan: ActionPlan
+    ) -> GitCommitOutput:
+        root = Path(plan.target)
+        paths: list[str] = plan.payload["paths"]
+        head, tree, _ = await staged_tree(root, paths, ctx.cancel)
+        if head != plan.payload["head"] or tree != plan.payload["tree"]:
+            raise ToolExecutionError("the repository changed after approval; not committing")
+        await _git(root, ctx, "add", "-A", "--", *paths)
+        await _git(root, ctx, "commit", "-q", "-m", plan.payload["message"], "--", *paths)
+        commit = (await _git(root, ctx, "rev-parse", "HEAD")).strip()
+        committed_tree = (await _git(root, ctx, "rev-parse", "HEAD^{tree}")).strip()
+        return GitCommitOutput(
+            commit=commit,
+            tree=committed_tree,
+            files=len(paths),
+            tree_matches_approval=committed_tree == tree,
+        )
+
+
 GIT_TOOLS: Final = (
     GitStatusTool,
     GitDiffTool,
@@ -447,4 +562,5 @@ GIT_TOOLS: Final = (
     GitShowTool,
     GitBlameTool,
     GitCreateBranchTool,
+    GitCommitTool,
 )

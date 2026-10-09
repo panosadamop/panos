@@ -79,6 +79,10 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 14. **(M4)** Intent classification is rule-based (English + Greek), not a local LLM call. Simple commands answer in milliseconds; everything else goes to the router. An LLM classifier can be added behind the same `Intent` type.
 15. **(M4)** Budget escalation uses the *cheaper fallback* path only (over-budget cloud candidates are filtered out). Approval-gated escalation arrives with jobs in M5.
 16. **(M4)** No vision port yet (the `VISION` task type exists; image content does not). Screenshots/vision come with M7.
+17. **(M5)** Only Planner, Developer, Reviewer and QA agents exist. The other AGENTS.md roles come with their workflows (requirements M6, DevOps/planning later).
+18. **(M5)** Review findings are reported, not auto-fixed. The trace check only reports which requirement IDs travelled through the job and appear in the plan.
+19. **(M5)** Docker has no dedicated execution tool. Execution goes through `shell.run` + classifier (`docker.exec` P3), which already gives "inspect without approval, execute only with approval".
+20. **(M5)** Notifications go to the event bus (`/ws/events`) and the log only; desktop toasts and voice arrive in M7.
 
 ## 5a. Design points added in M3
 
@@ -98,6 +102,15 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - **API keys never come from the environment or argv.** Only the keyring, via `panos ai set-key` (hidden prompt / `--stdin`).
 - **Chat routing for STANDARD content prefers Claude Sonnet 5.5** (AI_ROUTING "cloud_efficient"), then local models. The router reports expected cost; per-request ($0.50) and monthly ($20) caps are on by default.
 - **The Anthropic refusal fallback is on by default** (server-side, Sonnet/Opus 5.5). If Claude declines a request, the API can retry it on a fallback model. Turn it off with `ai.anthropic_refusal_fallback = false`.
+
+## 5a-ter. Design points added in M5
+
+- **Commits are bound to the exact tree.** `git.commit` computes the tree in a temporary index (the user's index is never touched) and the approval hashes `{message, paths, HEAD, tree}`. Any change after approval invalidates it. Unrelated changes the user has staged stay staged and uncommitted.
+- **A coding job never commits on its own.** It ends WAITING_FOR_APPROVAL with the diffstat in the approval summary. Rejecting leaves the work uncommitted and the job COMPLETED, with an "uncommitted" note.
+- **Checkpoints use a shadow repository** outside the project, with exact-byte restore and an undo point taken before every rollback.
+- **Every failure path ends visibly:** limits, exhausted repairs, invalid edits and rejected approvals end BLOCKED with a report. Nothing unsuccessful is ever marked COMPLETED.
+- **Work requests in conversation start jobs** ("implement …", "φτιάξε …" with a project); without a project they are answered as chat.
+- **Docker execution stays in `shell.run`** (`docker.exec`, P3). `docker.inspect` only parses files and, if the Docker CLI exists, runs read-only `ps` / `compose config`.
 
 ## 5b. Security incidents
 
@@ -130,14 +143,19 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 
 - [ ] Add a Git remote so CI runs on macOS/Linux. Commits need explicit owner approval.
 - [x] Commit M0–M2 — done 2026-10-09 (`f53b847`).
-- [ ] Decide whether to commit M3.
+- [x] Commit M3 — done 2026-10-09 (`58de356`, together with M4).
 - [ ] Coverage under-reports async API handlers run in TestClient's portal thread. Investigate (e.g. an httpx `ASGITransport` client) if API-layer coverage numbers matter.
 - [ ] Honour nested `.gitignore` files in the walker/indexer.
 - [x] Secret redaction before cloud prompts (M4, `code_safe` redaction in the gateway). The *index* itself still stores raw text locally; that is by design for a local cache.
-- [ ] Decide whether to commit M4 (and M3).
+- [x] Commit M4 — done 2026-10-09 (`58de356`).
 - [ ] Retrieval uses FTS snippets (~matched lines), not whole chunks. Pass full chunk text to the model when context budgets allow.
 - [ ] An LLM-based intent classifier on the local light tier, for paraphrased commands the rules miss.
-- [ ] Approval-gated budget escalation (M5, with jobs).
+- [ ] Approval-gated budget escalation: still open. M5 limits block the job; the user resumes it, optionally with a larger budget via a new job.
+- [ ] Checkpoint retention pruning (`jobs.checkpoint_retention` unused), a large-file limit, and nested Git repos in checkpoints.
+- [ ] Approval tokens are memory-only. An approval granted just before a node restart must be re-requested (resume re-issues it). The 30-minute approval TTL may be short for unattended jobs.
+- [ ] Planning a commit writes blob objects into the user's object store (no refs or index change; `git gc` prunes unused ones). Git hooks run on the real commit; if a hook rewrites content, `tree_matches_approval: false` is reported.
+- [x] Live coding runs with local models (M5 report): the pipeline works, but qwen2.5-coder:7b did not complete the task in 3 runs.
+- [ ] A more forgiving edit format for small local models (search/replace blocks instead of JSON), and evaluating qwen2.5-coder:14b / an MoE model for local-only coding.
 - [ ] Greek-capable local model evaluation is still open (qwen2.5 Greek prose is weak).
 - [ ] Multilingual embeddings: in the live smoke, `nomic-embed-text` got 3/5 top-1 overall but missed Greek-query → English-content cases. Evaluate `bge-m3` or `multilingual-e5` via Ollama (the registry allows a model swap; vectors are keyed per model).
 - [ ] Optionally tell IT security about the 2026-10-08 Defender detections (test strings, not malware).

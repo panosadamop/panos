@@ -1,17 +1,17 @@
 # Requirement test coverage
 
-_Generated 2026-10-09 08:51 UTC by `pytest --req-report`. Do not edit by hand._
+_Generated 2026-10-09 10:34 UTC by `pytest --req-report`. Do not edit by hand._
 
 A requirement counts as *covered* when at least one test is tagged with it. Coverage grows milestone by milestone; untested requirements belong to later milestones.
 
 | Type | Total | Covered | Passing |
 |---|---|---|---|
-| BR | 29 | 13 | 13 |
-| FR | 30 | 15 | 15 |
-| NFR | 31 | 15 | 15 |
+| BR | 29 | 14 | 14 |
+| FR | 30 | 18 | 18 |
+| NFR | 31 | 17 | 17 |
 | EPIC | 7 | 0 | 0 |
-| US | 30 | 6 | 6 |
-| AC | 90 | 26 | 26 |
+| US | 30 | 13 | 13 |
+| AC | 90 | 40 | 40 |
 
 ## Covered requirements
 
@@ -20,52 +20,65 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | BR-001 | Unified assistant | passed | 2 |
 | BR-002 | Cross-platform | passed | 4 |
 | BR-003 | Hybrid AI | passed | 20 |
-| BR-004 | Local-only privacy | passed | 13 |
+| BR-004 | Local-only privacy | passed | 14 |
 | BR-006 | Desktop productivity | passed | 16 |
+| BR-007 | Development assistant | passed | 11 |
 | BR-008 | Technology breadth | passed | 13 |
-| BR-011 | Existing projects | passed | 6 |
-| BR-017 | Git governance | passed | 77 |
-| BR-018 | Docker governance | passed | 59 |
+| BR-011 | Existing projects | passed | 17 |
+| BR-017 | Git governance | passed | 82 |
+| BR-018 | Docker governance | passed | 60 |
 | BR-019 | Email boundary | passed | 9 |
 | BR-022 | Browser boundary | passed | 4 |
 | BR-027 | Offline operation | passed | 2 |
 | BR-029 | Workspace | passed | 4 |
-| FR-002 | Conversation | passed | 19 |
+| FR-002 | Conversation | passed | 20 |
 | FR-003 | Application registry | passed | 29 |
 | FR-004 | Project registry | passed | 69 |
 | FR-005 | Repository onboarding | passed | 35 |
+| FR-006 | Coding workflow | passed | 11 |
 | FR-010 | Approval model | passed | 24 |
 | FR-011 | Tool execution | passed | 58 |
 | FR-012 | Terminal | passed | 161 |
-| FR-013 | Git | passed | 47 |
-| FR-014 | Docker/Kubernetes | passed | 28 |
+| FR-013 | Git | passed | 51 |
+| FR-014 | Docker/Kubernetes | passed | 29 |
 | FR-019 | Knowledge ingestion | passed | 6 |
 | FR-020 | Knowledge retrieval | passed | 21 |
 | FR-021 | AI routing | passed | 23 |
-| FR-022 | Long-running jobs | passed | 14 |
-| FR-023 | Limits | passed | 3 |
+| FR-022 | Long-running jobs | passed | 26 |
+| FR-023 | Limits | passed | 5 |
+| FR-024 | Checkpoints | passed | 5 |
+| FR-025 | Notifications | passed | 2 |
 | FR-028 | Audit | passed | 18 |
 | NFR-MNT-004 | No provider-specific behavior in domain services. *Enforced by impo... | passed | 12 |
 | NFR-OBS-001 | Structured logs with correlation/job/step IDs. | passed | 3 |
 | NFR-OBS-002 | Metrics for latency, failures, AI tokens/cost, tool outcomes and qu... | passed | 1 |
-| NFR-PERF-002 | Simple local commands should not require a cloud round trip. | passed | 15 |
+| NFR-PERF-002 | Simple local commands should not require a cloud round trip. | passed | 16 |
 | NFR-PERF-004 | Indexing runs incrementally after initial project ingestion. | passed | 2 |
 | NFR-PORT-002 | Windows/macOS/Linux behavior lives behind adapter contracts. *One c... | passed | 4 |
 | NFR-PORT-003 | AI/STT/TTS/vector/integration providers are pluggable. | passed | 12 |
 | NFR-PRV-003 | Knowledge sources retain provenance and access scope. | passed | 15 |
 | NFR-PRV-004 | Project privacy policy overrides model preference/cost. | passed | 1 |
-| NFR-REL-001 | Persist job state before consequential steps. | passed | 2 |
+| NFR-REL-001 | Persist job state before consequential steps. | passed | 4 |
+| NFR-REL-002 | Recover safely after runtime/UI crashes. | passed | 3 |
+| NFR-REL-004 | Failed tasks must not be reported as successful. | passed | 1 |
 | NFR-SEC-001 | Least privilege by default. | passed | 134 |
 | NFR-SEC-002 | No unrestricted LLM shell/desktop access. | passed | 235 |
 | NFR-SEC-003 | Encrypt credentials/secrets at rest using OS-backed secure storage ... | passed | 4 |
 | NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 76 |
-| NFR-SEC-005 | Local-only content must be technically blocked from cloud-provider ... | passed | 17 |
+| NFR-SEC-005 | Local-only content must be technically blocked from cloud-provider ... | passed | 18 |
 | US-005 | I can mark a project or folder local-only, and Panos never sends it... | passed | 7 |
 | US-010 | I can ask Panos to open an installed supported IDE/browser. | passed | 9 |
 | US-011 | I can register a project anywhere on disk. | passed | 11 |
 | US-012 | Panos analyzes an existing repository before major changes. | passed | 8 |
+| US-020 | I can request a feature in natural language and have Panos plan, im... | passed | 11 |
+| US-022 | I can ask Panos to diagnose build/test failures and attempt bounded... | passed | 2 |
+| US-023 | I can roll back an autonomous task to its checkpoint. | passed | 5 |
 | US-024 | I can use voice, coding, requirements and repository analysis witho... | passed | 2 |
-| US-052 | I can pause/resume/cancel a job. | passed | 3 |
+| US-040 | I am asked before Git commits. | passed | 6 |
+| US-041 | I am asked before Docker execution. | passed | 2 |
+| US-050 | Panos can work autonomously while I do something else. | passed | 11 |
+| US-051 | Panos notifies me when approval or a business decision is needed. | passed | 1 |
+| US-052 | I can pause/resume/cancel a job. | passed | 14 |
 | AC-US005-01 | A project or folder can be marked local-only; newly created or regi... | passed | 3 |
 | AC-US005-02 | While a request involves local-only content (files, retrieval chunk... | passed | 13 |
 | AC-US005-03 | A blocked cloud route is enforced both in routing and at the cloud ... | passed | 6 |
@@ -81,17 +94,31 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | AC-US012-01 | Panos detects primary languages/frameworks and build/test commands. | passed | 16 |
 | AC-US012-02 | It records a repository snapshot before material modification. | passed | 1 |
 | AC-US012-03 | Failure to understand critical project structure causes clarificati... | passed | 1 |
+| AC-US020-01 | A non-trivial feature receives an implementation plan. | passed | 1 |
+| AC-US020-02 | A checkpoint is created before substantial changes. | passed | 1 |
+| AC-US020-03 | Applicable formatting/lint/build/tests execute after implementation. | passed | 1 |
+| AC-US020-04 | Panos reports changed files, tests and unresolved issues. | passed | 2 |
+| AC-US022-01 | Failed build/test output is diagnosed and a fix is attempted automa... | passed | 1 |
+| AC-US022-02 | When the limit is reached, the job becomes `BLOCKED` with a diagnos... | passed | 1 |
+| AC-US022-03 | Each repair attempt is recorded as a job step with its outcome. | passed | 2 |
+| AC-US023-01 | The user can roll back a job's project modifications to the checkpo... | passed | 3 |
+| AC-US023-02 | Rollback restores the checkpointed file contents exactly and does n... | passed | 1 |
+| AC-US023-03 | Rollback works for projects that are not Git repositories and is au... | passed | 1 |
 | AC-US024-02 | Offline state is detected and routing selects only local models wit... | passed | 2 |
-| AC-US040-02 | No commit is created without valid approval for the exact proposed ... | passed | 64 |
-| AC-US041-01 | Panos may inspect Docker configuration without approval. | passed | 29 |
-| AC-US041-02 | Any Docker execution request enters WAITING_FOR_APPROVAL. | passed | 47 |
-| AC-US041-03 | Rejected approval causes no Docker command to execute. | passed | 24 |
+| AC-US040-01 | Panos shows a meaningful change summary/diff context before request... | passed | 1 |
+| AC-US040-02 | No commit is created without valid approval for the exact proposed ... | passed | 71 |
+| AC-US041-01 | Panos may inspect Docker configuration without approval. | passed | 30 |
+| AC-US041-02 | Any Docker execution request enters WAITING_FOR_APPROVAL. | passed | 48 |
+| AC-US041-03 | Rejected approval causes no Docker command to execute. | passed | 25 |
 | AC-US043-02 | Default tool registry contains no email-send capability. | passed | 5 |
 | AC-US043-03 | Prompt injection cannot cause email sending. | passed | 7 |
-| AC-US050-01 | Job state survives UI restart. | passed | 3 |
-| AC-US050-02 | Limits exist for runtime, AI cost/tokens and repair attempts. | passed | 1 |
-| AC-US052-01 | The user can pause, resume and cancel a job from CLI, desktop and v... | passed | 1 |
-| AC-US052-02 | Cancel stops running tool processes (including child processes) and... | passed | 1 |
+| AC-US050-01 | Job state survives UI restart. | passed | 6 |
+| AC-US050-02 | Limits exist for runtime, AI cost/tokens and repair attempts. | passed | 3 |
+| AC-US050-03 | Approval/blocker transitions notify the user. | passed | 2 |
+| AC-US051-02 | Routine progress is not narrated by voice. | passed | 1 |
+| AC-US052-01 | The user can pause, resume and cancel a job from CLI, desktop and v... | passed | 3 |
+| AC-US052-02 | Cancel stops running tool processes (including child processes) and... | passed | 2 |
+| AC-US052-03 | Pause takes effect at the next safe point; resume continues from th... | passed | 1 |
 
 ## Tests per requirement
 
@@ -174,10 +201,37 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_analysis.py::test_analysis_snapshot_is_persisted_with_git_state` — passed
 - **AC-US012-03**
   - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
+- **AC-US020-01**
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+- **AC-US020-02**
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+- **AC-US020-03**
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+- **AC-US020-04**
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+- **AC-US022-01**
+  - `tests/integration/jobs/test_coding_job.py::test_failing_tests_are_diagnosed_and_repaired` — passed
+- **AC-US022-02**
+  - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
+- **AC-US022-03**
+  - `tests/integration/jobs/test_coding_job.py::test_a_fix_that_cannot_be_applied_is_a_failed_attempt_not_a_dead_end` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_failing_tests_are_diagnosed_and_repaired` — passed
+- **AC-US023-01**
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_restores_exact_bytes_in_non_git_project` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_job_changes_can_be_rolled_back` — passed
+- **AC-US023-02**
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_never_touches_user_git_history_index_or_stash` — passed
+- **AC-US023-03**
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_restores_exact_bytes_in_non_git_project` — passed
 - **AC-US024-02**
   - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
   - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
+- **AC-US040-01**
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
 - **AC-US040-02**
+  - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
   - `tests/integration/approvals/test_approval_service.py::test_action_hash_is_canonical` — passed
   - `tests/integration/approvals/test_approval_service.py::test_cannot_decide_twice_or_after_expiry` — passed
   - `tests/integration/approvals/test_approval_service.py::test_changed_action_invalidates_approval` — passed
@@ -193,6 +247,12 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/approvals/test_approval_service.py::test_short_node_key_rejected` — passed
   - `tests/integration/approvals/test_approval_service.py::test_token_signed_by_another_node_key_is_rejected` — passed
   - `tests/integration/approvals/test_approval_service.py::test_unapproved_or_rejected_cannot_be_consumed` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_rejected_commit_leaves_changes_uncommitted` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_commit_requires_approval_and_keeps_other_staged_changes` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_nothing_to_commit_and_bad_paths_are_rejected_at_plan` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_token_cannot_be_replayed` — passed
   - `tests/integration/tools/test_runtime.py::test_approved_action_executes_once_with_token` — passed
   - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[& $command]` — passed
   - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[Get-ChildItem *.log | Remove-Item]` — passed
@@ -243,6 +303,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv5-shell.read]` — passed
   - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv6-shell.unknown]` — passed
 - **AC-US041-01**
+  - `tests/integration/jobs/test_runner.py::test_docker_inspection_needs_no_approval` — passed
   - `tests/integration/tools/test_shell_tool.py::test_docker_inspection_needs_no_approval` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv0-docker.inspect]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv1-docker.inspect]` — passed
@@ -273,6 +334,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
 - **AC-US041-02**
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
   - `tests/integration/tools/test_runtime.py::test_approval_required_moves_job_to_waiting_for_approval` — passed
   - `tests/integration/tools/test_shell_tool.py::test_docker_execution_waits_for_approval_and_rejection_runs_nothing` — passed
   - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
@@ -321,6 +383,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv5-shell.read]` — passed
   - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv6-shell.unknown]` — passed
 - **AC-US041-03**
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
   - `tests/integration/tools/test_shell_tool.py::test_docker_execution_waits_for_approval_and_rejection_runs_nothing` — passed
   - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
   - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv1-git.mutate.shared]` — passed
@@ -360,15 +423,30 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
 - **AC-US050-01**
+  - `tests/e2e/test_job_recovery.py::test_hard_killed_node_recovers_job_as_paused` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/jobs/test_runner.py::test_crash_recovery_pauses_interrupted_jobs` — passed
   - `tests/integration/persistence/test_job_service.py::test_transitions_are_persisted_timestamped_and_audited` — passed
   - `tests/integration/persistence/test_repositories.py::test_job_and_steps_persist_state` — passed
   - `tests/integration/tools/test_runtime.py::test_job_step_persisted_with_outcome` — passed
 - **AC-US050-02**
+  - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
+  - `tests/integration/jobs/test_runner.py::test_token_and_runtime_limits_block_the_job` — passed
   - `tests/unit/domain/test_models.py::test_job_budget_supports_runtime_cost_token_and_repair_limits` — passed
+- **AC-US050-03**
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+- **AC-US051-02**
+  - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
 - **AC-US052-01**
+  - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
+  - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
   - `tests/unit/jobs/test_state_machine.py::test_every_non_terminal_state_can_be_cancelled_and_paused` — passed
 - **AC-US052-02**
+  - `tests/integration/jobs/test_runner.py::test_cancel_kills_the_running_process_tree` — passed
   - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
+- **AC-US052-03**
+  - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
 - **BR-001**
   - `tests/e2e/test_node_daemon.py::test_serve_status_and_authenticated_health` — passed
   - `tests/integration/api/test_routes.py::test_health_reports_ok_with_node_identity` — passed
@@ -402,6 +480,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/ai/test_gateway.py::test_local_only_goes_local_and_cloud_never_sees_it` — passed
   - `tests/integration/api/test_conversation_api.py::test_conversation_privacy_is_sticky` — passed
   - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_standard_project_jobs_may_use_cloud_local_only_never` — passed
   - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
   - `tests/security/test_local_only_egress.py::test_prompt_injection_in_retrieved_content_cannot_reroute` — passed
   - `tests/security/test_local_only_egress.py::test_route_dry_run_and_egress_audit_trail` — passed
@@ -429,6 +508,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/apps/test_catalog.py::test_aliases_resolve[vs code-vscode]` — passed
   - `tests/unit/apps/test_catalog.py::test_catalog_covers_required_families` — passed
   - `tests/unit/apps/test_catalog.py::test_unknown_apps_are_not_resolvable` — passed
+- **BR-007**
+  - `tests/unit/agents/test_contract.py::test_extract_json[Plan: {"a": 1} trailing words-True]` — passed
+  - `tests/unit/agents/test_contract.py::test_extract_json[Sure! ```json\n{"a": 1}\n``` done-True]` — passed
+  - `tests/unit/agents/test_contract.py::test_extract_json[[1, 2]-False]` — passed
+  - `tests/unit/agents/test_contract.py::test_extract_json[no json here-False]` — passed
+  - `tests/unit/agents/test_contract.py::test_extract_json[{"a": 1, "code": "line one\nline two"}-True]` — passed
+  - `tests/unit/agents/test_contract.py::test_extract_json[{"a": 1}-True]` — passed
+  - `tests/unit/agents/test_contract.py::test_extract_json[{"broken": -False]` — passed
+  - `tests/unit/agents/test_contract.py::test_handoff_merge_is_ordered_and_deduplicated` — passed
+  - `tests/unit/agents/test_contract.py::test_invalid_reply_gets_one_corrective_retry` — passed
+  - `tests/unit/agents/test_contract.py::test_two_invalid_replies_fail_closed` — passed
+  - `tests/unit/agents/test_contract.py::test_valid_reply_and_handoff_carry_ids_decisions_and_provenance` — passed
 - **BR-008**
   - `tests/unit/repository/test_detectors.py::test_detected_commands_are_classified_as_safe_once_allowlisted` — passed
   - `tests/unit/repository/test_detectors.py::test_django_with_pip` — passed
@@ -444,6 +535,17 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/repository/test_detectors.py::test_spring_boot_vaadin_maven_wrapper` — passed
   - `tests/unit/repository/test_detectors.py::test_unknown_stack_has_no_manifests_or_commands` — passed
 - **BR-011**
+  - `tests/integration/jobs/test_coding_job.py::test_a_fix_that_cannot_be_applied_is_a_failed_attempt_not_a_dead_end` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_failing_tests_are_diagnosed_and_repaired` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_invalid_agent_output_gets_one_retry` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_invalid_edits_block_the_job` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_job_changes_can_be_rolled_back` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_rejected_commit_leaves_changes_uncommitted` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_standard_project_jobs_may_use_cloud_local_only_never` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_unusable_agent_output_blocks_instead_of_failing` — passed
   - `tests/integration/projects/test_analysis.py::test_analysis_snapshot_is_persisted_with_git_state` — passed
   - `tests/integration/projects/test_analysis.py::test_conflicting_build_systems_are_questioned` — passed
   - `tests/integration/projects/test_analysis.py::test_discovered_commands_run_without_approval_others_still_ask` — passed
@@ -451,6 +553,11 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
   - `tests/integration/projects/test_analysis.py::test_workspace_declared_monorepo_is_not_questioned` — passed
 - **BR-017**
+  - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_commit_requires_approval_and_keeps_other_staged_changes` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_nothing_to_commit_and_bad_paths_are_rejected_at_plan` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_token_cannot_be_replayed` — passed
   - `tests/integration/projects/test_git_tools.py::test_create_branch_is_local_p1` — passed
   - `tests/integration/projects/test_git_tools.py::test_diff_with_numstat_and_path_filter` — passed
   - `tests/integration/projects/test_git_tools.py::test_log_branches_show_blame` — passed
@@ -529,6 +636,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_git[argv8-git.read]` — passed
   - `tests/unit/shell/test_classifier.py::test_git[argv9-git.mutate.local]` — passed
 - **BR-018**
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
   - `tests/security/test_approval_bypass.py::test_approval_cannot_cross_tools` — passed
   - `tests/security/test_approval_bypass.py::test_approval_for_one_command_cannot_run_another` — passed
   - `tests/security/test_approval_bypass.py::test_arguments_are_never_shell_interpreted` — passed
@@ -631,6 +739,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/api/test_conversation_api.py::test_ws_events_carry_streamed_tokens` — passed
   - `tests/integration/api/test_conversation_api.py::test_ws_events_require_first_message_auth` — passed
   - `tests/integration/api/test_conversation_api.py::test_ws_events_stream_conversation_events` — passed
+  - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
 - **FR-003**
   - `tests/integration/api/test_projects_api.py::test_analyze_and_snapshot` — passed
   - `tests/integration/api/test_projects_api.py::test_apps_list_launch_and_preferences` — passed
@@ -767,6 +876,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/repository/test_structure_and_walk.py::test_tree_docs_conventions_packages` — passed
   - `tests/unit/repository/test_structure_and_walk.py::test_walk_honours_gitignore_and_skips_vendor_dirs` — passed
   - `tests/unit/repository/test_structure_and_walk.py::test_walk_respects_max_files` — passed
+- **FR-006**
+  - `tests/integration/jobs/test_coding_job.py::test_a_fix_that_cannot_be_applied_is_a_failed_attempt_not_a_dead_end` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_failing_tests_are_diagnosed_and_repaired` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_invalid_agent_output_gets_one_retry` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_invalid_edits_block_the_job` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_job_changes_can_be_rolled_back` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_rejected_commit_leaves_changes_uncommitted` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_standard_project_jobs_may_use_cloud_local_only_never` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_unusable_agent_output_blocks_instead_of_failing` — passed
 - **FR-010**
   - `tests/integration/api/test_approvals_api.py::test_approval_endpoints_require_auth` — passed
   - `tests/integration/api/test_approvals_api.py::test_audit_list_and_verify` — passed
@@ -1014,6 +1135,10 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_project_allowlist_marks_discovered_commands_build_test` — passed
   - `tests/unit/shell/test_classifier.py::test_wrappers_are_transparent` — passed
 - **FR-013**
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_commit_requires_approval_and_keeps_other_staged_changes` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_nothing_to_commit_and_bad_paths_are_rejected_at_plan` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_token_cannot_be_replayed` — passed
   - `tests/integration/projects/test_git_tools.py::test_create_branch_is_local_p1` — passed
   - `tests/integration/projects/test_git_tools.py::test_diff_with_numstat_and_path_filter` — passed
   - `tests/integration/projects/test_git_tools.py::test_log_branches_show_blame` — passed
@@ -1062,6 +1187,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_git[argv8-git.read]` — passed
   - `tests/unit/shell/test_classifier.py::test_git[argv9-git.mutate.local]` — passed
 - **FR-014**
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv0-docker.inspect]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv1-docker.inspect]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv10-docker.exec]` — passed
@@ -1144,6 +1270,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_router.py::test_standard_chat_prefers_efficient_cloud_and_explains` — passed
   - `tests/unit/ai/test_router.py::test_task_families` — passed
 - **FR-022**
+  - `tests/e2e/test_job_recovery.py::test_hard_killed_node_recovers_job_as_paused` — passed
+  - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_api_errors` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
+  - `tests/integration/jobs/test_runner.py::test_cancel_kills_the_running_process_tree` — passed
+  - `tests/integration/jobs/test_runner.py::test_crash_recovery_pauses_interrupted_jobs` — passed
+  - `tests/integration/jobs/test_runner.py::test_docker_inspection_needs_no_approval` — passed
+  - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+  - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
+  - `tests/integration/jobs/test_runner.py::test_token_and_runtime_limits_block_the_job` — passed
   - `tests/integration/persistence/test_job_service.py::test_invalid_transitions_are_refused_and_not_persisted` — passed
   - `tests/integration/persistence/test_job_service.py::test_missing_job` — passed
   - `tests/integration/persistence/test_job_service.py::test_transitions_are_persisted_timestamped_and_audited` — passed
@@ -1161,7 +1299,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **FR-023**
   - `tests/integration/ai/test_gateway.py::test_budget_exhaustion_routes_locally` — passed
   - `tests/integration/ai/test_gateway.py::test_standard_goes_to_cloud_redacted_metered_and_audited` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_failing_tests_are_diagnosed_and_repaired` — passed
+  - `tests/integration/jobs/test_runner.py::test_token_and_runtime_limits_block_the_job` — passed
   - `tests/unit/domain/test_models.py::test_job_budget_supports_runtime_cost_token_and_repair_limits` — passed
+- **FR-024**
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_is_itself_reversible_and_checks_ownership` — passed
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_never_touches_user_git_history_index_or_stash` — passed
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_restores_exact_bytes_in_non_git_project` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_job_changes_can_be_rolled_back` — passed
+- **FR-025**
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
 - **FR-028**
   - `tests/e2e/test_node_daemon.py::test_cli_audit_and_approvals_against_live_node` — passed
   - `tests/integration/api/test_approvals_api.py::test_approval_endpoints_require_auth` — passed
@@ -1203,6 +1352,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **NFR-PERF-002**
   - `tests/e2e/test_node_daemon.py::test_cli_ask_against_live_node_and_real_local_model` — passed
   - `tests/integration/api/test_conversation_api.py::test_fast_path_commands_need_no_model` — passed
+  - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[Panos, show my projects-list_projects-None]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf IntelliJ-open_app-IntelliJ]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf \u03ad\u03c1\u03b3\u03bf orders-api-open_project-orders-api]` — passed
@@ -1256,8 +1406,16 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **NFR-PRV-004**
   - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
 - **NFR-REL-001**
+  - `tests/e2e/test_job_recovery.py::test_hard_killed_node_recovers_job_as_paused` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
   - `tests/integration/persistence/test_migrations.py::test_database_uses_wal_journal` — passed
   - `tests/integration/tools/test_runtime.py::test_job_step_persisted_with_outcome` — passed
+- **NFR-REL-002**
+  - `tests/e2e/test_job_recovery.py::test_hard_killed_node_recovers_job_as_paused` — passed
+  - `tests/integration/jobs/test_runner.py::test_cancel_kills_the_running_process_tree` — passed
+  - `tests/integration/jobs/test_runner.py::test_crash_recovery_pauses_interrupted_jobs` — passed
+- **NFR-REL-004**
+  - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
 - **NFR-SEC-001**
   - `tests/e2e/test_node_daemon.py::test_serve_status_and_authenticated_health` — passed
   - `tests/integration/api/test_security.py::test_allowed_origin_accepted` — passed
@@ -1716,6 +1874,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/ai/test_gateway.py::test_local_only_goes_local_and_cloud_never_sees_it` — passed
   - `tests/integration/api/test_conversation_api.py::test_conversation_privacy_is_sticky` — passed
   - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_standard_project_jobs_may_use_cloud_local_only_never` — passed
   - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
   - `tests/security/test_local_only_egress.py::test_prompt_injection_in_retrieved_content_cannot_reroute` — passed
   - `tests/security/test_local_only_egress.py::test_route_dry_run_and_egress_audit_trail` — passed
@@ -1768,10 +1927,66 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_analysis.py::test_remote_urls_are_redacted` — passed
   - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
   - `tests/integration/projects/test_analysis.py::test_workspace_declared_monorepo_is_not_questioned` — passed
+- **US-020**
+  - `tests/integration/jobs/test_coding_job.py::test_a_fix_that_cannot_be_applied_is_a_failed_attempt_not_a_dead_end` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_failing_tests_are_diagnosed_and_repaired` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_invalid_agent_output_gets_one_retry` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_invalid_edits_block_the_job` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_job_changes_can_be_rolled_back` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_rejected_commit_leaves_changes_uncommitted` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_standard_project_jobs_may_use_cloud_local_only_never` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_unusable_agent_output_blocks_instead_of_failing` — passed
+- **US-022**
+  - `tests/integration/jobs/test_coding_job.py::test_failing_tests_are_diagnosed_and_repaired` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_repairs_stop_at_the_limit_and_never_report_success` — passed
+- **US-023**
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_is_itself_reversible_and_checks_ownership` — passed
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_never_touches_user_git_history_index_or_stash` — passed
+  - `tests/integration/jobs/test_checkpoints.py::test_rollback_restores_exact_bytes_in_non_git_project` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_job_changes_can_be_rolled_back` — passed
 - **US-024**
   - `tests/e2e/test_node_daemon.py::test_cli_ask_against_live_node_and_real_local_model` — passed
   - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
+- **US-040**
+  - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
+  - `tests/integration/jobs/test_coding_job.py::test_rejected_commit_leaves_changes_uncommitted` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_commit_requires_approval_and_keeps_other_staged_changes` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_nothing_to_commit_and_bad_paths_are_rejected_at_plan` — passed
+  - `tests/integration/jobs/test_git_commit_tool.py::test_token_cannot_be_replayed` — passed
+- **US-041**
+  - `tests/integration/jobs/test_runner.py::test_docker_inspection_needs_no_approval` — passed
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
+- **US-050**
+  - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_api_errors` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
+  - `tests/integration/jobs/test_runner.py::test_cancel_kills_the_running_process_tree` — passed
+  - `tests/integration/jobs/test_runner.py::test_crash_recovery_pauses_interrupted_jobs` — passed
+  - `tests/integration/jobs/test_runner.py::test_docker_inspection_needs_no_approval` — passed
+  - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+  - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
+  - `tests/integration/jobs/test_runner.py::test_token_and_runtime_limits_block_the_job` — passed
+- **US-051**
+  - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
 - **US-052**
+  - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_api_errors` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
+  - `tests/integration/jobs/test_runner.py::test_cancel_kills_the_running_process_tree` — passed
+  - `tests/integration/jobs/test_runner.py::test_crash_recovery_pauses_interrupted_jobs` — passed
+  - `tests/integration/jobs/test_runner.py::test_docker_inspection_needs_no_approval` — passed
+  - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+  - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
+  - `tests/integration/jobs/test_runner.py::test_token_and_runtime_limits_block_the_job` — passed
   - `tests/integration/persistence/test_job_service.py::test_invalid_transitions_are_refused_and_not_persisted` — passed
   - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
   - `tests/unit/jobs/test_state_machine.py::test_every_non_terminal_state_can_be_cancelled_and_paused` — passed

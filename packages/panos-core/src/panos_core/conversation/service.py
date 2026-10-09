@@ -56,6 +56,10 @@ class ContextFactory(Protocol):
     async def __call__(self, project: Project | None, *, actor: str = ...) -> ToolContext: ...
 
 
+class JobStarter(Protocol):
+    async def __call__(self, objective: str, project: Project, actor: str) -> str: ...
+
+
 class ConversationError(DomainError):
     def __init__(self, reason: str, message: str) -> None:
         super().__init__(message)
@@ -114,6 +118,11 @@ class ConversationService:
         self._settings = settings
         self._node_id = node_id
         self._context_for = context_for
+        self._start_job: JobStarter | None = None
+
+    def attach_job_starter(self, starter: "JobStarter") -> None:
+        """Work requests inside a project ("implement …") become coding jobs (M5)."""
+        self._start_job = starter
 
     # ------------------------------------------------------------------ queries
     async def get(self, conversation_id: str) -> tuple[Conversation, Sequence[ConversationMessage]]:
@@ -413,6 +422,13 @@ class ConversationService:
                 ctx = await self._context_for(turn.project, actor=actor)
                 tool = await self._tools.invoke("app.launch", {"app": app.key}, ctx)
                 text = _tool_text(tool, f"Launching {app.name}.")
+        elif intent.kind == "task" and turn.project is not None and self._start_job:
+            job_id = await self._start_job(turn.user_message.content, turn.project, actor)
+            text = (
+                f"Started job {job_id} in {turn.project.name}. I will plan, implement and "
+                "test it, and ask before committing. Follow it with `panos job show "
+                f"{job_id}`."
+            )
         else:
             return None
         label = turn.conversation.privacy

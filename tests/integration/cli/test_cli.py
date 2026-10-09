@@ -31,7 +31,8 @@ def test_config_show_is_json_without_secrets(settings: PanosSettings) -> None:
     assert result.exit_code == 0
     data = json.loads(result.stdout)
     assert data["log_level"] == "INFO"
-    assert "token" not in result.stdout.lower()
+    keys = json.dumps(data).lower()
+    assert '"token"' not in keys and "api_key" not in keys and 'secret"' not in keys
 
 
 def test_status_when_not_running(settings: PanosSettings) -> None:

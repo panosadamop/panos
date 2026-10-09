@@ -21,6 +21,9 @@ _REASON_STATUS = {
     "no_ide": 404,
     "project_mismatch": 409,
     "empty": 400,
+    "invalid_state": 409,
+    "mismatch": 409,
+    "git_failed": 500,
 }
 
 

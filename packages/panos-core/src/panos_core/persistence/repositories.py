@@ -129,6 +129,14 @@ class SqlJobRepository(_SqlRepository):
         stmt = select(JobStepRow).where(JobStepRow.job_id == job_id).order_by(JobStepRow.sequence)
         return [m.step_from_row(r) for r in await self._session.scalars(stmt)]
 
+    async def list(
+        self, *, statuses: Sequence[str] | None = None, limit: int = 100
+    ) -> Sequence[Job]:
+        stmt = select(JobRow).order_by(JobRow.created_at.desc()).limit(limit)
+        if statuses:
+            stmt = stmt.where(JobRow.status.in_(list(statuses)))
+        return [m.job_from_row(r) for r in await self._session.scalars(stmt)]
+
 
 class SqlApprovalRepository(_SqlRepository):
     async def add(self, approval: ActionApproval) -> None:
@@ -226,6 +234,18 @@ class SqlCheckpointRepository(_SqlRepository):
         stmt = (
             select(CheckpointRow)
             .where(CheckpointRow.project_id == project_id)
+            .order_by(CheckpointRow.created_at)
+        )
+        return [m.checkpoint_from_row(r) for r in await self._session.scalars(stmt)]
+
+    async def get(self, checkpoint_id: str) -> Checkpoint | None:
+        row = await self._session.get(CheckpointRow, checkpoint_id)
+        return m.checkpoint_from_row(row) if row else None
+
+    async def list_for_job(self, job_id: str) -> Sequence[Checkpoint]:
+        stmt = (
+            select(CheckpointRow)
+            .where(CheckpointRow.job_id == job_id)
             .order_by(CheckpointRow.created_at)
         )
         return [m.checkpoint_from_row(r) for r in await self._session.scalars(stmt)]
@@ -380,6 +400,15 @@ class SqlUsageRepository(_SqlRepository):
             AIUsage(**{c: getattr(r, c) for c in AIUsage.model_fields})
             for r in await self._session.scalars(stmt)
         ]
+
+    async def totals_for_job(self, job_id: str) -> tuple[int, float]:
+        """(input + output tokens, cost USD) of every model call made for a job."""
+        stmt = select(
+            func.coalesce(func.sum(AIUsageRow.input_tokens + AIUsageRow.output_tokens), 0),
+            func.coalesce(func.sum(AIUsageRow.cost_usd), 0.0),
+        ).where(AIUsageRow.job_id == job_id)
+        tokens, cost = (await self._session.execute(stmt)).one()
+        return int(tokens), float(cost)
 
     async def cost_since(self, start: datetime) -> float:
         stmt = select(func.coalesce(func.sum(AIUsageRow.cost_usd), 0.0)).where(
