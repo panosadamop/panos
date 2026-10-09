@@ -1,8 +1,13 @@
 """``/ws/events``: live event stream (API.md, ADR-018).
 
 Browsers cannot set an ``Authorization`` header on a WebSocket, so the client sends
-``{"type": "auth", "token": "..."}`` as its first message within ``AUTH_TIMEOUT_S``;
-anything else closes the socket with 1008. Host/Origin checks already ran in the
+``{"type": "auth", "token": "...", "since": <seq>?, "epoch": "..."?}`` as its first message
+within ``AUTH_TIMEOUT_S``; anything else closes the socket with 1008.
+
+``auth.ok`` carries ``epoch`` and ``seq``. A reconnecting client sends the epoch and last seq
+it saw: missed events are replayed first; if they are gone or the node restarted (another
+epoch) the server sends ``{"type": "resync"}`` and the client reloads its state.
+Host/Origin checks already ran in the
 loopback middleware before the handshake was accepted.
 """
 
@@ -46,8 +51,23 @@ async def events(ws: WebSocket) -> None:
         return
 
     container: NodeContainer = ws.app.state.container
-    async with container.events.subscribe() as queue:
-        await ws.send_json({"type": "auth.ok", "v": 1})
+    bus = container.events
+    async with bus.subscribe() as queue:
+        await ws.send_json({"type": "auth.ok", "v": 1, "epoch": bus.epoch, "seq": bus.last_seq})
+        since = first.get("since")
+        if isinstance(since, int):
+            missed = bus.since(since) if first.get("epoch") == bus.epoch else None
+            if missed is None:
+                await ws.send_json({"type": "resync", "seq": bus.last_seq})
+            else:
+                replayed = {e.seq for e in missed}
+                for event in missed:
+                    await ws.send_text(event.model_dump_json())
+                # Live events already queued may duplicate the replay: drop those.
+                pending = [queue.get_nowait() for _ in range(queue.qsize())]
+                for event in pending:
+                    if event.seq not in replayed:
+                        await ws.send_text(event.model_dump_json())
         receiver = asyncio.create_task(_drain(ws))
         try:
             while not receiver.done():

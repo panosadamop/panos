@@ -1,0 +1,10 @@
+{
+  "name": "panos-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.6.2",
+  "scripts": {
+    "gen": "pnpm --filter panos-desktop gen",
+    "check": "pnpm --filter panos-desktop check",
+    "test": "pnpm --filter panos-desktop test"
+  }
+}

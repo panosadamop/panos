@@ -64,7 +64,7 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 1. Migrations ship inside `panos_core` (not root `/migrations`) so the node can self-upgrade, including in a frozen build. *(ADR-004 amended)*
 2. The CI Python matrix is 3.12 + 3.14 (not 3.13).
 3. `platform/posix/` holds shared macOS/Linux code. Separate packages will be added only where implementations differ.
-4. The pnpm/TypeScript workspace is deferred to M7.
+4. The pnpm/TypeScript workspace is deferred to M7. *(Done in M7: `apps/desktop`.)*
 5. The secret store has a `memory` backend for tests only. Production uses the OS keyring and refuses plaintext storage.
 
 6. **(M2)** New shell action classes extend PERMISSIONS.md: `shell.read` P0, `build.test` P1, `shell.write` P2, `shell.delete` P3, `shell.unknown` P3, `net.fetch` P2, `net.upload` P3, `git.mutate.local` P1, `git.destructive` P3. `net.upload` is P3, not P4, because the spec fixes only *browser* uploads at P4.
@@ -87,6 +87,12 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 22. **(M6)** "8 stack families" are delivered as 7 application packs (FastAPI, Django, Spring Boot, Vaadin, React/TypeScript, NestJS, Laravel) plus 4 add-ons (PostgreSQL, MongoDB, Docker, Kubernetes), which covers every technology BR-008 names. The cloud providers in BR-008 (GCP/Azure/AWS) have no scaffold templates yet.
 23. **(M6)** Only Markdown and OpenAPI artifacts are generated. DOCX/XLSX/PPTX/PDF export (FR-029, BR-028) is still open.
 24. **(M6)** Official project generators (Spring Initializr, `create-vite`, …) are not used; scaffolding is template-based and offline.
+25. **(M7)** The `openwakeword` package is not used. Its Linux install needs `tflite-runtime`, which has no wheels for Python ≥ 3.12 (our CI matrix). `OnnxWakeWord` runs the same models on onnxruntime with identical scores. *(ADR-016 note)*
+26. **(M7)** UI tests are Vitest + Testing Library + axe on all 8 views against a fake API. There is **no Playwright suite** yet (M7-03 listed one); the event-stream client has its own reconnect and resync tests.
+27. **(M7)** TypeScript is pinned to ~5.9: openapi-typescript does not work with TypeScript 7 yet.
+28. **(M7)** Screen capture on macOS/Linux grabs the whole primary screen (no window bounds yet), with no macOS permission flow and no Wayland support. Windows is the production path, as ADR-022 allows.
+29. **(M7)** Model downloads (`panos voice setup`) use pinned release tags over HTTPS, but **without checksum verification** (ADR-021 asks for it).
+30. **(M7)** Only the Windows NSIS installer is built; macOS/Linux bundles are not (M7-09 says best-effort).
 
 ## 5a. Design points added in M3
 
@@ -126,6 +132,15 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - **Skills contain approved, non-stale facts only.** They are versioned by a hash of exactly those facts, so unrelated changes do not bump them.
 - **Change control is transitive over trace links,** not just the parent tree. Re-approving a parent clears its descendants; linked items (APIs, data) need their own decision or an explicit, reasoned clear.
 
+## 5a-quinquies. Design points added in M7
+
+- **Push-to-talk is the primary voice trigger.** The wake word is off by default, and `hey_jarvis` is only a development stand-in until a "Panos" model meets the validation targets.
+- **Voice is a separate, supervised process.** A crash cannot take the node down. If the node dies, the worker exits on stdin EOF. Missing models are reported, never downloaded implicitly.
+- **"Stop talking" is never a job command.** It only stops speech; "stop" / "pause" / "resume" act on jobs. Voice notifications speak only what needs the user.
+- **Screenshots stay in memory and local by default.** Cloud vision requires per-request consent **and** a STANDARD project; consent alone does not change a LOCAL_ONLY label.
+- **The desktop shell has no file-system or shell capability.** The WebView gets the node's base URL and token only through the `connection` command and keeps them in memory.
+- **Events are replayable.** Each event has a sequence number, and the node keeps the last 2000 for reconnecting clients; anything older triggers a resync over REST.
+
 ## 5b. Security incidents
 
 | Date | Event | Handling |
@@ -152,6 +167,12 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - `Path.write_text` emits CRLF on Windows. Write test fixtures as bytes.
 - `types-pywin32` annotates `CreateJobObject` as returning `None` (stub bug).
 - Windows `CreateProcess` and `shutil.which` search the current directory first. Resolve executables explicitly.
+- PyInstaller does not detect modules imported by name at runtime: the SQLAlchemy dialect driver (`aiosqlite`) needs `--hidden-import`, and Alembic's `env.py`/migrations need `--add-data` (they are loaded as source files). **Smoke-test the frozen build, not just `version`.**
+- openWakeWord's Linux dependency `tflite-runtime` has no Python 3.12+ wheels. The ONNX models give identical results without it.
+- Silero VAD v5 expects a 64-sample context before every 512-sample chunk; without it the scores are wrong.
+- faster-whisper can loop on short or noisy Greek audio ("Παραδείγματος…" for 31 s). Cap `max_new_tokens` by duration and set `no_repeat_ngram_size`.
+- Synthetic (TTS-generated) code-switched audio is a poor STT test: Whisper transcribes it badly even when real speech works. Use real recordings as evidence.
+- TypeScript 7 breaks openapi-typescript; pin TypeScript ~5.9.
 
 ## 7. Open follow-ups
 
@@ -184,3 +205,12 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] Optionally install the Windows Greek speech voice ("Stefanos").
 - [ ] Delete ~242 MB of leftover Piper voices in `%USERPROFILE%\.cache\huggingface\hub`.
 - [ ] Starlette TestClient httpx deprecation: migrate when FastAPI does.
+- [ ] Real-speech evaluation of mixed Greek/English commands (AC-US003-01/02). Synthetic audio was not accepted as evidence.
+- [ ] Checksum verification for voice model downloads (ADR-021).
+- [ ] Pull and evaluate a local vision model (`gemma3:4b` / `qwen2.5vl:7b`) for screen analysis on the CPU-only machine.
+- [ ] The `screen.captured` audit record stores the window title (first 200 chars). It can reveal private content (e.g. an email subject); consider an option to hash or omit it.
+- [ ] CI: voice wheels (onnxruntime, ctranslate2, Piper) for Python 3.14 on all three OSes are a risk; the voice extra may need to be optional in the 3.14 job.
+- [ ] Run the NSIS installer and do the manual desktop check (window, tray, hotkey, notifications, autostart) on Windows.
+- [ ] Playwright end-to-end UI tests against the mock API (M7-03 asked for them; Vitest + axe cover the views today).
+- [ ] macOS/Linux: window bounds for capture, the macOS screen-recording permission flow, Wayland via the portal, and installer bundles.
+- [ ] Code signing of the installer (optional for personal use).

@@ -21,3 +21,24 @@ Nuitka (slower builds); requiring a system Python with uv (simpler, but a worse 
 
 ## Consequences
 Native extensions (onnxruntime, ctranslate2) must be validated in the frozen build in M7.
+
+## Implementation notes (M7, 2026-10-09)
+
+- **Sidecar:** `scripts/build_sidecar.py [--voice]` runs PyInstaller one-folder into `apps/desktop/src-tauri/sidecar/panos-node/`. That output is git-ignored.
+  - Size: 315 MB with voice (onnxruntime, ctranslate2, Piper, sounddevice).
+  - Bundled data: package data, Alembic env and migrations (loaded from disk as source), and hidden imports (`aiosqlite`, `keyring.backends.Windows`, `win32timezone`).
+  - The frozen executable runs the voice worker as `panos-node voice-worker <config>`.
+- **Installer:** `pnpm tauri build --config src-tauri/tauri.bundle.conf.json` (NSIS, per-user install) copies the sidecar folder in as a resource. The plain `tauri.conf.json` has no resources, so development builds don't need the sidecar. The installer is 113 MB.
+- **Smoke test (frozen build, isolated directories):**
+  - `version` returns in 1–4 s;
+  - `serve` reaches healthy in ~7 s, including migrations 0001–0006;
+  - project creation and a chat turn work;
+  - the frozen voice worker loads the real models and reaches `idle` in ~21 s;
+  - clean shutdown.
+  - Two frozen-only defects were found this way and fixed: the Alembic `env.py` was missing, and the SQLAlchemy driver `aiosqlite` was not detected.
+- **Models:** not bundled. `panos voice setup` downloads them.
+- **Not done:**
+  - code signing;
+  - checksum verification of model downloads;
+  - macOS/Linux bundles (the CI `shell` job only builds and tests the Rust crate);
+  - an automated installer test. The installer has been built but not run.

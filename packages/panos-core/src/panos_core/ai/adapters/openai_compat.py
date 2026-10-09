@@ -31,6 +31,11 @@ def _messages(request: ChatRequest) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for m in request.messages:
         msg: dict[str, Any] = {"role": m.role.value, "content": m.content}
+        if m.images:
+            msg["content"] = [{"type": "text", "text": m.content}] + [
+                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img}"}}
+                for img in m.images
+            ]
         if m.role == Role.ASSISTANT and m.tool_calls:
             msg["tool_calls"] = [
                 {

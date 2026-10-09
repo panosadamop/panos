@@ -129,6 +129,24 @@ class EstimationSettings(BaseModel):
     sprint_weeks: int = Field(default=2, gt=0)
 
 
+class VoiceSettings(BaseModel):
+    """Voice worker (ADR-016). Off by default: push-to-talk once enabled."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = False  # start the voice worker with the node
+    wake_word: bool = False  # always-listening wake word (opt-in; dev model until trained)
+    wake_word_model: str = "hey_jarvis_v0.1"
+    threshold: float = Field(default=0.5, gt=0, lt=1)
+    language: str | None = "el"  # None = auto-detect
+    stt_model: str = "small"
+    accurate_model: str | None = None  # e.g. "medium" for dictation
+    tts: bool = True
+    voice_notifications: bool = True  # speak approvals/blockers/completion only
+    input_device: int | str | None = None
+    model_dir: Path | None = None  # default: <data_dir>/models/voice
+
+
 class PanosSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="PANOS_",
@@ -152,6 +170,7 @@ class PanosSettings(BaseSettings):
     ai: AISettings = Field(default_factory=AISettings)
     jobs: JobSettings = Field(default_factory=JobSettings)
     estimation: EstimationSettings = Field(default_factory=EstimationSettings)
+    voice: VoiceSettings = Field(default_factory=VoiceSettings)
 
     @field_validator("data_dir", "config_dir", "log_dir", "runtime_dir", "workspace_dir")
     @classmethod

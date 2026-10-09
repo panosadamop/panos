@@ -189,6 +189,8 @@ candidate_st = st.builds(
     complexity=st.sampled_from(list(Complexity)),
     tokens=st.integers(1, 300_000),
     tools=st.booleans(),
+    prefer_cloud=st.booleans(),
+    vision=st.booleans(),
 )
 def test_property_local_only_requests_never_get_a_cloud_model(
     candidates: list[Candidate],
@@ -196,6 +198,8 @@ def test_property_local_only_requests_never_get_a_cloud_model(
     complexity: Complexity,
     tokens: int,
     tools: bool,
+    prefer_cloud: bool,
+    vision: bool,
 ) -> None:
     request = req(
         PrivacyMode.LOCAL_ONLY,
@@ -203,6 +207,8 @@ def test_property_local_only_requests_never_get_a_cloud_model(
         complexity=complexity,
         input_tokens=tokens,
         needs_tools=tools,
+        prefer_cloud=prefer_cloud,  # a preference never overrides the privacy filter
+        needs_vision=vision,
     )
     try:
         decision = Router(candidates).route(request)

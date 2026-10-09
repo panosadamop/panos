@@ -271,3 +271,24 @@ def project_scaffold(
     )
     if data.get("opened"):
         typer.echo(f"Open in IDE: {data['opened']['status']}")
+
+
+def screen(
+    question: Annotated[list[str] | None, typer.Argument(help="what to look for")] = None,
+    project: Annotated[str | None, typer.Option("--project", "-p")] = None,
+    cloud: Annotated[
+        bool,
+        typer.Option(
+            "--cloud", help="allow a cloud model for this one request (STANDARD projects only)"
+        ),
+    ] = False,
+) -> None:
+    """Capture the active window (in memory) and explain any visible errors."""
+    body = {"question": " ".join(question or []), "project": project, "allow_cloud": cloud}
+    data = call(lambda c: c.post("/screen/analyze", body))
+    typer.echo(data["text"])
+    typer.echo(
+        f"[{data['window_title'][:60]} · {data['model']} · {data['locality']} · "
+        f"{data['privacy']} · not saved]",
+        err=True,
+    )

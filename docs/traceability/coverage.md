@@ -1,17 +1,17 @@
 # Requirement test coverage
 
-_Generated 2026-10-09 12:25 UTC by `pytest --req-report`. Do not edit by hand._
+_Generated 2026-10-09 13:56 UTC by `pytest --req-report`. Do not edit by hand._
 
 A requirement counts as *covered* when at least one test is tagged with it. Coverage grows milestone by milestone; untested requirements belong to later milestones.
 
 | Type | Total | Covered | Passing |
 |---|---|---|---|
-| BR | 29 | 19 | 19 |
-| FR | 30 | 23 | 23 |
-| NFR | 31 | 17 | 17 |
+| BR | 29 | 21 | 21 |
+| FR | 30 | 25 | 25 |
+| NFR | 31 | 20 | 20 |
 | EPIC | 7 | 0 | 0 |
-| US | 30 | 18 | 18 |
-| AC | 90 | 52 | 52 |
+| US | 30 | 23 | 23 |
+| AC | 90 | 66 | 66 |
 
 ## Covered requirements
 
@@ -21,6 +21,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | BR-002 | Cross-platform | passed | 4 |
 | BR-003 | Hybrid AI | passed | 20 |
 | BR-004 | Local-only privacy | passed | 14 |
+| BR-005 | Voice | passed | 26 |
 | BR-006 | Desktop productivity | passed | 16 |
 | BR-007 | Development assistant | passed | 11 |
 | BR-008 | Technology breadth | passed | 24 |
@@ -32,11 +33,13 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | BR-017 | Git governance | passed | 82 |
 | BR-018 | Docker governance | passed | 60 |
 | BR-019 | Email boundary | passed | 9 |
+| BR-021 | Screen understanding | passed | 5 |
 | BR-022 | Browser boundary | passed | 4 |
 | BR-027 | Offline operation | passed | 2 |
 | BR-028 | Documents | passed | 12 |
 | BR-029 | Workspace | passed | 4 |
-| FR-002 | Conversation | passed | 20 |
+| FR-001 | Activation | passed | 20 |
+| FR-002 | Conversation | passed | 27 |
 | FR-003 | Application registry | passed | 29 |
 | FR-004 | Project registry | passed | 69 |
 | FR-005 | Repository onboarding | passed | 35 |
@@ -49,16 +52,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | FR-012 | Terminal | passed | 161 |
 | FR-013 | Git | passed | 51 |
 | FR-014 | Docker/Kubernetes | passed | 29 |
+| FR-015 | Screen analysis | passed | 5 |
 | FR-019 | Knowledge ingestion | passed | 6 |
 | FR-020 | Knowledge retrieval | passed | 21 |
 | FR-021 | AI routing | passed | 23 |
-| FR-022 | Long-running jobs | passed | 26 |
+| FR-022 | Long-running jobs | passed | 29 |
 | FR-023 | Limits | passed | 5 |
 | FR-024 | Checkpoints | passed | 5 |
 | FR-025 | Notifications | passed | 2 |
 | FR-028 | Audit | passed | 18 |
 | FR-029 | Document generation | passed | 12 |
 | FR-030 | Claude skills | passed | 2 |
+| NFR-MNT-001 | Typed interfaces and versioned schemas. *mypy `--strict`, TypeScrip... | passed | 1 |
 | NFR-MNT-004 | No provider-specific behavior in domain services. *Enforced by impo... | passed | 14 |
 | NFR-OBS-001 | Structured logs with correlation/job/step IDs. | passed | 3 |
 | NFR-OBS-002 | Metrics for latency, failures, AI tokens/cost, tool outcomes and qu... | passed | 1 |
@@ -66,6 +71,8 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | NFR-PERF-004 | Indexing runs incrementally after initial project ingestion. | passed | 2 |
 | NFR-PORT-002 | Windows/macOS/Linux behavior lives behind adapter contracts. *One c... | passed | 4 |
 | NFR-PORT-003 | AI/STT/TTS/vector/integration providers are pluggable. | passed | 14 |
+| NFR-PRV-001 | Wake-word detection operates locally. | passed | 1 |
+| NFR-PRV-002 | Screenshots are ephemeral by default. | passed | 1 |
 | NFR-PRV-003 | Knowledge sources retain provenance and access scope. | passed | 15 |
 | NFR-PRV-004 | Project privacy policy overrides model preference/cost. | passed | 1 |
 | NFR-REL-001 | Persist job state before consequential steps. | passed | 4 |
@@ -76,10 +83,15 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | NFR-SEC-003 | Encrypt credentials/secrets at rest using OS-backed secure storage ... | passed | 4 |
 | NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 76 |
 | NFR-SEC-005 | Local-only content must be technically blocked from cloud-provider ... | passed | 18 |
+| US-001 | As a user, I can activate Panos by saying `Panos` so I can work han... | passed | 3 |
+| US-002 | I can use a global hotkey when voice activation is inconvenient. | passed | 2 |
+| US-003 | I can speak Greek, English or mixed technical language. | passed | 1 |
+| US-004 | I can stop speech without cancelling work. | passed | 12 |
 | US-005 | I can mark a project or folder local-only, and Panos never sends it... | passed | 7 |
 | US-010 | I can ask Panos to open an installed supported IDE/browser. | passed | 9 |
 | US-011 | I can register a project anywhere on disk. | passed | 11 |
 | US-012 | Panos analyzes an existing repository before major changes. | passed | 8 |
+| US-013 | I can ask Panos to inspect an error visible on my active screen. | passed | 5 |
 | US-020 | I can request a feature in natural language and have Panos plan, im... | passed | 11 |
 | US-021 | I can request a specific technology stack and have it honored. | passed | 11 |
 | US-022 | I can ask Panos to diagnose build/test failures and attempt bounded... | passed | 2 |
@@ -92,8 +104,17 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | US-040 | I am asked before Git commits. | passed | 6 |
 | US-041 | I am asked before Docker execution. | passed | 2 |
 | US-050 | Panos can work autonomously while I do something else. | passed | 11 |
-| US-051 | Panos notifies me when approval or a business decision is needed. | passed | 1 |
-| US-052 | I can pause/resume/cancel a job. | passed | 14 |
+| US-051 | Panos notifies me when approval or a business decision is needed. | passed | 2 |
+| US-052 | I can pause/resume/cancel a job. | passed | 15 |
+| AC-US001-01 | Wake-word detection works without internet. | passed | 1 |
+| AC-US001-02 | Ambient audio is not sent to cloud providers. | passed | 1 |
+| AC-US001-03 | Detection starts a command utterance session and gives visible feed... | passed | 2 |
+| AC-US001-04 | Wake-word sensitivity is configurable and wake-word listening can b... | passed | 1 |
+| AC-US001-05 | Ambient and utterance audio are not written to disk unless the user... | passed | 1 |
+| AC-US003-04 | Panos responds in the language of the user's request unless configu... | passed | 1 |
+| AC-US004-01 | Saying `stop talking` (or pressing the mute-speech control) stops T... | passed | 2 |
+| AC-US004-02 | Stopping speech does not change the state of any running job. | passed | 1 |
+| AC-US004-03 | `stop`, `pause` and `resume` are routed to job control, not to TTS ... | passed | 11 |
 | AC-US005-01 | A project or folder can be marked local-only; newly created or regi... | passed | 3 |
 | AC-US005-02 | While a request involves local-only content (files, retrieval chunk... | passed | 13 |
 | AC-US005-03 | A blocked cloud route is enforced both in routing and at the cloud ... | passed | 6 |
@@ -109,6 +130,10 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | AC-US012-01 | Panos detects primary languages/frameworks and build/test commands. | passed | 16 |
 | AC-US012-02 | It records a repository snapshot before material modification. | passed | 1 |
 | AC-US012-03 | Failure to understand critical project structure causes clarificati... | passed | 1 |
+| AC-US013-01 | The active window is captured only after an explicit user request o... | passed | 1 |
+| AC-US013-02 | The screenshot is kept in memory only and discarded after analysis ... | passed | 1 |
+| AC-US013-03 | Screenshots are analyzed by a local vision model by default; a clou... | passed | 2 |
+| AC-US013-04 | The analysis identifies visible errors and suggests next steps; any... | passed | 1 |
 | AC-US020-01 | A non-trivial feature receives an implementation plan. | passed | 1 |
 | AC-US020-02 | A checkpoint is created before substantial changes. | passed | 1 |
 | AC-US020-03 | Applicable formatting/lint/build/tests execute after implementation. | passed | 1 |
@@ -142,13 +167,44 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | AC-US050-01 | Job state survives UI restart. | passed | 6 |
 | AC-US050-02 | Limits exist for runtime, AI cost/tokens and repair attempts. | passed | 3 |
 | AC-US050-03 | Approval/blocker transitions notify the user. | passed | 2 |
-| AC-US051-02 | Routine progress is not narrated by voice. | passed | 1 |
-| AC-US052-01 | The user can pause, resume and cancel a job from CLI, desktop and v... | passed | 3 |
+| AC-US051-01 | Approvals, blockers, business decisions and completion produce a de... | passed | 1 |
+| AC-US051-02 | Routine progress is not narrated by voice. | passed | 2 |
+| AC-US052-01 | The user can pause, resume and cancel a job from CLI, desktop and v... | passed | 4 |
 | AC-US052-02 | Cancel stops running tool processes (including child processes) and... | passed | 2 |
 | AC-US052-03 | Pause takes effect at the next safe point; resume continues from th... | passed | 1 |
 
 ## Tests per requirement
 
+- **AC-US001-01**
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+- **AC-US001-02**
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+- **AC-US001-03**
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_wake_word_triggers_capture_with_grace_and_respects_mute` — passed
+- **AC-US001-04**
+  - `tests/unit/voice/test_voice_unit.py::test_wake_word_triggers_capture_with_grace_and_respects_mute` — passed
+- **AC-US001-05**
+  - `tests/unit/voice/test_voice_unit.py::test_no_audio_is_ever_written_to_disk` — passed
+- **AC-US003-04**
+  - `tests/unit/voice/test_voice_unit.py::test_language_runs_send_latin_words_to_the_english_voice` — passed
+- **AC-US004-01**
+  - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_speech_output_and_barge_in` — passed
+- **AC-US004-02**
+  - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
+- **AC-US004-03**
+  - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos stop-stop-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos, open IntelliJ-utterance-open IntelliJ]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03b5, \u03c3\u03c5\u03bd\u03ad\u03c7\u03b9\u03c3\u03b5-resume-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03bf, \u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf project orders-utterance-\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf project orders]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03bf, \u03c3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b1 \u03bd\u03b1 \u03bc\u03b9\u03bb\u03ac\u03c2!-stop_talking-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b1.-stop-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[hey panos pause-pause-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[never mind-cancel_listening-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[stop talking-stop_talking-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[stop the server and redeploy-utterance-stop the server and redeploy]` — passed
 - **AC-US005-01**
   - `tests/integration/projects/test_project_service.py::test_register_existing_directory` — passed
   - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
@@ -228,6 +284,15 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_analysis.py::test_analysis_snapshot_is_persisted_with_git_state` — passed
 - **AC-US012-03**
   - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
+- **AC-US013-01**
+  - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
+- **AC-US013-02**
+  - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
+- **AC-US013-03**
+  - `tests/integration/screen/test_screen.py::test_cloud_vision_needs_consent_and_a_standard_project` — passed
+  - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
+- **AC-US013-04**
+  - `tests/integration/screen/test_screen.py::test_asking_in_chat_captures_and_explains` — passed
 - **AC-US020-01**
   - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
 - **AC-US020-02**
@@ -491,11 +556,15 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **AC-US050-03**
   - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
   - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+- **AC-US051-01**
+  - `tests/integration/voice/test_supervisor.py::test_only_important_notifications_are_spoken` — passed
 - **AC-US051-02**
   - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+  - `tests/integration/voice/test_supervisor.py::test_only_important_notifications_are_spoken` — passed
 - **AC-US052-01**
   - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
   - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
+  - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
   - `tests/unit/jobs/test_state_machine.py::test_every_non_terminal_state_can_be_cancelled_and_paused` — passed
 - **AC-US052-02**
   - `tests/integration/jobs/test_runner.py::test_cancel_kills_the_running_process_tree` — passed
@@ -546,6 +615,33 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
   - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
   - `tests/unit/domain/test_models.py::test_new_project_defaults_to_local_only` — passed
+- **BR-005**
+  - `tests/integration/voice/test_supervisor.py::test_job_control_without_jobs_explains` — passed
+  - `tests/integration/voice/test_supervisor.py::test_only_important_notifications_are_spoken` — passed
+  - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
+  - `tests/integration/voice/test_supervisor.py::test_start_without_models_explains` — passed
+  - `tests/integration/voice/test_supervisor.py::test_voice_api` — passed
+  - `tests/integration/voice/test_supervisor.py::test_worker_events_update_status_and_reach_the_event_bus` — passed
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_adapter_errors_do_not_kill_the_engine` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos stop-stop-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos, open IntelliJ-utterance-open IntelliJ]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03b5, \u03c3\u03c5\u03bd\u03ad\u03c7\u03b9\u03c3\u03b5-resume-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03bf, \u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf project orders-utterance-\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf project orders]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03bf, \u03c3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b1 \u03bd\u03b1 \u03bc\u03b9\u03bb\u03ac\u03c2!-stop_talking-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b1.-stop-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[hey panos pause-pause-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[never mind-cancel_listening-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[stop talking-stop_talking-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[stop the server and redeploy-utterance-stop the server and redeploy]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_endpointing_edge_cases` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_language_runs_send_latin_words_to_the_english_voice` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_no_audio_is_ever_written_to_disk` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_push_to_talk_captures_until_silence_then_transcribes` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_speech_output_and_barge_in` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_wake_word_triggers_capture_with_grace_and_respects_mute` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_worker_serves_json_line_commands` — passed
 - **BR-006**
   - `tests/contract/test_desktop_contract.py::test_windows_discovers_edge` — passed
   - `tests/integration/projects/test_apps_and_desktop.py::test_discovered_apps_are_listed_and_unavailable_ones_dropped` — passed
@@ -798,6 +894,12 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **BR-021**
+  - `tests/integration/screen/test_screen.py::test_asking_in_chat_captures_and_explains` — passed
+  - `tests/integration/screen/test_screen.py::test_capture_failures_are_reported` — passed
+  - `tests/integration/screen/test_screen.py::test_cloud_vision_needs_consent_and_a_standard_project` — passed
+  - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
+  - `tests/integration/screen/test_screen.py::test_without_a_local_vision_model_local_screens_are_refused` — passed
 - **BR-022**
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.submit]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
@@ -824,6 +926,27 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_project_service.py::test_create_in_workspace` — passed
   - `tests/unit/config/test_settings.py::test_default_workspace_is_home_panos_projects` — passed
   - `tests/unit/config/test_settings.py::test_ensure_directories_creates_workspace_and_dirs` — passed
+- **FR-001**
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_adapter_errors_do_not_kill_the_engine` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos stop-stop-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos, open IntelliJ-utterance-open IntelliJ]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03b5, \u03c3\u03c5\u03bd\u03ad\u03c7\u03b9\u03c3\u03b5-resume-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03bf, \u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf project orders-utterance-\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf project orders]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03bf, \u03c3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b1 \u03bd\u03b1 \u03bc\u03b9\u03bb\u03ac\u03c2!-stop_talking-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b1.-stop-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[hey panos pause-pause-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[never mind-cancel_listening-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[stop talking-stop_talking-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[stop the server and redeploy-utterance-stop the server and redeploy]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_endpointing_edge_cases` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_language_runs_send_latin_words_to_the_english_voice` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_no_audio_is_ever_written_to_disk` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_push_to_talk_captures_until_silence_then_transcribes` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_speech_output_and_barge_in` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_wake_word_triggers_capture_with_grace_and_respects_mute` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_worker_serves_json_line_commands` — passed
 - **FR-002**
   - `tests/e2e/test_node_daemon.py::test_cli_ask_against_live_node_and_real_local_model` — passed
   - `tests/integration/api/test_cli_ai.py::test_ai_commands` — passed
@@ -845,6 +968,13 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/api/test_conversation_api.py::test_ws_events_require_first_message_auth` — passed
   - `tests/integration/api/test_conversation_api.py::test_ws_events_stream_conversation_events` — passed
   - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
+  - `tests/integration/screen/test_screen.py::test_asking_in_chat_captures_and_explains` — passed
+  - `tests/integration/voice/test_supervisor.py::test_job_control_without_jobs_explains` — passed
+  - `tests/integration/voice/test_supervisor.py::test_only_important_notifications_are_spoken` — passed
+  - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
+  - `tests/integration/voice/test_supervisor.py::test_start_without_models_explains` — passed
+  - `tests/integration/voice/test_supervisor.py::test_voice_api` — passed
+  - `tests/integration/voice/test_supervisor.py::test_worker_events_update_status_and_reach_the_event_bus` — passed
 - **FR-003**
   - `tests/integration/api/test_projects_api.py::test_analyze_and_snapshot` — passed
   - `tests/integration/api/test_projects_api.py::test_apps_list_launch_and_preferences` — passed
@@ -1374,6 +1504,12 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv7-docker.inspect]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
+- **FR-015**
+  - `tests/integration/screen/test_screen.py::test_asking_in_chat_captures_and_explains` — passed
+  - `tests/integration/screen/test_screen.py::test_capture_failures_are_reported` — passed
+  - `tests/integration/screen/test_screen.py::test_cloud_vision_needs_consent_and_a_standard_project` — passed
+  - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
+  - `tests/integration/screen/test_screen.py::test_without_a_local_vision_model_local_screens_are_refused` — passed
 - **FR-019**
   - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
   - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
@@ -1433,6 +1569,9 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/api/test_jobs_api.py::test_job_api_errors` — passed
   - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
   - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
+  - `tests/integration/api/test_ws_resync.py::test_event_bus_since` — passed
+  - `tests/integration/api/test_ws_resync.py::test_events_have_sequence_numbers_and_missed_ones_are_replayed` — passed
+  - `tests/integration/api/test_ws_resync.py::test_too_old_or_restarted_means_resync` — passed
   - `tests/integration/jobs/test_runner.py::test_cancel_kills_the_running_process_tree` — passed
   - `tests/integration/jobs/test_runner.py::test_crash_recovery_pauses_interrupted_jobs` — passed
   - `tests/integration/jobs/test_runner.py::test_docker_inspection_needs_no_approval` — passed
@@ -1504,6 +1643,8 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **FR-030**
   - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
   - `tests/unit/requirements/test_packs_estimation_skills.py::test_skills_use_only_approved_facts_and_hash_changes_with_them` — passed
+- **NFR-MNT-001**
+  - `tests/unit/test_event_catalog.py::test_catalogue_matches_domain_and_generated_typescript` — passed
 - **NFR-MNT-004**
   - `tests/unit/ai/test_adapters.py::test_anthropic_chat_stream_use_beta_surface_only_with_fallback` — passed
   - `tests/unit/ai/test_adapters.py::test_anthropic_guard_runs_before_the_sdk_is_touched` — passed
@@ -1565,6 +1706,10 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_adapters.py::test_openai_compatible_cloud_guard_blocks_before_any_request` — passed
   - `tests/unit/ai/test_adapters.py::test_remote_ollama_is_cloud_and_refuses_local_only` — passed
   - `tests/unit/ai/test_adapters.py::test_slow_local_generation_is_a_clear_non_retryable_timeout` — passed
+- **NFR-PRV-001**
+  - `tests/unit/voice/test_voice_unit.py::test_no_audio_is_ever_written_to_disk` — passed
+- **NFR-PRV-002**
+  - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
 - **NFR-PRV-003**
   - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
   - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
@@ -2066,6 +2211,28 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_privacy_context.py::test_envelopes_cannot_be_forged_from_inside` — passed
   - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
   - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
+- **US-001**
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_wake_word_triggers_capture_with_grace_and_respects_mute` — passed
+- **US-002**
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_push_to_talk_captures_until_silence_then_transcribes` — passed
+- **US-003**
+  - `tests/unit/voice/test_voice_unit.py::test_language_runs_send_latin_words_to_the_english_voice` — passed
+- **US-004**
+  - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos stop-stop-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos, open IntelliJ-utterance-open IntelliJ]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03b5, \u03c3\u03c5\u03bd\u03ad\u03c7\u03b9\u03c3\u03b5-resume-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03bf, \u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf project orders-utterance-\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf project orders]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a0\u03ac\u03bd\u03bf, \u03c3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b1 \u03bd\u03b1 \u03bc\u03b9\u03bb\u03ac\u03c2!-stop_talking-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[\u03a3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b1.-stop-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[hey panos pause-pause-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[never mind-cancel_listening-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[stop talking-stop_talking-None]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_command_routing[stop the server and redeploy-utterance-stop the server and redeploy]` — passed
+  - `tests/unit/voice/test_voice_unit.py::test_speech_output_and_barge_in` — passed
 - **US-005**
   - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
   - `tests/security/test_local_only_egress.py::test_local_only_project_chat_retrieval_and_embeddings_stay_local` — passed
@@ -2105,6 +2272,12 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_analysis.py::test_remote_urls_are_redacted` — passed
   - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
   - `tests/integration/projects/test_analysis.py::test_workspace_declared_monorepo_is_not_questioned` — passed
+- **US-013**
+  - `tests/integration/screen/test_screen.py::test_asking_in_chat_captures_and_explains` — passed
+  - `tests/integration/screen/test_screen.py::test_capture_failures_are_reported` — passed
+  - `tests/integration/screen/test_screen.py::test_cloud_vision_needs_consent_and_a_standard_project` — passed
+  - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
+  - `tests/integration/screen/test_screen.py::test_without_a_local_vision_model_local_screens_are_refused` — passed
 - **US-020**
   - `tests/integration/jobs/test_coding_job.py::test_a_fix_that_cannot_be_applied_is_a_failed_attempt_not_a_dead_end` — passed
   - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
@@ -2177,6 +2350,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/jobs/test_runner.py::test_token_and_runtime_limits_block_the_job` — passed
 - **US-051**
   - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+  - `tests/integration/voice/test_supervisor.py::test_only_important_notifications_are_spoken` — passed
 - **US-052**
   - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
   - `tests/integration/api/test_jobs_api.py::test_job_api_errors` — passed
@@ -2191,4 +2365,5 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/jobs/test_runner.py::test_token_and_runtime_limits_block_the_job` — passed
   - `tests/integration/persistence/test_job_service.py::test_invalid_transitions_are_refused_and_not_persisted` — passed
   - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
+  - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
   - `tests/unit/jobs/test_state_machine.py::test_every_non_terminal_state_can_be_cancelled_and_paused` — passed

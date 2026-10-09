@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from typing import Final, Literal
 
 IntentKind = Literal[
-    "list_projects", "open_project", "open_app", "list_apps", "status", "task", "chat"
+    "screen", "list_projects", "open_project", "open_app", "list_apps", "status", "task", "chat"
 ]
 
 
@@ -21,6 +21,16 @@ class Intent:
 
 
 _PATTERNS: Final[tuple[tuple[IntentKind, re.Pattern[str]], ...]] = (
+    (
+        "screen",
+        re.compile(
+            r"^(?:what(?:'s| is) (?:on|wrong (?:on|with)) (?:my|the) screen|look at (?:my|the) "
+            r"screen|(?:check|read) (?:this|the) error(?: on (?:my|the) screen)?|τι (?:βλέπεις|"
+            r"δείχνει) (?:στην|η) οθόνη|κοίτα (?:την|στην) οθόνη|τι λάθος (?:βλέπεις|έχει) "
+            r"(?:στην οθόνη)?)[?;\u037e]?$",
+            re.I,
+        ),
+    ),
     (
         "list_projects",
         re.compile(

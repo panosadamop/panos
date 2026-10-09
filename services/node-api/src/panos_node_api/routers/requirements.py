@@ -111,7 +111,7 @@ class RequirementView(BaseModel):
     created_at: datetime
 
 
-class ApprovalView(BaseModel):
+class RequirementApprovalView(BaseModel):
     id: str
     key: str
     version: int
@@ -125,7 +125,7 @@ class ApprovalView(BaseModel):
 
 class RequirementDetail(RequirementView):
     history: list[RequirementView]
-    approvals: list[ApprovalView]
+    approvals: list[RequirementApprovalView]
 
 
 class InterviewView(BaseModel):
@@ -142,8 +142,8 @@ def _req(r: Requirement) -> RequirementView:
     return RequirementView(**r.model_dump(mode="json") | {"created_at": r.created_at})
 
 
-def _appr(a: RequirementApproval) -> ApprovalView:
-    return ApprovalView(**a.model_dump(mode="json") | {"decided_at": a.decided_at})
+def _appr(a: RequirementApproval) -> RequirementApprovalView:
+    return RequirementApprovalView(**a.model_dump(mode="json") | {"decided_at": a.decided_at})
 
 
 def _itv(i: Interview) -> InterviewView:
@@ -294,10 +294,12 @@ async def submit_requirement(ref: str, key: str, container: Container) -> Requir
         raise_for_reason(exc.reason, str(exc))
 
 
-@router.post("/projects/{ref}/requirements/{key}/approval", response_model=list[ApprovalView])
+@router.post(
+    "/projects/{ref}/requirements/{key}/approval", response_model=list[RequirementApprovalView]
+)
 async def decide_requirement(
     ref: str, key: str, body: ApprovalRequest, container: Container
-) -> list[ApprovalView]:
+) -> list[RequirementApprovalView]:
     project = await _project(container, ref)
     try:
         if body.decision == "approve":

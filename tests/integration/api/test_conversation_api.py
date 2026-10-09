@@ -241,7 +241,8 @@ def test_ws_auth_timeout(client: TestClient, monkeypatch: pytest.MonkeyPatch) ->
 def test_ws_events_stream_conversation_events(client: TestClient) -> None:
     with client.websocket_connect(WS) as ws:
         ws.send_json({"type": "auth", "token": TOKEN})
-        assert ws.receive_json() == {"type": "auth.ok", "v": 1}
+        ok = ws.receive_json()
+        assert ok["type"] == "auth.ok" and ok["v"] == 1 and ok["epoch"]
         reply = say(client, "list projects")
         first = ws.receive_json()
         second = ws.receive_json()

@@ -1,6 +1,7 @@
 """``panos`` command."""
 
 import json
+from pathlib import Path
 from typing import Annotated, NoReturn
 
 import httpx
@@ -15,8 +16,9 @@ from panos_cli.common import (
     not_running,
 )
 from panos_cli.jobs import job_app
-from panos_cli.projects import apps_app, project_app
+from panos_cli.projects import apps_app, project_app, screen
 from panos_cli.requirements import interview_app, new, req_app
+from panos_cli.voice import voice_app
 from panos_core import API_VERSION, __version__
 from panos_core.config import load_settings
 from panos_core.config.settings import default_config_file
@@ -125,7 +127,22 @@ app.add_typer(ai_app, name="ai")
 app.add_typer(job_app, name="job")
 app.add_typer(interview_app, name="interview")
 app.add_typer(req_app, name="req")
+app.add_typer(voice_app, name="voice")
+
+
+@app.command("voice-worker", hidden=True)
+def voice_worker(config: Path) -> None:
+    """Internal: the voice worker process (used by the packaged node, ADR-016)."""
+    import sys
+
+    from panos_core.voice import worker
+
+    sys.argv = [sys.argv[0], str(config)]
+    worker.main()
+
+
 app.command("new")(new)
+app.command("screen")(screen)
 app.command("ask")(ask)
 
 

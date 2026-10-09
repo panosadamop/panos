@@ -1,6 +1,101 @@
 {
   "components": {
     "schemas": {
+      "AnalyzeRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "allow_cloud": {
+            "default": false,
+            "title": "Allow Cloud",
+            "type": "boolean"
+          },
+          "project": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "project id or name (policy)",
+            "title": "Project"
+          },
+          "question": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "title": "AnalyzeRequest",
+        "type": "object"
+      },
+      "AnalyzeView": {
+        "properties": {
+          "height": {
+            "title": "Height",
+            "type": "integer"
+          },
+          "locality": {
+            "title": "Locality",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "persisted": {
+            "default": false,
+            "title": "Persisted",
+            "type": "boolean"
+          },
+          "privacy": {
+            "title": "Privacy",
+            "type": "string"
+          },
+          "process": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Process"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "width": {
+            "title": "Width",
+            "type": "integer"
+          },
+          "window_title": {
+            "title": "Window Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "privacy",
+          "window_title",
+          "process",
+          "width",
+          "height",
+          "provider",
+          "model",
+          "locality"
+        ],
+        "title": "AnalyzeView",
+        "type": "object"
+      },
       "AnswerRequest": {
         "additionalProperties": false,
         "properties": {
@@ -151,7 +246,7 @@
         "properties": {
           "approvals": {
             "items": {
-              "$ref": "#/components/schemas/panos_node_api__schemas__ApprovalView"
+              "$ref": "#/components/schemas/ApprovalView"
             },
             "title": "Approvals",
             "type": "array"
@@ -197,6 +292,105 @@
           "decision"
         ],
         "title": "ApprovalRequest",
+        "type": "object"
+      },
+      "ApprovalView": {
+        "properties": {
+          "action_type": {
+            "title": "Action Type",
+            "type": "string"
+          },
+          "decided_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided At"
+          },
+          "decided_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided By"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "job_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Job Id"
+          },
+          "payload_hash": {
+            "title": "Payload Hash",
+            "type": "string"
+          },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
+          "requested_at": {
+            "format": "date-time",
+            "title": "Requested At",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "target": {
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "action_type",
+          "target",
+          "summary",
+          "payload_hash",
+          "project_id",
+          "job_id",
+          "requested_at",
+          "expires_at",
+          "decided_at",
+          "decided_by"
+        ],
+        "title": "ApprovalView",
         "type": "object"
       },
       "AuditEventView": {
@@ -521,7 +715,7 @@
       "DecisionResponse": {
         "properties": {
           "approval": {
-            "$ref": "#/components/schemas/panos_node_api__schemas__ApprovalView"
+            "$ref": "#/components/schemas/ApprovalView"
           },
           "token": {
             "anyOf": [
@@ -1741,6 +1935,70 @@
         "title": "ReplyView",
         "type": "object"
       },
+      "RequirementApprovalView": {
+        "properties": {
+          "cascaded_from_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cascaded From Id"
+          },
+          "comments": {
+            "title": "Comments",
+            "type": "string"
+          },
+          "decided_at": {
+            "format": "date-time",
+            "title": "Decided At",
+            "type": "string"
+          },
+          "decided_by": {
+            "title": "Decided By",
+            "type": "string"
+          },
+          "decision": {
+            "title": "Decision",
+            "type": "string"
+          },
+          "excluded_keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded Keys",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "version",
+          "decision",
+          "decided_by",
+          "comments",
+          "cascaded_from_id",
+          "excluded_keys",
+          "decided_at"
+        ],
+        "title": "RequirementApprovalView",
+        "type": "object"
+      },
       "RequirementCreate": {
         "additionalProperties": false,
         "properties": {
@@ -1787,7 +2045,7 @@
         "properties": {
           "approvals": {
             "items": {
-              "$ref": "#/components/schemas/panos_node_api__routers__requirements__ApprovalView"
+              "$ref": "#/components/schemas/RequirementApprovalView"
             },
             "title": "Approvals",
             "type": "array"
@@ -2350,6 +2608,22 @@
         "title": "SnapshotView",
         "type": "object"
       },
+      "SpeakRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "SpeakRequest",
+        "type": "object"
+      },
       "StepView": {
         "properties": {
           "agent": {
@@ -2617,6 +2891,22 @@
         "title": "UsageSummary",
         "type": "object"
       },
+      "UtteranceRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "UtteranceRequest",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -2657,9 +2947,10 @@
         "title": "ValidationError",
         "type": "object"
       },
-      "panos_node_api__routers__requirements__ApprovalView": {
+      "VoiceSettingsUpdate": {
+        "additionalProperties": false,
         "properties": {
-          "cascaded_from_id": {
+          "language": {
             "anyOf": [
               {
                 "type": "string"
@@ -2668,156 +2959,166 @@
                 "type": "null"
               }
             ],
-            "title": "Cascaded From Id"
+            "title": "Language"
           },
-          "comments": {
-            "title": "Comments",
-            "type": "string"
+          "muted": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Muted"
           },
-          "decided_at": {
-            "format": "date-time",
-            "title": "Decided At",
-            "type": "string"
+          "threshold": {
+            "anyOf": [
+              {
+                "exclusiveMaximum": 1.0,
+                "exclusiveMinimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
           },
-          "decided_by": {
-            "title": "Decided By",
-            "type": "string"
+          "tts": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tts"
           },
-          "decision": {
-            "title": "Decision",
-            "type": "string"
+          "voice_notifications": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Voice Notifications"
           },
-          "excluded_keys": {
+          "wake_word": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wake Word"
+          }
+        },
+        "title": "VoiceSettingsUpdate",
+        "type": "object"
+      },
+      "VoiceStatusView": {
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Language"
+          },
+          "last_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Error"
+          },
+          "last_transcript": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Transcript"
+          },
+          "missing_models": {
             "items": {
               "type": "string"
             },
-            "title": "Excluded Keys",
+            "title": "Missing Models",
             "type": "array"
           },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "key": {
-            "title": "Key",
-            "type": "string"
-          },
-          "version": {
-            "title": "Version",
+          "restarts": {
+            "title": "Restarts",
             "type": "integer"
+          },
+          "running": {
+            "title": "Running",
+            "type": "boolean"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          },
+          "tts": {
+            "title": "Tts",
+            "type": "boolean"
+          },
+          "voice_notifications": {
+            "title": "Voice Notifications",
+            "type": "boolean"
+          },
+          "wake_word": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wake Word"
+          },
+          "wake_word_enabled": {
+            "title": "Wake Word Enabled",
+            "type": "boolean"
           }
         },
         "required": [
-          "id",
-          "key",
-          "version",
-          "decision",
-          "decided_by",
-          "comments",
-          "cascaded_from_id",
-          "excluded_keys",
-          "decided_at"
+          "enabled",
+          "running",
+          "state",
+          "wake_word",
+          "wake_word_enabled",
+          "tts",
+          "voice_notifications",
+          "language",
+          "last_transcript",
+          "last_error",
+          "restarts",
+          "missing_models"
         ],
-        "title": "ApprovalView",
-        "type": "object"
-      },
-      "panos_node_api__schemas__ApprovalView": {
-        "properties": {
-          "action_type": {
-            "title": "Action Type",
-            "type": "string"
-          },
-          "decided_at": {
-            "anyOf": [
-              {
-                "format": "date-time",
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Decided At"
-          },
-          "decided_by": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Decided By"
-          },
-          "expires_at": {
-            "format": "date-time",
-            "title": "Expires At",
-            "type": "string"
-          },
-          "id": {
-            "title": "Id",
-            "type": "string"
-          },
-          "job_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Job Id"
-          },
-          "payload_hash": {
-            "title": "Payload Hash",
-            "type": "string"
-          },
-          "project_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Project Id"
-          },
-          "requested_at": {
-            "format": "date-time",
-            "title": "Requested At",
-            "type": "string"
-          },
-          "status": {
-            "title": "Status",
-            "type": "string"
-          },
-          "summary": {
-            "title": "Summary",
-            "type": "string"
-          },
-          "target": {
-            "title": "Target",
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "status",
-          "action_type",
-          "target",
-          "summary",
-          "payload_hash",
-          "project_id",
-          "job_id",
-          "requested_at",
-          "expires_at",
-          "decided_at",
-          "decided_by"
-        ],
-        "title": "ApprovalView",
+        "title": "VoiceStatusView",
         "type": "object"
       }
     }
@@ -3136,7 +3437,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/panos_node_api__schemas__ApprovalView"
+                  "$ref": "#/components/schemas/ApprovalView"
                 }
               }
             },
@@ -5071,7 +5372,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/panos_node_api__routers__requirements__ApprovalView"
+                    "$ref": "#/components/schemas/RequirementApprovalView"
                   },
                   "title": "Response Decide Requirement Api V1 Projects  Ref  Requirements  Key  Approval Post",
                   "type": "array"
@@ -5410,6 +5711,319 @@
         "summary": "Traceability",
         "tags": [
           "requirements"
+        ]
+      }
+    },
+    "/api/v1/screen/analyze": {
+      "post": {
+        "operationId": "analyze_api_v1_screen_analyze_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyzeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyzeView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Analyze",
+        "tags": [
+          "screen"
+        ]
+      }
+    },
+    "/api/v1/voice/listen": {
+      "post": {
+        "description": "Push-to-talk pressed (the desktop's global hotkey calls this).",
+        "operationId": "listen_api_v1_voice_listen_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Listen Api V1 Voice Listen Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Listen",
+        "tags": [
+          "voice"
+        ]
+      }
+    },
+    "/api/v1/voice/listen/stop": {
+      "post": {
+        "description": "Push-to-talk released.",
+        "operationId": "listen_stop_api_v1_voice_listen_stop_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Listen Stop Api V1 Voice Listen Stop Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Listen Stop",
+        "tags": [
+          "voice"
+        ]
+      }
+    },
+    "/api/v1/voice/settings": {
+      "patch": {
+        "operationId": "update_settings_api_v1_voice_settings_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoiceSettingsUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceStatusView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Settings",
+        "tags": [
+          "voice"
+        ]
+      }
+    },
+    "/api/v1/voice/speak": {
+      "post": {
+        "operationId": "speak_api_v1_voice_speak_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpeakRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Speak Api V1 Voice Speak Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Speak",
+        "tags": [
+          "voice"
+        ]
+      }
+    },
+    "/api/v1/voice/start": {
+      "post": {
+        "operationId": "start_api_v1_voice_start_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceStatusView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Start",
+        "tags": [
+          "voice"
+        ]
+      }
+    },
+    "/api/v1/voice/status": {
+      "get": {
+        "operationId": "status_api_v1_voice_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceStatusView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Status",
+        "tags": [
+          "voice"
+        ]
+      }
+    },
+    "/api/v1/voice/stop": {
+      "post": {
+        "operationId": "stop_api_v1_voice_stop_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceStatusView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Stop",
+        "tags": [
+          "voice"
+        ]
+      }
+    },
+    "/api/v1/voice/stop-talking": {
+      "post": {
+        "operationId": "stop_talking_api_v1_voice_stop_talking_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "boolean"
+                  },
+                  "title": "Response Stop Talking Api V1 Voice Stop Talking Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Stop Talking",
+        "tags": [
+          "voice"
+        ]
+      }
+    },
+    "/api/v1/voice/utterance": {
+      "post": {
+        "description": "Handle text as if it had been spoken (routing, job control, conversation).",
+        "operationId": "utterance_api_v1_voice_utterance_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtteranceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "title": "Response Utterance Api V1 Voice Utterance Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Utterance",
+        "tags": [
+          "voice"
         ]
       }
     }

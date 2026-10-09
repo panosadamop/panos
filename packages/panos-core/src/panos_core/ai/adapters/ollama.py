@@ -34,6 +34,8 @@ def _to_ollama_messages(request: ChatRequest) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for m in request.messages:
         msg: dict[str, Any] = {"role": m.role.value, "content": m.content}
+        if m.images:
+            msg["images"] = list(m.images)
         if m.role == Role.ASSISTANT and m.tool_calls:
             msg["tool_calls"] = [
                 {"function": {"name": c.name, "arguments": c.arguments}} for c in m.tool_calls

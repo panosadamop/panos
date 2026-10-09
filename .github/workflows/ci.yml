@@ -50,3 +50,43 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Dependency vulnerability audit
         run: uvx pip-audit --strict --progress-spinner off -r <(uv export --all-packages --no-hashes --no-emit-workspace --format requirements-txt)
+
+  desktop:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: astral-sh/setup-uv@v6
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Type check
+        run: pnpm --filter panos-desktop typecheck
+      - name: UI tests (Vitest, Testing Library, axe)
+        run: pnpm --filter panos-desktop test
+      - name: Generated API and event types up to date
+        run: pnpm --filter panos-desktop check:gen
+
+  shell:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: apps/desktop/src-tauri
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri
+      - name: Prepare frontend dist (tauri::generate_context! needs it)
+        run: mkdir ..\dist; echo "<html></html>" > ..\dist\index.html
+        shell: pwsh
+      - name: Rust tests
+        run: cargo test
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings

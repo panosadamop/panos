@@ -56,6 +56,10 @@ class ContextFactory(Protocol):
     async def __call__(self, project: Project | None, *, actor: str = ...) -> ToolContext: ...
 
 
+class ScreenAnalyzer(Protocol):
+    async def __call__(self, question: str, project: Project | None, actor: str) -> str: ...
+
+
 class JobStarter(Protocol):
     async def __call__(self, objective: str, project: Project, actor: str) -> str: ...
 
@@ -119,6 +123,11 @@ class ConversationService:
         self._node_id = node_id
         self._context_for = context_for
         self._start_job: JobStarter | None = None
+        self._screen: ScreenAnalyzer | None = None
+
+    def attach_screen(self, analyzer: "ScreenAnalyzer") -> None:
+        """ "What's on my screen?" → capture + local vision analysis (ADR-025)."""
+        self._screen = analyzer
 
     def attach_job_starter(self, starter: "JobStarter") -> None:
         """Work requests inside a project ("implement …") become coding jobs (M5)."""
@@ -422,6 +431,8 @@ class ConversationService:
                 ctx = await self._context_for(turn.project, actor=actor)
                 tool = await self._tools.invoke("app.launch", {"app": app.key}, ctx)
                 text = _tool_text(tool, f"Launching {app.name}.")
+        elif intent.kind == "screen" and self._screen is not None:
+            text = await self._screen(turn.user_message.content, turn.project, actor)
         elif intent.kind == "task" and turn.project is not None and self._start_job:
             job_id = await self._start_job(turn.user_message.content, turn.project, actor)
             text = (

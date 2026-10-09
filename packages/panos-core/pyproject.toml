@@ -22,11 +22,21 @@ dependencies = [
     "sqlite-vec>=0.1.6",
     "pywin32>=308; sys_platform == 'win32'",
     "jinja2>=3.1",
+    "mss>=9.0",
 ]
 
 [project.optional-dependencies]
 # Cloud provider SDKs are optional: a local-only installation needs none of them.
 anthropic = ["anthropic>=1.0"]
+# Voice worker (ADR-016): STT, wake word, VAD and TTS run locally on CPU.
+voice = [
+    "numpy>=2.0",
+    "onnxruntime>=1.20",
+    "faster-whisper>=1.1",
+    "piper-tts>=1.2",
+    "sounddevice>=0.5",
+    "soundfile>=0.12",
+]
 
 [build-system]
 requires = ["hatchling>=1.25"]

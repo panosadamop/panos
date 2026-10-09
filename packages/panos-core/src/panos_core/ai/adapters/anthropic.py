@@ -71,6 +71,17 @@ def build_params(request: ChatRequest, model: str, *, fallback: bool) -> dict[st
                 for c in m.tool_calls
             ]
             messages.append({"role": "assistant", "content": blocks})
+        elif m.images:
+            blocks = [
+                {
+                    "type": "image",
+                    "source": {"type": "base64", "media_type": "image/png", "data": img},
+                }
+                for img in m.images
+            ]
+            messages.append(
+                {"role": m.role.value, "content": [*blocks, {"type": "text", "text": m.content}]}
+            )
         else:
             messages.append({"role": m.role.value, "content": m.content})
     params: dict[str, Any] = {

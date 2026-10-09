@@ -40,10 +40,12 @@ from panos_core.projects.context import project_tool_context
 from panos_core.repository import AnalysisService
 from panos_core.requirements import RequirementsService
 from panos_core.requirements.pipeline import PipelineService
+from panos_core.screen import ScreenService
 from panos_core.secrets import SecretStore, create_secret_store, get_or_create_node_key
 from panos_core.tools import ToolContext, ToolRegistry, ToolRuntime
 from panos_core.tools.builtin import build_default_registry
 from panos_core.tools.contract import CancelToken
+from panos_core.voice.supervisor import VoiceChannel, VoiceSupervisor
 
 log = get_logger(__name__)
 
@@ -76,6 +78,8 @@ class NodeContainer:
     runner: JobRunner
     requirements: RequirementsService
     pipeline: PipelineService
+    voice: VoiceSupervisor
+    screen: ScreenService
     started_monotonic: float = field(default_factory=time.monotonic)
     background: list[asyncio.Task[object]] = field(default_factory=list)
 
@@ -96,6 +100,7 @@ class NodeContainer:
         await self.gateway.refresh_health(force=True)
 
     async def close(self) -> None:
+        await self.voice.stop()
         await self.runner.close()  # running jobs are recovered as interrupted on next start
         for task in self.background:
             task.cancel()
@@ -150,6 +155,14 @@ def _embedder(gateway: AIGateway) -> Embedder:
         return vectors, model.name
 
     return embed
+
+
+async def _start_voice(voice: VoiceSupervisor) -> object:
+    try:
+        return await voice.start()
+    except Exception:
+        log.exception("voice_start_failed")
+        return None
 
 
 async def _refresh_apps(apps: AppService) -> object:
@@ -236,6 +249,41 @@ async def build_container(
     )
     runner.add_listener(notifications.on_job_status)
     approvals.add_listener(runner.on_approval)
+    screen = ScreenService(apps.desktop, gateway, audit)
+    conversations = ConversationService(
+        uow_factory,
+        gateway,
+        knowledge,
+        projects,
+        apps,
+        tools,
+        audit,
+        events,
+        settings.ai,
+        node.id,
+        _context_factory(uow_factory, node.id),
+    )
+
+    async def voice_reply(text: str, conversation_id: str | None) -> tuple[str, str]:
+        reply = await conversations.send(text, conversation_id=conversation_id, actor="user:voice")
+        return reply.text, reply.conversation_id
+
+    async def vocabulary() -> list[str]:
+        # STT prompt: the names people say (projects, apps, tools) — ADR-016.
+        names = [p.name for p in await projects.list()]
+        names += [a.name for a in await apps.list()]
+        return [*names, "Panos", "Docker", "Git", "commit", "branch", "pull request"]
+
+    voice = VoiceSupervisor(
+        settings.voice,
+        settings.data_dir,
+        settings.runtime_dir,
+        events,
+        voice_reply,
+        jobs,
+        runner,
+        vocabulary,
+    )
     container = NodeContainer(
         settings=settings,
         engine=engine,
@@ -255,24 +303,14 @@ async def build_container(
         models=models,
         gateway=gateway,
         events=events,
-        conversations=ConversationService(
-            uow_factory,
-            gateway,
-            knowledge,
-            projects,
-            apps,
-            tools,
-            audit,
-            events,
-            settings.ai,
-            node.id,
-            _context_factory(uow_factory, node.id),
-        ),
+        conversations=conversations,
         checkpoints=checkpoints,
         notifications=notifications,
         runner=runner,
         requirements=requirements,
         pipeline=pipeline,
+        voice=voice,
+        screen=screen,
     )
 
     async def impact_task(project_id: str, changed_key: str, stale_keys: list[str]) -> None:
@@ -287,6 +325,19 @@ async def build_container(
         )
 
     requirements.set_change_hook(impact_task)
+
+    notifications.channels.append(VoiceChannel(voice))
+
+    async def analyze_screen(question: str, project: Project | None, actor: str) -> str:
+        try:
+            result = await screen.analyze(question, project=project, actor=actor)
+        except Exception as exc:  # explained to the user instead of failing the turn
+            return f"I could not analyze the screen: {exc}"
+        return result.text
+
+    conversations.attach_screen(analyze_screen)
+    if settings.voice.enabled:
+        container.background.append(asyncio.create_task(_start_voice(voice)))
     await runner.recover()  # ADR-011: interrupted jobs become PAUSED; queued jobs start
 
     async def start_coding_job(objective: str, project: Project, actor: str) -> str:

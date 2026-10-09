@@ -14,6 +14,8 @@ from panos_node_api.routers import (
     node,
     projects,
     requirements,
+    screen,
+    voice,
 )
 
 api_router = APIRouter(prefix=f"/api/{API_VERSION}")
@@ -28,6 +30,8 @@ for module in (
     events,
     jobs,
     requirements,
+    voice,
+    screen,
 ):
     api_router.include_router(module.router)
 

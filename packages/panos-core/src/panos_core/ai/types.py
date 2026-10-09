@@ -68,6 +68,8 @@ class Message(BaseModel):
     tool_calls: tuple[ToolCall, ...] = ()
     tool_call_id: str | None = None
     source: str | None = None  # provenance (file path, URL...) for untrusted content
+    # Base64-encoded PNG images (screenshots, ADR-025). In memory only; never persisted.
+    images: tuple[str, ...] = ()
 
 
 class ToolDef(BaseModel):
@@ -90,6 +92,9 @@ class ChatRequest(BaseModel):
     max_output_tokens: int = Field(default=4096, gt=0)
     # Set by the gateway after secret redaction; cloud adapters refuse unredacted requests.
     redacted: bool = False
+    # The user explicitly asked for a cloud model for this request (e.g. screenshot analysis
+    # with per-request consent). Ordering only: privacy filters still apply first.
+    prefer_cloud: bool = False
 
     @property
     def privacy(self) -> PrivacyMode:

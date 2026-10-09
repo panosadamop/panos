@@ -282,3 +282,44 @@ Report: [`docs/planning/reports/M5.md`](docs/planning/reports/M5.md). M5 not com
 **Results:** 845 passed, 1 skipped; coverage 88.2 %; ruff, mypy (267 files) and import-linter clean; OpenAPI and registry up to date.
 
 Report: [`docs/planning/reports/M6.md`](docs/planning/reports/M6.md). M6 not committed. Awaiting approval for M7 and a commit decision.
+
+### 10. Commit of M6, then M7 — Desktop and voice
+
+**Owner:** "approve both", in answer to "approve M7?" and "commit M6?".
+
+**Claude:**
+- Committed M6 as `3ba0038`.
+- Implemented M7:
+  - voice worker (separate supervised process) with push-to-talk, an ONNX wake word (dev model, opt-in), Silero VAD, faster-whisper `small`, Piper with a Greek/English splitter, barge-in, and routing ("stop talking" vs. job control);
+  - `panos voice …` CLI, `/voice/*` API, spoken notifications for what needs the user;
+  - active-window capture and local-first vision routing (`panos screen`, `/screen/analyze`, chat/voice intent);
+  - replayable event bus (seq, epoch, resync);
+  - React desktop UI (8 views, el/en, axe-checked) with generated REST and event types;
+  - Tauri 2 shell (attach or start the node, tray, single instance, autostart, push-to-talk hotkey, notifications, no fs/shell capabilities);
+  - PyInstaller sidecar and the NSIS installer;
+  - wake-word recording and validation tooling, plus a training guide.
+
+**Found and fixed while testing:**
+- `openwakeword` needs `tflite-runtime` on Linux (no Python 3.12+ wheels). Reimplemented its pipeline on onnxruntime with identical scores.
+- Live microphone: the utterance ended before the speaker started, and Whisper looped for 31 s on Greek. Added a grace period after the wake word, minimum speech before endpointing, a token cap and `no_repeat_ngram_size`.
+- Screen requests with cloud consent did not prefer the cloud model, and the Greek question mark (`;`) was not recognised in the screen intent.
+- TypeScript 7 broke openapi-typescript (pinned ~5.9); duplicate OpenAPI schema names.
+- Frozen build: Alembic `env.py` missing, and `aiosqlite` not detected. Both were found only by a real `serve` smoke test.
+- Report review: the UI had no autostart toggle (added), and the "speak notifications" checkbox ignored the node's setting (fixed, with a test).
+
+**Live checks:**
+- Real microphone and worker: ready in 16 s, push-to-talk, Greek and English TTS aloud.
+- Frozen node: healthy in 7.5 s; the frozen voice worker reached idle with real models.
+- Active-window capture works on Windows.
+- Synthetic code-switched audio transcribes poorly, so mixed-language STT was **not** claimed; it needs real speech.
+
+**Results:** 880 passed, 1 skipped (real voice models enabled); coverage 86.9 %; ruff, mypy (296 files) and import-linter clean; OpenAPI, registry and event types up to date; desktop 17/17 tests with axe; clippy and Rust tests clean; NSIS installer built (not run).
+
+**Owner checks still open:**
+- install the app and try the window, tray, hotkey and notifications;
+- record and train the "Panos" wake word;
+- real mixed-language speech;
+- optionally pull a local vision model.
+
+Report: [`docs/planning/reports/M7.md`](docs/planning/reports/M7.md). M7 not committed. Awaiting approval for M8 and a commit decision.
+

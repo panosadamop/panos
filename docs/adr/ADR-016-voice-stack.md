@@ -53,3 +53,26 @@ Porcupine (AccessKey with online validation, no Greek); Vosk (weak Greek); mediu
 - Wake-word-first hands-free use is deferred until the custom model is trained and validated. AC-US001 is met with a dev wake word initially and with "Panos" after the training task.
 - **Follow-ups (M7):** `CT2_USE_MKL=1` A/B; whisper.cpp + Vulkan on the iGPU; real-voice and far-field evaluation; mic-capture latency.
 - Licences (personal use): openWakeWord pre-trained models CC BY-NC-SA, joy voice CC BY-NC, lessac non-commercial, Piper GPL-3.0. Revisit if distribution is ever considered.
+
+## Implementation notes (M7, 2026-10-09)
+
+- **Worker:** `python -m panos_core.voice.worker <config.json>` (frozen build: `panos-node voice-worker <config>`). It speaks a JSON-lines protocol on stdin/stdout. Commands: `listen`, `stop_listening`, `cancel_listening`, `speak`, `stop_talking`, `configure`, `shutdown`. Events: `ready`, `state`, `wake`, `transcript`, `no_speech`, `speech_stopped`, `spoken`, `error`.
+- **Supervisor:** `VoiceSupervisor` in the node. It restarts a crashed worker with backoff (at most 5 times, then it stops and reports `last_error`), publishes `voice.*` events and routes transcripts:
+  - `stop talking` stops TTS;
+  - `stop` / `pause` / `resume` act on the most recent active (or, for resume, resumable) job;
+  - `mute` mutes the wake word (unmuting is done from the CLI, API or UI);
+  - anything else is a conversation turn, with the reply spoken back.
+- **Wake word without openwakeword:** the `openwakeword` package needs `tflite-runtime` on Linux, which has no wheels for Python ≥ 3.12. `OnnxWakeWord` reimplements its pipeline (melspectrogram → embedding → classifier) on onnxruntime with the same models. Scores match openwakeword exactly on the S-1 clips (positives 0.998–0.999, negatives ≤ 0.002).
+- **VAD:** Silero v5 ONNX with 512-sample chunks plus the 64-sample context the v5 model expects.
+- **Endpointing:** an utterance ends after 0.8 s of silence, but only once at least 0.3 s of speech has been heard. A 0.3 s grace period after the wake word (skipping the tail of the wake phrase) also prevents the first live failure, where an utterance ended after 1 s before the user started speaking.
+- **STT guards:**
+  - `max_new_tokens` is capped from the audio duration, and `no_repeat_ngram_size=3` is set.
+  - Live, a repetition loop once produced 31 s of "Παραδείγματος…"; with the guards it no longer can.
+  - The vocabulary prompt is built from project and app names.
+- **TTS:** Piper. The language-run splitter sends Latin-script runs to the English voice and Greek runs to the Greek voice. Playback stops within one audio block on `stop_talking` or barge-in.
+- **Models:**
+  - `panos voice setup` downloads files from pinned release tags (openWakeWord v0.5.1, piper-voices v1.0.0, silero-vad v5.1.2) over HTTPS; `--from <dir>` copies an existing folder. **There is no checksum verification yet** (ADR-021 asks for it; open follow-up).
+  - Whisper is fetched by faster-whisper itself.
+  - Nothing is downloaded implicitly; a missing model is reported in `voice status`.
+- **Privacy:** audio is held in numpy buffers only. A test asserts that no audio is written to disk; another checks that the wake word works with networking blocked.
+- **Configuration:** `[voice]` in the config (enabled, wake word on/off, model, threshold, language, STT model, accurate model, TTS voices, voice notifications, input device, model dir). `PATCH /voice/settings` applies changes live.

@@ -33,7 +33,15 @@ _ORDER: Final[dict[str, tuple[Tier, ...]]] = {
     "work": ("cloud_efficient", "cloud_premium", "local_capable", "local_large", "local_light"),
     "hard": ("cloud_premium", "cloud_efficient", "local_large", "local_capable", "local_light"),
     "embed": ("embedding",),
-    "vision": ("cloud_efficient", "cloud_premium", "cloud_light"),
+    # Local first (ADR-025): images are analyzed locally unless the user consents to cloud.
+    "vision": (
+        "local_capable",
+        "local_large",
+        "local_light",
+        "cloud_efficient",
+        "cloud_premium",
+        "cloud_light",
+    ),
 }
 _WORK_TASKS: Final = frozenset(
     {TaskType.CODING, TaskType.REQUIREMENTS, TaskType.ARCHITECTURE, TaskType.REVIEW}
@@ -81,6 +89,7 @@ class RouteRequest:
     output_tokens: int = 1024
     needs_tools: bool = False
     needs_vision: bool = False
+    prefer_cloud: bool = False
     max_cost_usd: float | None = None
     remaining_monthly_usd: float | None = None
     allow_premium: bool = True
@@ -102,6 +111,8 @@ class RouteRequest:
             input_tokens=estimate_tokens(text),
             output_tokens=min(request.max_output_tokens, 2048),
             needs_tools=bool(request.tools),
+            needs_vision=any(m.images for m in request.messages),
+            prefer_cloud=request.prefer_cloud,
             max_cost_usd=max_cost_usd,
             remaining_monthly_usd=remaining_monthly_usd,
             allow_premium=allow_premium,
@@ -162,9 +173,17 @@ class Router:
             eligible.append((c, latency, cost))
         if not eligible:
             raise NoRouteError(req, rejected)
-        best, latency, cost = min(
-            eligible, key=lambda e: (order.index(e[0].model.tier), e[1], e[2])
-        )
+
+        def rank(e: tuple[Candidate, float, float]) -> tuple[int, int, float, float]:
+            cloud_first = 0 if (req.prefer_cloud and e[0].locality == Locality.CLOUD) else 1
+            return (
+                cloud_first if req.prefer_cloud else 0,
+                order.index(e[0].model.tier),
+                e[1],
+                e[2],
+            )
+
+        best, latency, cost = min(eligible, key=rank)
         reasons = [
             f"task family '{family}' prefers tiers {' > '.join(order)}",
             f"chose {best.key} ({best.model.tier}, {best.locality.value})",

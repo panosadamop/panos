@@ -43,7 +43,7 @@ The approved implementation plan is [`docs/planning/PLAN_PROPOSAL.md`](docs/plan
 
 ## Development
 
-Prerequisites: [uv](https://docs.astral.sh/uv/), Git. Rust and pnpm are needed only from M7 (desktop).
+Prerequisites: [uv](https://docs.astral.sh/uv/), Git. Rust and pnpm are needed only for the desktop app (M7).
 
 ```bash
 uv sync --all-packages                 # create .venv with all workspace packages
@@ -103,6 +103,30 @@ uv run panos req approve -p shop ADR-001        # the stack must be approved bef
 uv run panos req trace -p shop                  # BR → FR → stories → ACs → tests, with gaps
 uv run panos project estimate shop              # points, hours, cost, sprint plan
 uv run panos project scaffold shop --open       # skeleton + docs/requirements + .claude/skills, opens the IDE
+```
+
+Voice, screen and the desktop app (M7). Voice runs locally in a separate worker process. Push-to-talk is the primary trigger; the wake word is opt-in (`hey_jarvis` until a "Panos" model is trained, see [`docs/planning/wakeword-training.md`](docs/planning/wakeword-training.md)). Audio never leaves memory.
+
+```bash
+uv sync --all-packages                           # the dev group already includes panos-core[voice]
+uv run panos voice setup                         # download the pinned voice models (or --from <folder>)
+uv run panos voice start                         # the node supervises the worker
+uv run panos voice listen                        # one push-to-talk utterance from the CLI
+uv run panos voice say "Καλημέρα, ready when you are"
+uv run panos voice wake on|off; uv run panos voice mute|unmute
+uv run panos screen -p repo "why is this test failing?"   # active window, in memory, local vision model
+```
+
+Say "stop talking" to interrupt speech, or "stop" / "pause" / "resume" to control the current job. For screen analysis, pull a local vision model (`ollama pull gemma3:4b`). `--cloud` uses Claude only for STANDARD projects.
+
+The desktop app (Tauri 2 + React) attaches to a running node or starts it. It provides chat, jobs, approvals, projects, apps, settings, audit and status views in Greek and English, a tray icon, `Ctrl+Shift+Space` push-to-talk and native notifications. It needs Rust and pnpm:
+
+```bash
+pnpm install
+pnpm --dir apps/desktop tauri dev               # development (uses `panos serve` on PATH or PANOS_NODE_CMD)
+pnpm --dir apps/desktop check                   # typecheck, Vitest + axe, generated-code drift
+uv run python scripts/build_sidecar.py --voice  # frozen node for the installer (~315 MB)
+pnpm --dir apps/desktop tauri build --config src-tauri/tauri.bundle.conf.json   # NSIS installer
 ```
 
 The `justfile` wraps the same commands (`just check`). CI runs them on Windows, macOS and Linux for Python 3.12 and 3.14 (`.github/workflows/ci.yml`).

@@ -20,6 +20,13 @@ models:
   - {kind: ollama, name: "qwen2.5-coder:14b", tier: local_large, context: 8192,
      max_output: 4096, tool_use: json_in_content, vision: false, languages: [en, el],
      prompt_tps: 12.5, gen_tps: 2.8}
+  # Local vision (ADR-025, screenshots). Used only once pulled (`ollama pull gemma3:4b`);
+  # speeds are estimates until measured on this machine.
+  - {kind: ollama, name: "gemma3:4b", tier: local_light, context: 8192, max_output: 2048,
+     tool_use: none, vision: true, languages: [en, el], prompt_tps: 40, gen_tps: 8}
+  - {kind: ollama, name: "qwen2.5vl:7b", tier: local_capable, context: 8192,
+     max_output: 2048, tool_use: none, vision: true, languages: [en, el],
+     prompt_tps: 20, gen_tps: 5}
   - {kind: ollama, name: "nomic-embed-text", tier: embedding, context: 8192, embed_dim: 768,
      query_prefix: "search_query: ", doc_prefix: "search_document: "}
 

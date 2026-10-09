@@ -13,6 +13,7 @@ from panos_core.ai.types import ChatRequest, Locality, Role
 LOCAL_CHAT = "mock-local-chat"
 LOCAL_EMBED = "mock-embed"
 CLOUD_CHAT = "mock-cloud-chat"
+LOCAL_VISION = "mock-local-vision"
 
 
 def mock_models() -> ModelRegistry:
@@ -26,6 +27,15 @@ def mock_models() -> ModelRegistry:
                 tool_use="json_in_content",
                 prompt_tps=500,
                 gen_tps=50,
+            ),
+            ModelInfo(  # slower than LOCAL_CHAT: chosen only when images need vision
+                kind="mock",
+                name=LOCAL_VISION,
+                tier="local_capable",
+                context=8192,
+                vision=True,
+                prompt_tps=100,
+                gen_tps=10,
             ),
             ModelInfo(
                 kind="mock",
@@ -42,6 +52,7 @@ def mock_models() -> ModelRegistry:
                 tier="cloud_efficient",
                 context=200_000,
                 tool_use="native",
+                vision=True,
                 cost_in=2.0,
                 cost_out=10.0,
                 prompt_tps=2000,
@@ -55,7 +66,10 @@ def mock_models() -> ModelRegistry:
 class MockAI:
     local: MockProvider = field(
         default_factory=lambda: MockProvider(
-            id="local", kind="mock", locality=Locality.LOCAL, models=(LOCAL_CHAT, LOCAL_EMBED)
+            id="local",
+            kind="mock",
+            locality=Locality.LOCAL,
+            models=(LOCAL_CHAT, LOCAL_EMBED, LOCAL_VISION),
         )
     )
     cloud: MockProvider = field(

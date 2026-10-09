@@ -34,3 +34,9 @@ target/
 .vscode/
 *.swp
 .DS_Store
+
+# Desktop (M7)
+apps/desktop/dist/
+apps/desktop/src-tauri/sidecar/
+apps/desktop/src-tauri/gen/
+*.tsbuildinfo

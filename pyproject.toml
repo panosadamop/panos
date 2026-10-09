@@ -11,7 +11,7 @@ panos-cli = { workspace = true }
 
 [dependency-groups]
 dev = [
-    "panos-core[anthropic]",
+    "panos-core[anthropic,voice]",
     "panos-node-api",
     "panos-cli",
     "pytest>=8.3",
@@ -28,6 +28,7 @@ dev = [
     "types-pywin32>=308",
     "types-pyyaml>=6.0",
     "types-psutil>=6.1",
+    "pyinstaller>=6.10",
 ]
 
 # ---------------------------------------------------------------- ruff
@@ -83,7 +84,8 @@ disallow_untyped_defs = false
 disallow_incomplete_defs = false
 
 [[tool.mypy.overrides]]
-module = ["alembic.*", "bashlex.*", "rfc8785.*", "sqlite_vec.*"]
+module = ["alembic.*", "bashlex.*", "rfc8785.*", "sqlite_vec.*", "onnxruntime.*",
+          "faster_whisper.*", "sounddevice.*", "piper.*", "soundfile.*"]
 ignore_missing_imports = true
 
 [tool.pydantic-mypy]
