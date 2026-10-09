@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+.import_linter_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node / TypeScript
+node_modules/
+.pnpm-store/
+
+# Rust / Tauri
+target/
+
+# Local state (never commit runtime data)
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+.DS_Store

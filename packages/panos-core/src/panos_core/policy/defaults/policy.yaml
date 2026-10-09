@@ -1,0 +1,59 @@
+# Default Panos permission policy (mirrors docs/specs/PERMISSIONS.md, ADR-005, ADR-024).
+#
+# Levels:  P0 READ (auto) · P1 SAFE_WRITE (auto within scope) · P2 CONTROLLED (ask by default)
+#          P3 APPROVAL_REQUIRED · P4 FORBIDDEN
+# Unknown action classes are DENIED. Project overrides may tighten any rule;
+# loosening is allowed only where `loosenable: true` (P2 → P1), never for P3/P4.
+
+version: 1
+rules:
+  # --- filesystem -----------------------------------------------------------------
+  - {action: fs.read,              level: P0, description: Read project files}
+  - {action: fs.list,              level: P0, description: List project directories}
+  - {action: fs.search,            level: P0, description: Search project files}
+  - {action: fs.write,             level: P1, description: Create or modify files inside the active project}
+  - {action: fs.move,              level: P1, description: Move/rename files inside the active project}
+  - {action: fs.delete,            level: P2, loosenable: true, description: Delete a single file recoverable from Git}
+  - {action: fs.delete.unrecoverable, level: P3, description: "Bulk, directory, untracked/ignored or unrecoverable delete"}
+  - {action: fs.write.git_internal, level: P4, description: Direct writes into .git (would bypass Git governance)}
+
+  # --- shell (classified per command, ADR-007) --------------------------------------
+  - {action: shell.read,           level: P0, description: Read-only informational commands}
+  - {action: build.test,           level: P1, description: "Format/lint/type-check/unit tests and discovered build commands"}
+  - {action: shell.write,          level: P2, description: Shell commands that write files (redirection, Set-Content)}
+  - {action: shell.delete,         level: P3, description: Shell deletion commands (bypass fs.delete classification)}
+  - {action: shell.unknown,        level: P3, description: "Unclassified, dynamic or nested-interpreter commands"}
+  - {action: pkg.install,          level: P2, description: Install dependencies}
+  - {action: db.dev.schema,        level: P2, loosenable: true, description: Create local development database/schema}
+  - {action: net.fetch,            level: P2, description: Network download from the shell}
+  - {action: net.upload,           level: P3, description: Network upload or data submission from the shell}
+
+  # --- git -------------------------------------------------------------------------
+  - {action: git.read,             level: P0, description: "status/diff/log/branches/blame"}
+  - {action: git.mutate.local,     level: P1, description: "Local working-tree/index operations (add, switch, local branch create)"}
+  - {action: git.commit,           level: P3, description: Create commits (commit, cherry-pick, revert, merge commit)}
+  - {action: git.mutate.shared,    level: P3, description: "push, merge, rebase, pull, tags/releases"}
+  - {action: git.destructive,      level: P3, description: "reset --hard, clean, branch -D, forced checkout/restore"}
+
+  # --- containers / infrastructure ---------------------------------------------------
+  - {action: docker.inspect,       level: P0, description: Inspect Docker configuration and state}
+  - {action: docker.exec,          level: P3, description: Any Docker/Compose execution}
+  - {action: k8s.read,             level: P0, description: Read Kubernetes state}
+  - {action: k8s.mutate,           level: P3, description: Kubernetes cluster mutation}
+  - {action: infra.mutate,         level: P3, description: Infrastructure mutation}
+  - {action: deploy.production,    level: P3, description: Production deployment}
+
+  # --- applications ------------------------------------------------------------------
+  - {action: app.launch,           level: P1, description: Launch an approved installed application}
+
+  # --- integrations ------------------------------------------------------------------
+  - {action: pm.read,              level: P0, description: Read Jira/Azure DevOps}
+  - {action: pm.write,             level: P3, description: Jira/Azure DevOps write}
+  - {action: calendar.read,        level: P0, description: Read calendars and free/busy}
+  - {action: calendar.write,       level: P3, description: Calendar write/respond}
+  - {action: email.read,           level: P0, description: "Read/search/summarize email"}
+  - {action: email.draft,          level: P1, description: Create email drafts}
+  - {action: email.send,           level: P4, description: Email sending is forbidden (BR-019)}
+  - {action: browser.read,         level: P0, description: "Open, navigate and read pages"}
+  - {action: browser.submit,       level: P4, description: Consequential browser submission}
+  - {action: browser.upload,       level: P4, description: Browser upload}

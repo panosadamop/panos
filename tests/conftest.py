@@ -1,0 +1,58 @@
+"""Shared fixtures. Every test runs with isolated per-user directories."""
+
+import sys
+from collections.abc import AsyncIterator
+from pathlib import Path
+
+import pytest
+
+from panos_core.config import PanosSettings, ensure_directories, load_settings
+from panos_core.persistence import UnitOfWorkFactory, create_engine, run_migrations
+
+pytest_plugins = ["tests.plugins.req_coverage"]
+
+_DIR_ENV = {
+    "PANOS_DATA_DIR": "data",
+    "PANOS_CONFIG_DIR": "config",
+    "PANOS_LOG_DIR": "logs",
+    "PANOS_RUNTIME_DIR": "run",
+    "PANOS_WORKSPACE_DIR": "workspace",
+}
+
+
+@pytest.fixture(autouse=True)
+def isolated_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """Point all Panos directories and the config file at a temp dir; never touch real ones."""
+    home = tmp_path / "panos-home"
+    for name, sub in _DIR_ENV.items():
+        monkeypatch.setenv(name, str(home / sub))
+    monkeypatch.setenv("PANOS_CONFIG_FILE", str(home / "config" / "config.toml"))
+    # Never touch the real OS credential store from tests.
+    monkeypatch.setenv("PANOS_SECRET_BACKEND", "memory")
+    for var in ("PANOS_LOG_LEVEL", "PANOS_ALLOWED_ORIGINS", "PANOS_LOG_JSON_CONSOLE"):
+        monkeypatch.delenv(var, raising=False)
+    return home
+
+
+@pytest.fixture
+def settings(isolated_env: Path) -> PanosSettings:
+    s = load_settings()
+    ensure_directories(s)
+    return s
+
+
+@pytest.fixture
+async def uow_factory(settings: PanosSettings) -> AsyncIterator[UnitOfWorkFactory]:
+    run_migrations(settings.database_path)
+    engine = create_engine(settings.database_path)
+    try:
+        yield UnitOfWorkFactory(engine)
+    finally:
+        await engine.dispose()
+
+
+def pytest_runtest_setup(item: pytest.Item) -> None:
+    if item.get_closest_marker("windows") and sys.platform != "win32":
+        pytest.skip("Windows-only test")
+    if item.get_closest_marker("posix") and sys.platform == "win32":
+        pytest.skip("POSIX-only test")

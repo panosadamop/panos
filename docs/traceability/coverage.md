@@ -1,0 +1,1256 @@
+# Requirement test coverage
+
+_Generated 2026-10-08 12:03 UTC by `pytest --req-report`. Do not edit by hand._
+
+A requirement counts as *covered* when at least one test is tagged with it. Coverage grows milestone by milestone; untested requirements belong to later milestones.
+
+| Type | Total | Covered | Passing |
+|---|---|---|---|
+| BR | 29 | 7 | 7 |
+| FR | 30 | 9 | 9 |
+| NFR | 31 | 6 | 6 |
+| EPIC | 7 | 0 | 0 |
+| US | 30 | 2 | 2 |
+| AC | 90 | 13 | 13 |
+
+## Covered requirements
+
+| ID | Title | Status | Tests |
+|---|---|---|---|
+| BR-001 | Unified assistant | passed | 2 |
+| BR-004 | Local-only privacy | passed | 1 |
+| BR-017 | Git governance | passed | 65 |
+| BR-018 | Docker governance | passed | 59 |
+| BR-019 | Email boundary | passed | 9 |
+| BR-022 | Browser boundary | passed | 4 |
+| BR-029 | Workspace | passed | 3 |
+| FR-004 | Project registry | passed | 53 |
+| FR-010 | Approval model | passed | 24 |
+| FR-011 | Tool execution | passed | 58 |
+| FR-012 | Terminal | passed | 160 |
+| FR-013 | Git | passed | 35 |
+| FR-014 | Docker/Kubernetes | passed | 28 |
+| FR-022 | Long-running jobs | passed | 14 |
+| FR-023 | Limits | passed | 1 |
+| FR-028 | Audit | passed | 16 |
+| NFR-OBS-001 | Structured logs with correlation/job/step IDs. | passed | 3 |
+| NFR-REL-001 | Persist job state before consequential steps. | passed | 2 |
+| NFR-SEC-001 | Least privilege by default. | passed | 131 |
+| NFR-SEC-002 | No unrestricted LLM shell/desktop access. | passed | 228 |
+| NFR-SEC-003 | Encrypt credentials/secrets at rest using OS-backed secure storage ... | passed | 3 |
+| NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 72 |
+| US-011 | I can register a project anywhere on disk. | passed | 1 |
+| US-052 | I can pause/resume/cancel a job. | passed | 3 |
+| AC-US005-01 | A project or folder can be marked local-only; newly created or regi... | passed | 1 |
+| AC-US011-02 | Registration stores the privacy mode, preferred IDE, AI policy and ... | passed | 1 |
+| AC-US011-03 | Registering a path that does not exist, is not accessible, or is al... | passed | 1 |
+| AC-US040-02 | No commit is created without valid approval for the exact proposed ... | passed | 64 |
+| AC-US041-01 | Panos may inspect Docker configuration without approval. | passed | 29 |
+| AC-US041-02 | Any Docker execution request enters WAITING_FOR_APPROVAL. | passed | 47 |
+| AC-US041-03 | Rejected approval causes no Docker command to execute. | passed | 24 |
+| AC-US043-02 | Default tool registry contains no email-send capability. | passed | 5 |
+| AC-US043-03 | Prompt injection cannot cause email sending. | passed | 7 |
+| AC-US050-01 | Job state survives UI restart. | passed | 3 |
+| AC-US050-02 | Limits exist for runtime, AI cost/tokens and repair attempts. | passed | 1 |
+| AC-US052-01 | The user can pause, resume and cancel a job from CLI, desktop and v... | passed | 1 |
+| AC-US052-02 | Cancel stops running tool processes (including child processes) and... | passed | 1 |
+
+## Tests per requirement
+
+- **AC-US005-01**
+  - `tests/unit/domain/test_models.py::test_new_project_defaults_to_local_only` — passed
+- **AC-US011-02**
+  - `tests/integration/persistence/test_repositories.py::test_project_round_trip_preserves_policy_fields` — passed
+- **AC-US011-03**
+  - `tests/integration/persistence/test_repositories.py::test_same_path_cannot_be_registered_twice` — passed
+- **AC-US040-02**
+  - `tests/integration/approvals/test_approval_service.py::test_action_hash_is_canonical` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_cannot_decide_twice_or_after_expiry` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_changed_action_invalidates_approval` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_expired_approval` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_forged_tokens_are_rejected[<lambda>0]` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_forged_tokens_are_rejected[<lambda>1]` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_forged_tokens_are_rejected[<lambda>2]` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_forged_tokens_are_rejected[<lambda>3]` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_full_lifecycle_and_audit` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_identical_pending_request_is_reused` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_record_has_version_decision_timestamp` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_replay_is_rejected` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_short_node_key_rejected` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_token_signed_by_another_node_key_is_rejected` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_unapproved_or_rejected_cannot_be_consumed` — passed
+  - `tests/integration/tools/test_runtime.py::test_approved_action_executes_once_with_token` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[& $command]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[Get-ChildItem *.log | Remove-Item]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[git status; git commit -m x]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv1-git.mutate.shared]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv10-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv11-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv12-k8s.mutate]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv13-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv14-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv15-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv16-net.upload]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv2-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv3-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv4-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv5-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv6-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv7-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv8-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv9-docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[fs.delete]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[git.commit]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[git.mutate.shared]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[k8s.mutate]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_encoded_powershell_is_decoded_and_classified` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv0-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv1-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv10-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv11-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv13-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv2-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv3-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv4-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv5-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv6-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv7-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv8-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv9-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv0-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv1-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv2-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv3-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv4-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv5-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv6-shell.unknown]` — passed
+- **AC-US041-01**
+  - `tests/integration/tools/test_shell_tool.py::test_docker_inspection_needs_no_approval` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv0-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv1-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv10-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv11-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv13-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv14-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv15-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv16-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv17-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv18-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv19-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv2-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv20-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv21-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv22-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv23-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv24-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv25-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv26-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv27-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv3-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv4-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv5-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv6-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv7-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
+- **AC-US041-02**
+  - `tests/integration/tools/test_runtime.py::test_approval_required_moves_job_to_waiting_for_approval` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_docker_execution_waits_for_approval_and_rejection_runs_nothing` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv1-git.mutate.shared]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv10-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv11-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv12-k8s.mutate]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv13-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv14-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv15-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv16-net.upload]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv2-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv3-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv4-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv5-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv6-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv7-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv8-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv9-docker.exec]` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_approval_wait_reachable_from_active_states_and_resumable` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[fs.delete]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[git.commit]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[git.mutate.shared]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[k8s.mutate]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv0-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv1-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv10-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv11-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv13-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv2-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv3-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv4-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv5-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv6-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv7-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv8-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv9-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv0-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv1-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv2-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv3-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv4-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv5-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv6-shell.unknown]` — passed
+- **AC-US041-03**
+  - `tests/integration/tools/test_shell_tool.py::test_docker_execution_waits_for_approval_and_rejection_runs_nothing` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv1-git.mutate.shared]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv10-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv11-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv12-k8s.mutate]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv13-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv14-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv15-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv16-net.upload]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv2-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv3-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv4-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv5-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv6-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv7-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv8-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv9-docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[browser.upload-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[docker.exec-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[email.send-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[fs.delete-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[git.commit-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[pkg.install-1]` — passed
+- **AC-US043-02**
+  - `tests/integration/tools/test_runtime.py::test_default_registry_has_no_email_send_capability` — passed
+  - `tests/integration/tools/test_runtime.py::test_registry_refuses_email_send_capability` — passed
+  - `tests/security/test_email_and_injection.py::test_instructions_inside_file_content_are_just_data` — passed
+  - `tests/security/test_email_and_injection.py::test_no_tool_in_the_default_runtime_can_send_email` — passed
+  - `tests/security/test_email_and_injection.py::test_requesting_a_send_tool_fails_closed` — passed
+- **AC-US043-03**
+  - `tests/security/test_email_and_injection.py::test_instructions_inside_file_content_are_just_data` — passed
+  - `tests/security/test_email_and_injection.py::test_no_tool_in_the_default_runtime_can_send_email` — passed
+  - `tests/security/test_email_and_injection.py::test_requesting_a_send_tool_fails_closed` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.submit]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **AC-US050-01**
+  - `tests/integration/persistence/test_job_service.py::test_transitions_are_persisted_timestamped_and_audited` — passed
+  - `tests/integration/persistence/test_repositories.py::test_job_and_steps_persist_state` — passed
+  - `tests/integration/tools/test_runtime.py::test_job_step_persisted_with_outcome` — passed
+- **AC-US050-02**
+  - `tests/unit/domain/test_models.py::test_job_budget_supports_runtime_cost_token_and_repair_limits` — passed
+- **AC-US052-01**
+  - `tests/unit/jobs/test_state_machine.py::test_every_non_terminal_state_can_be_cancelled_and_paused` — passed
+- **AC-US052-02**
+  - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
+- **BR-001**
+  - `tests/e2e/test_node_daemon.py::test_serve_status_and_authenticated_health` — passed
+  - `tests/integration/api/test_routes.py::test_health_reports_ok_with_node_identity` — passed
+- **BR-004**
+  - `tests/unit/domain/test_models.py::test_new_project_defaults_to_local_only` — passed
+- **BR-017**
+  - `tests/security/test_approval_bypass.py::test_approval_cannot_cross_tools` — passed
+  - `tests/security/test_approval_bypass.py::test_approval_for_one_command_cannot_run_another` — passed
+  - `tests/security/test_approval_bypass.py::test_arguments_are_never_shell_interpreted` — passed
+  - `tests/security/test_approval_bypass.py::test_batch_file_metacharacters_are_refused` — passed
+  - `tests/security/test_approval_bypass.py::test_encoded_command_cannot_hide_a_commit` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[& $command]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[Get-ChildItem *.log | Remove-Item]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[git status; git commit -m x]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv1-git.mutate.shared]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv10-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv11-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv12-k8s.mutate]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv13-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv14-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv15-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv16-net.upload]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv2-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv3-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv4-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv5-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv6-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv7-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv8-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv9-docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[fs.delete]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[git.commit]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[git.mutate.shared]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[k8s.mutate]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv0-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv1-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv10-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv11-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv12-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv13-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv14-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv15-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv16-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv17-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv18-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv19-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv2-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv20-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv21-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv22-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv23-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv24-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv25-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv26-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv27-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv28-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv29-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv3-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv30-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv31-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv32-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv33-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv4-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv5-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv6-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv7-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv8-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv9-git.mutate.local]` — passed
+- **BR-018**
+  - `tests/security/test_approval_bypass.py::test_approval_cannot_cross_tools` — passed
+  - `tests/security/test_approval_bypass.py::test_approval_for_one_command_cannot_run_another` — passed
+  - `tests/security/test_approval_bypass.py::test_arguments_are_never_shell_interpreted` — passed
+  - `tests/security/test_approval_bypass.py::test_batch_file_metacharacters_are_refused` — passed
+  - `tests/security/test_approval_bypass.py::test_encoded_command_cannot_hide_a_commit` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[& $command]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[Get-ChildItem *.log | Remove-Item]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[git status; git commit -m x]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv1-git.mutate.shared]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv10-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv11-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv12-k8s.mutate]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv13-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv14-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv15-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv16-net.upload]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv2-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv3-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv4-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv5-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv6-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv7-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv8-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv9-docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[fs.delete]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[git.commit]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[git.mutate.shared]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[k8s.mutate]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p2_and_p3_require_approval[pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv0-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv1-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv10-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv11-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv13-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv14-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv15-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv16-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv17-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv18-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv19-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv2-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv20-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv21-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv22-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv23-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv24-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv25-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv26-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv27-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv3-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv4-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv5-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv6-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv7-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
+- **BR-019**
+  - `tests/integration/tools/test_runtime.py::test_default_registry_has_no_email_send_capability` — passed
+  - `tests/integration/tools/test_runtime.py::test_registry_refuses_email_send_capability` — passed
+  - `tests/security/test_email_and_injection.py::test_instructions_inside_file_content_are_just_data` — passed
+  - `tests/security/test_email_and_injection.py::test_no_tool_in_the_default_runtime_can_send_email` — passed
+  - `tests/security/test_email_and_injection.py::test_requesting_a_send_tool_fails_closed` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.submit]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **BR-022**
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.submit]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **BR-029**
+  - `tests/integration/cli/test_cli.py::test_config_path_lists_workspace` — passed
+  - `tests/unit/config/test_settings.py::test_default_workspace_is_home_panos_projects` — passed
+  - `tests/unit/config/test_settings.py::test_ensure_directories_creates_workspace_and_dirs` — passed
+- **FR-004**
+  - `tests/integration/persistence/test_repositories.py::test_project_round_trip_preserves_policy_fields` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_delete_modified_tracked_file_is_p3` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_delete_tracked_clean_file_is_p2` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_delete_untracked_or_directory_is_p3` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_list_recursive_skips_heavy_dirs` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_move_inside_project` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_move_overwrite_requires_approval` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_project_root_cannot_be_deleted_or_moved` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_read_reports_hash_and_truncation` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_search_finds_matches` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_tools_require_an_active_project` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_write_create_update_with_precondition` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_write_leaves_no_temp_files` — passed
+  - `tests/unit/config/test_settings.py::test_default_workspace_is_home_panos_projects` — passed
+  - `tests/unit/domain/test_models.py::test_new_project_defaults_to_local_only` — passed
+  - `tests/unit/domain/test_models.py::test_project_accepts_absolute_paths[/home/u/demo]` — passed
+  - `tests/unit/domain/test_models.py::test_project_accepts_absolute_paths[C:/work/demo]` — passed
+  - `tests/unit/domain/test_models.py::test_project_accepts_absolute_paths[C:\\work\\demo]` — passed
+  - `tests/unit/domain/test_models.py::test_project_accepts_absolute_paths[\\\\server\\share\\demo]` — passed
+  - `tests/unit/domain/test_models.py::test_project_rejects_relative_paths[..\\demo]` — passed
+  - `tests/unit/domain/test_models.py::test_project_rejects_relative_paths[./demo]` — passed
+  - `tests/unit/domain/test_models.py::test_project_rejects_relative_paths[C:demo]` — passed
+  - `tests/unit/domain/test_models.py::test_project_rejects_relative_paths[demo]` — passed
+  - `tests/unit/tools/test_paths.py::test_absolute_path_inside_root_is_ok` — passed
+  - `tests/unit/tools/test_paths.py::test_absolute_path_outside_root_rejected` — passed
+  - `tests/unit/tools/test_paths.py::test_empty_and_nul_rejected[   ]` — passed
+  - `tests/unit/tools/test_paths.py::test_empty_and_nul_rejected[]` — passed
+  - `tests/unit/tools/test_paths.py::test_empty_and_nul_rejected[a\x00b]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[./src/../src/a.txt]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[.]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[new/file.txt]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[src/a.txt]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[src\\a.txt]` — passed
+  - `tests/unit/tools/test_paths.py::test_relative_and_git_internal_helpers` — passed
+  - `tests/unit/tools/test_paths.py::test_sibling_with_common_prefix_rejected` — passed
+  - `tests/unit/tools/test_paths.py::test_symlink_escape_rejected` — passed
+  - `tests/unit/tools/test_paths.py::test_traversal_rejected[../x]` — passed
+  - `tests/unit/tools/test_paths.py::test_traversal_rejected[..]` — passed
+  - `tests/unit/tools/test_paths.py::test_traversal_rejected[src/../../../etc/passwd]` — passed
+  - `tests/unit/tools/test_paths.py::test_traversal_rejected[src/../../x]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[//?/C:/x-namespace]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[C:relative.txt-drive-relative]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[COM1.log-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[CON-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[\\\\.\\PhysicalDrive0-namespace]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[\\\\?\\C:\\x-namespace]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[a.txt::$DATA-alternate data]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[conout$-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[lpt9-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\a.txt:hidden-alternate data]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\evil. -trailing]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\nul.txt-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[trailing.-trailing]` — passed
+- **FR-010**
+  - `tests/integration/api/test_approvals_api.py::test_approval_endpoints_require_auth` — passed
+  - `tests/integration/api/test_approvals_api.py::test_audit_list_and_verify` — passed
+  - `tests/integration/api/test_approvals_api.py::test_list_and_approve_returns_single_use_token` — passed
+  - `tests/integration/api/test_approvals_api.py::test_reject_returns_no_token_and_cannot_decide_twice` — passed
+  - `tests/integration/api/test_approvals_api.py::test_unknown_approval_and_bad_body` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_action_hash_is_canonical` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_cannot_decide_twice_or_after_expiry` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_changed_action_invalidates_approval` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_expired_approval` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_forged_tokens_are_rejected[<lambda>0]` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_forged_tokens_are_rejected[<lambda>1]` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_forged_tokens_are_rejected[<lambda>2]` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_forged_tokens_are_rejected[<lambda>3]` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_full_lifecycle_and_audit` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_identical_pending_request_is_reused` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_record_has_version_decision_timestamp` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_replay_is_rejected` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_short_node_key_rejected` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_token_signed_by_another_node_key_is_rejected` — passed
+  - `tests/integration/approvals/test_approval_service.py::test_unapproved_or_rejected_cannot_be_consumed` — passed
+  - `tests/integration/persistence/test_repositories.py::test_approvals_filter_by_status` — passed
+  - `tests/integration/tools/test_runtime.py::test_approval_required_moves_job_to_waiting_for_approval` — passed
+  - `tests/integration/tools/test_runtime.py::test_approved_action_executes_once_with_token` — passed
+  - `tests/unit/domain/test_models.py::test_approval_requires_sha256_payload_hash_and_future_expiry` — passed
+- **FR-011**
+  - `tests/integration/tools/test_runtime.py::test_approval_required_moves_job_to_waiting_for_approval` — passed
+  - `tests/integration/tools/test_runtime.py::test_approved_action_executes_once_with_token` — passed
+  - `tests/integration/tools/test_runtime.py::test_default_registry_has_no_email_send_capability` — passed
+  - `tests/integration/tools/test_runtime.py::test_forbidden_action_is_denied_and_audited` — passed
+  - `tests/integration/tools/test_runtime.py::test_job_step_persisted_with_outcome` — passed
+  - `tests/integration/tools/test_runtime.py::test_overrides_from_context_are_applied` — passed
+  - `tests/integration/tools/test_runtime.py::test_read_runs_without_approval_and_is_not_audited_as_decision` — passed
+  - `tests/integration/tools/test_runtime.py::test_registry_refuses_email_send_capability` — passed
+  - `tests/integration/tools/test_runtime.py::test_registry_refuses_unknown_capabilities_and_duplicates` — passed
+  - `tests/integration/tools/test_runtime.py::test_schema_violations_are_rejected_before_planning` — passed
+  - `tests/integration/tools/test_runtime.py::test_tools_cannot_run_without_a_runtime_permit` — passed
+  - `tests/integration/tools/test_runtime.py::test_undeclared_action_class_is_denied` — passed
+  - `tests/integration/tools/test_runtime.py::test_unknown_tool_rejected_and_audited` — passed
+  - `tests/security/test_approval_bypass.py::test_approval_cannot_cross_tools` — passed
+  - `tests/security/test_approval_bypass.py::test_approval_for_one_command_cannot_run_another` — passed
+  - `tests/security/test_approval_bypass.py::test_arguments_are_never_shell_interpreted` — passed
+  - `tests/security/test_approval_bypass.py::test_batch_file_metacharacters_are_refused` — passed
+  - `tests/security/test_approval_bypass.py::test_encoded_command_cannot_hide_a_commit` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[& $command]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[Get-ChildItem *.log | Remove-Item]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[git status; git commit -m x]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv1-git.mutate.shared]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv10-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv11-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv12-k8s.mutate]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv13-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv14-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv15-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv16-net.upload]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv2-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv3-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv4-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv5-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv6-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv7-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv8-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv9-docker.exec]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[app.launch-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[browser.submit-4]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[browser.upload-4]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[build.test-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[calendar.write-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[db.dev.schema-2]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[deploy.production-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[docker.exec-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[email.send-4]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.delete-2]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.delete.unrecoverable-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.read-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.search-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.write-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[git.commit-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[git.mutate.shared-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[infra.mutate-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[k8s.mutate-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[pkg.install-2]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[pm.write-3]` — passed
+- **FR-012**
+  - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_cwd_must_stay_in_project` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_docker_execution_waits_for_approval_and_rejection_runs_nothing` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_docker_inspection_needs_no_approval` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_exit_code_and_stderr_are_reported` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_git_status_runs_and_captures_output` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_output_is_capped` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_secrets_are_not_passed_to_children` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_timeout_kills_the_process` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv0-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv1-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv10-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv11-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv13-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv14-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv15-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv16-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv17-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv18-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv19-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv2-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv20-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv21-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv22-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv23-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv24-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv25-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv26-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv27-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv3-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv4-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv5-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv6-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv7-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_empty_and_dynamic_commands_are_unknown` — passed
+  - `tests/unit/shell/test_classifier.py::test_encoded_powershell_is_decoded_and_classified` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv0-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv1-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv10-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv11-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv12-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv13-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv14-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv15-net.fetch]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv16-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv17-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv18-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv19-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv2-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv20-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv21-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv22-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv23-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv24-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv25-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv26-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv27-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv3-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv4-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv5-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv6-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv7-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv8-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv9-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv0-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv1-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv10-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv11-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv12-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv13-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv14-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv15-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv16-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv17-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv18-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv19-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv2-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv20-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv21-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv22-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv23-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv24-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv25-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv26-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv27-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv28-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv29-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv3-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv30-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv31-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv32-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv33-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv4-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv5-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv6-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv7-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv8-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv9-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv0-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv1-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv10-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv11-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv13-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv2-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv3-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv4-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv5-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv6-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv7-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv8-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv9-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv0-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv1-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv2-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv3-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv4-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv5-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv6-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nesting_depth_is_bounded` — passed
+  - `tests/unit/shell/test_classifier.py::test_normalize_exe[/usr/bin/git-git]` — passed
+  - `tests/unit/shell/test_classifier.py::test_normalize_exe[C:\\Tools\\Git.EXE-git]` — passed
+  - `tests/unit/shell/test_classifier.py::test_normalize_exe[gradlew.bat-gradlew]` — passed
+  - `tests/unit/shell/test_classifier.py::test_normalize_exe[npm.cmd-npm]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv0-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv1-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv10-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv11-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv12-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv13-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv14-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv15-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv16-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv17-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv18-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv19-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv2-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv20-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv21-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv22-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv23-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv24-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv25-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv26-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv27-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv28-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv29-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv3-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv30-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv4-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv5-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv6-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv7-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv8-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv9-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_project_allowlist_marks_discovered_commands_build_test` — passed
+  - `tests/unit/shell/test_classifier.py::test_wrappers_are_transparent` — passed
+- **FR-013**
+  - `tests/integration/tools/test_shell_tool.py::test_git_status_runs_and_captures_output` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv0-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv1-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv10-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv11-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv12-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv13-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv14-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv15-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv16-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv17-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv18-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv19-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv2-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv20-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv21-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv22-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv23-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv24-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv25-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv26-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv27-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv28-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv29-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv3-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv30-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv31-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv32-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv33-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv4-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv5-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv6-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv7-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv8-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv9-git.mutate.local]` — passed
+- **FR-014**
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv0-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv1-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv10-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv11-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv13-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv14-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv15-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv16-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv17-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv18-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv19-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv2-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv20-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv21-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv22-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv23-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv24-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv25-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv26-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv27-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv3-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv4-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv5-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv6-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv7-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
+- **FR-022**
+  - `tests/integration/persistence/test_job_service.py::test_invalid_transitions_are_refused_and_not_persisted` — passed
+  - `tests/integration/persistence/test_job_service.py::test_missing_job` — passed
+  - `tests/integration/persistence/test_job_service.py::test_transitions_are_persisted_timestamped_and_audited` — passed
+  - `tests/integration/persistence/test_repositories.py::test_job_and_steps_persist_state` — passed
+  - `tests/unit/domain/test_models.py::test_job_status_has_exactly_the_fr022_states` — passed
+  - `tests/unit/domain/test_models.py::test_terminal_job_states` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_approval_wait_reachable_from_active_states_and_resumable` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_completion_only_from_running` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_every_non_terminal_state_can_be_cancelled_and_paused` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_every_state_has_a_transition_entry` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_every_state_reachable_from_queued` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_exhaustive_ensure_transition_matches_table` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_no_self_transitions` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_terminal_states_have_no_exits` — passed
+- **FR-023**
+  - `tests/unit/domain/test_models.py::test_job_budget_supports_runtime_cost_token_and_repair_limits` — passed
+- **FR-028**
+  - `tests/e2e/test_node_daemon.py::test_cli_audit_and_approvals_against_live_node` — passed
+  - `tests/integration/api/test_approvals_api.py::test_approval_endpoints_require_auth` — passed
+  - `tests/integration/api/test_approvals_api.py::test_audit_list_and_verify` — passed
+  - `tests/integration/api/test_approvals_api.py::test_list_and_approve_returns_single_use_token` — passed
+  - `tests/integration/api/test_approvals_api.py::test_reject_returns_no_token_and_cannot_decide_twice` — passed
+  - `tests/integration/api/test_approvals_api.py::test_unknown_approval_and_bad_body` — passed
+  - `tests/integration/audit/test_audit_chain.py::test_concurrent_appends_keep_a_linear_chain` — passed
+  - `tests/integration/audit/test_audit_chain.py::test_events_are_chained_and_verify` — passed
+  - `tests/integration/audit/test_audit_chain.py::test_metadata_is_redacted_before_hashing` — passed
+  - `tests/integration/audit/test_audit_chain.py::test_tampering_is_detected[DELETE FROM audit_event WHERE seq=3-prev_hash mismatch]` — passed
+  - `tests/integration/audit/test_audit_chain.py::test_tampering_is_detected[UPDATE audit_event SET action='tampered' WHERE seq=3-content hash mismatch]` — passed
+  - `tests/integration/audit/test_audit_chain.py::test_tampering_is_detected[UPDATE audit_event SET metadata_json='{"i": 99}' WHERE seq=2-content hash mismatch]` — passed
+  - `tests/integration/persistence/test_job_service.py::test_transitions_are_persisted_timestamped_and_audited` — passed
+  - `tests/integration/persistence/test_repositories.py::test_audit_log_appends_and_filters_newest_first` — passed
+  - `tests/integration/tools/test_runtime.py::test_read_runs_without_approval_and_is_not_audited_as_decision` — passed
+  - `tests/unit/domain/test_models.py::test_audit_event_captures_actor_action_decision_and_metadata` — passed
+- **NFR-OBS-001**
+  - `tests/integration/api/test_routes.py::test_correlation_id_echoed_or_generated` — passed
+  - `tests/unit/observability/test_logging.py::test_log_events_carry_correlation_job_and_step_ids` — passed
+  - `tests/unit/observability/test_logging.py::test_stdlib_logs_are_structured_and_redacted` — passed
+- **NFR-REL-001**
+  - `tests/integration/persistence/test_migrations.py::test_database_uses_wal_journal` — passed
+  - `tests/integration/tools/test_runtime.py::test_job_step_persisted_with_outcome` — passed
+- **NFR-SEC-001**
+  - `tests/e2e/test_node_daemon.py::test_serve_status_and_authenticated_health` — passed
+  - `tests/integration/api/test_security.py::test_allowed_origin_accepted` — passed
+  - `tests/integration/api/test_security.py::test_disallowed_origin_rejected` — passed
+  - `tests/integration/api/test_security.py::test_foreign_host_header_rejected_even_with_token[0.0.0.0:48123]` — passed
+  - `tests/integration/api/test_security.py::test_foreign_host_header_rejected_even_with_token[127.0.0.1:48124]` — passed
+  - `tests/integration/api/test_security.py::test_foreign_host_header_rejected_even_with_token[attacker.localhost:48123]` — passed
+  - `tests/integration/api/test_security.py::test_foreign_host_header_rejected_even_with_token[evil.example:48123]` — passed
+  - `tests/integration/api/test_security.py::test_foreign_host_header_rejected_even_with_token[localhost]` — passed
+  - `tests/integration/api/test_security.py::test_interactive_docs_and_live_schema_disabled[/docs]` — passed
+  - `tests/integration/api/test_security.py::test_interactive_docs_and_live_schema_disabled[/openapi.json]` — passed
+  - `tests/integration/api/test_security.py::test_interactive_docs_and_live_schema_disabled[/redoc]` — passed
+  - `tests/integration/api/test_security.py::test_localhost_host_header_accepted` — passed
+  - `tests/integration/api/test_security.py::test_missing_token_is_401_problem` — passed
+  - `tests/integration/api/test_security.py::test_no_shell_or_exec_endpoints_exist` — passed
+  - `tests/integration/api/test_security.py::test_unknown_routes_also_require_auth` — passed
+  - `tests/integration/api/test_security.py::test_websocket_with_foreign_origin_is_closed` — passed
+  - `tests/integration/api/test_security.py::test_wrong_token_is_401[Basic test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
+  - `tests/integration/api/test_security.py::test_wrong_token_is_401[Bearer ]` — passed
+  - `tests/integration/api/test_security.py::test_wrong_token_is_401[Bearer test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
+  - `tests/integration/api/test_security.py::test_wrong_token_is_401[bearer test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
+  - `tests/integration/api/test_security.py::test_wrong_token_is_401[test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_delete_modified_tracked_file_is_p3` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_delete_tracked_clean_file_is_p2` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_delete_untracked_or_directory_is_p3` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_list_recursive_skips_heavy_dirs` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_move_inside_project` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_move_overwrite_requires_approval` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_project_root_cannot_be_deleted_or_moved` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_read_reports_hash_and_truncation` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_search_finds_matches` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_tools_require_an_active_project` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_write_create_update_with_precondition` — passed
+  - `tests/integration/tools/test_fs_tools.py::test_write_leaves_no_temp_files` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-..\\outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-C:outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-CON]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-\\\\?\\C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-src/../../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-src\\app.py:stream]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-src\\nul]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-..\\outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-C:outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-CON]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-\\\\?\\C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-src/../../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-src\\app.py:stream]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-src\\nul]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-..\\outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-C:outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-CON]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-\\\\?\\C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-src/../../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-src\\app.py:stream]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-src\\nul]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-..\\outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-C:outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-CON]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-\\\\?\\C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-src/../../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-src\\app.py:stream]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-src\\nul]` — passed
+  - `tests/security/test_path_traversal.py::test_git_internals_cannot_be_written` — passed
+  - `tests/security/test_path_traversal.py::test_move_cannot_target_outside` — passed
+  - `tests/security/test_path_traversal.py::test_rejected_traversal_is_audited` — passed
+  - `tests/unit/config/test_runtime_file.py::test_runtime_file_round_trip_and_owner_only` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[app.launch-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[browser.submit-4]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[browser.upload-4]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[build.test-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[calendar.write-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[db.dev.schema-2]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[deploy.production-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[docker.exec-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[email.send-4]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.delete-2]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.delete.unrecoverable-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.read-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.search-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[fs.write-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[git.commit-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[git.mutate.shared-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[infra.mutate-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[k8s.mutate-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[pkg.install-2]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_default_policy_matches_permissions_table[pm.write-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_can_tighten_anything` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[browser.upload-3]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[docker.exec-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[email.send-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[fs.delete-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[git.commit-0]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[pkg.install-1]` — passed
+  - `tests/unit/policy/test_policy_engine.py::test_unknown_action_is_denied_by_default` — passed
+  - `tests/unit/tools/test_paths.py::test_absolute_path_inside_root_is_ok` — passed
+  - `tests/unit/tools/test_paths.py::test_absolute_path_outside_root_rejected` — passed
+  - `tests/unit/tools/test_paths.py::test_empty_and_nul_rejected[   ]` — passed
+  - `tests/unit/tools/test_paths.py::test_empty_and_nul_rejected[]` — passed
+  - `tests/unit/tools/test_paths.py::test_empty_and_nul_rejected[a\x00b]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[./src/../src/a.txt]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[.]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[new/file.txt]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[src/a.txt]` — passed
+  - `tests/unit/tools/test_paths.py::test_paths_inside_root_resolve[src\\a.txt]` — passed
+  - `tests/unit/tools/test_paths.py::test_relative_and_git_internal_helpers` — passed
+  - `tests/unit/tools/test_paths.py::test_sibling_with_common_prefix_rejected` — passed
+  - `tests/unit/tools/test_paths.py::test_symlink_escape_rejected` — passed
+  - `tests/unit/tools/test_paths.py::test_traversal_rejected[../x]` — passed
+  - `tests/unit/tools/test_paths.py::test_traversal_rejected[..]` — passed
+  - `tests/unit/tools/test_paths.py::test_traversal_rejected[src/../../../etc/passwd]` — passed
+  - `tests/unit/tools/test_paths.py::test_traversal_rejected[src/../../x]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[//?/C:/x-namespace]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[C:relative.txt-drive-relative]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[COM1.log-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[CON-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[\\\\.\\PhysicalDrive0-namespace]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[\\\\?\\C:\\x-namespace]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[a.txt::$DATA-alternate data]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[conout$-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[lpt9-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\a.txt:hidden-alternate data]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\evil. -trailing]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\nul.txt-reserved]` — passed
+  - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[trailing.-trailing]` — passed
+- **NFR-SEC-002**
+  - `tests/integration/tools/test_runtime.py::test_approval_required_moves_job_to_waiting_for_approval` — passed
+  - `tests/integration/tools/test_runtime.py::test_approved_action_executes_once_with_token` — passed
+  - `tests/integration/tools/test_runtime.py::test_default_registry_has_no_email_send_capability` — passed
+  - `tests/integration/tools/test_runtime.py::test_forbidden_action_is_denied_and_audited` — passed
+  - `tests/integration/tools/test_runtime.py::test_job_step_persisted_with_outcome` — passed
+  - `tests/integration/tools/test_runtime.py::test_overrides_from_context_are_applied` — passed
+  - `tests/integration/tools/test_runtime.py::test_read_runs_without_approval_and_is_not_audited_as_decision` — passed
+  - `tests/integration/tools/test_runtime.py::test_registry_refuses_email_send_capability` — passed
+  - `tests/integration/tools/test_runtime.py::test_registry_refuses_unknown_capabilities_and_duplicates` — passed
+  - `tests/integration/tools/test_runtime.py::test_schema_violations_are_rejected_before_planning` — passed
+  - `tests/integration/tools/test_runtime.py::test_tools_cannot_run_without_a_runtime_permit` — passed
+  - `tests/integration/tools/test_runtime.py::test_undeclared_action_class_is_denied` — passed
+  - `tests/integration/tools/test_runtime.py::test_unknown_tool_rejected_and_audited` — passed
+  - `tests/security/test_approval_bypass.py::test_approval_cannot_cross_tools` — passed
+  - `tests/security/test_approval_bypass.py::test_approval_for_one_command_cannot_run_another` — passed
+  - `tests/security/test_approval_bypass.py::test_arguments_are_never_shell_interpreted` — passed
+  - `tests/security/test_approval_bypass.py::test_batch_file_metacharacters_are_refused` — passed
+  - `tests/security/test_approval_bypass.py::test_encoded_command_cannot_hide_a_commit` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[& $command]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[Get-ChildItem *.log | Remove-Item]` — passed
+  - `tests/security/test_approval_bypass.py::test_powershell_profile_cannot_bypass_approval[git status; git commit -m x]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv0-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv1-git.mutate.shared]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv10-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv11-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv12-k8s.mutate]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv13-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv14-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv15-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv16-net.upload]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv2-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv3-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv4-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv5-docker.exec]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv6-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv7-git.commit]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv8-shell.unknown]` — passed
+  - `tests/security/test_approval_bypass.py::test_shell_routes_cannot_bypass_approval[argv9-docker.exec]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-..\\outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-C:outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-CON]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-\\\\?\\C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-src/../../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-src\\app.py:stream]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.delete-args2-src\\nul]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-..\\outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-C:outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-CON]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-\\\\?\\C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-src/../../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-src\\app.py:stream]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.list-args3-src\\nul]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-..\\outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-C:outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-CON]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-\\\\?\\C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-src/../../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-src\\app.py:stream]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.read-args0-src\\nul]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-..\\outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-C:outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-CON]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-\\\\?\\C:\\Windows\\win.ini]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-src/../../outside.txt]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-src\\app.py:stream]` — passed
+  - `tests/security/test_path_traversal.py::test_fs_tools_refuse_paths_outside_the_project[fs.write-args1-src\\nul]` — passed
+  - `tests/security/test_path_traversal.py::test_git_internals_cannot_be_written` — passed
+  - `tests/security/test_path_traversal.py::test_move_cannot_target_outside` — passed
+  - `tests/security/test_path_traversal.py::test_rejected_traversal_is_audited` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv0-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv1-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv10-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv11-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv13-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv14-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv15-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv16-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv17-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv18-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv19-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv2-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv20-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv21-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv22-k8s.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv23-k8s.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv24-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv25-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv26-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv27-infra.mutate]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv3-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv4-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv5-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv6-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv7-docker.inspect]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_empty_and_dynamic_commands_are_unknown` — passed
+  - `tests/unit/shell/test_classifier.py::test_encoded_powershell_is_decoded_and_classified` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv0-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv1-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv10-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv11-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv12-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv13-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv14-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv15-net.fetch]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv16-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv17-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv18-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv19-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv2-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv20-net.upload]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv21-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv22-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv23-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv24-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv25-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv26-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv27-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv3-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv4-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv5-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv6-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv7-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv8-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_files_network_and_system[argv9-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv0-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv1-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv10-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv11-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv12-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv13-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv14-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv15-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv16-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv17-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv18-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv19-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv2-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv20-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv21-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv22-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv23-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv24-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv25-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv26-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv27-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv28-git.destructive]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv29-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv3-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv30-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv31-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv32-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv33-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv4-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv5-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv6-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv7-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv8-git.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_git[argv9-git.mutate.local]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv0-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv1-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv10-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv11-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv12-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv13-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv2-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv3-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv4-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv5-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv6-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv7-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv8-git.mutate.shared]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_posix_and_cmd[argv9-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv0-git.commit]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv1-shell.delete]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv2-docker.exec]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv3-shell.write]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv4-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv5-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nested_powershell[argv6-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_nesting_depth_is_bounded` — passed
+  - `tests/unit/shell/test_classifier.py::test_normalize_exe[/usr/bin/git-git]` — passed
+  - `tests/unit/shell/test_classifier.py::test_normalize_exe[C:\\Tools\\Git.EXE-git]` — passed
+  - `tests/unit/shell/test_classifier.py::test_normalize_exe[gradlew.bat-gradlew]` — passed
+  - `tests/unit/shell/test_classifier.py::test_normalize_exe[npm.cmd-npm]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv0-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv1-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv10-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv11-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv12-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv13-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv14-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv15-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv16-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv17-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv18-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv19-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv2-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv20-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv21-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv22-build.test]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv23-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv24-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv25-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv26-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv27-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv28-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv29-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv3-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv30-shell.unknown]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv4-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv5-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv6-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv7-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv8-pkg.install]` — passed
+  - `tests/unit/shell/test_classifier.py::test_packages_and_builds[argv9-shell.read]` — passed
+  - `tests/unit/shell/test_classifier.py::test_project_allowlist_marks_discovered_commands_build_test` — passed
+  - `tests/unit/shell/test_classifier.py::test_wrappers_are_transparent` — passed
+- **NFR-SEC-003**
+  - `tests/unit/secrets/test_store.py::test_keyring_store_refuses_insecure_backend` — passed
+  - `tests/unit/secrets/test_store.py::test_memory_store_round_trip` — passed
+  - `tests/unit/secrets/test_store.py::test_node_key_created_once_and_stable` — passed
+- **NFR-SEC-004**
+  - `tests/integration/audit/test_audit_chain.py::test_metadata_is_redacted_before_hashing` — passed
+  - `tests/unit/observability/test_logging.py::test_secrets_are_redacted_in_log_file` — passed
+  - `tests/unit/observability/test_logging.py::test_stdlib_logs_are_structured_and_redacted` — passed
+  - `tests/unit/redaction/test_redaction.py::test_azure_connection_string_key_redacted` — passed
+  - `tests/unit/redaction/test_redaction.py::test_bearer_and_basic_headers_redacted` — passed
+  - `tests/unit/redaction/test_redaction.py::test_credentials_in_urls_redacted_but_url_kept` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_can_be_disabled` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_spares_ordinary_text[1cd6a5bf58f74ab98983d31e90cdb216]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_spares_ordinary_text[3f786850e387550fdab836ed7e6dc881de23001b]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_spares_ordinary_text[C:/Users/padamop/PycharmProjects/panos/packages/panos-core/src/panos_core]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_spares_ordinary_text[SpringBootApplicationContextConfiguration2Test]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_spares_ordinary_text[The quick brown fox jumps over the lazy dog 1234567890 times.]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_spares_ordinary_text[ThisIsAVeryLongCamelCaseIdentifierName2026ForTesting]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_spares_ordinary_text[prj_a25519fbdf594188bdfa9a5ea72959fc]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_entropy_layer_spares_ordinary_text[test_should_return_404_when_user_not_found_in_db]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_input_is_not_mutated` — passed
+  - `tests/unit/redaction/test_redaction.py::test_key_value_assignments_redacted[TOKEN=qwertyuiop-qwertyuiop]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_key_value_assignments_redacted[api_key: 'abc123xyz'-abc123xyz]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_key_value_assignments_redacted[password=hunter2-hunter2]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_key_value_assignments_redacted[secret = "s3cr3t"-s3cr3t]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[anthropic]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[aws]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[github-classic]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[github-fine-grained]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[google]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[jwt]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[openai-project]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[openai]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_known_secret_formats_are_redacted[slack]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_more_provider_formats_redacted[gitlab]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_more_provider_formats_redacted[huggingface]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_more_provider_formats_redacted[npm]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_more_provider_formats_redacted[sendgrid]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_more_provider_formats_redacted[stripe]` — passed
+  - `tests/unit/redaction/test_redaction.py::test_numeric_and_non_secret_fields_untouched` — passed
+  - `tests/unit/redaction/test_redaction.py::test_private_key_block_redacted` — passed
+  - `tests/unit/redaction/test_redaction.py::test_random_high_entropy_tokens_are_redacted` — passed
+  - `tests/unit/redaction/test_redaction.py::test_sensitive_keys_redacted_recursively` — passed
+  - `tests/unit/redaction/test_redaction.py::test_tuples_and_sets_keep_their_type` — passed
+  - `tests/unit/shell/test_environment.py::test_bad_overrides_rejected[overrides0]` — passed
+  - `tests/unit/shell/test_environment.py::test_bad_overrides_rejected[overrides1]` — passed
+  - `tests/unit/shell/test_environment.py::test_bad_overrides_rejected[overrides2]` — passed
+  - `tests/unit/shell/test_environment.py::test_bad_overrides_rejected[overrides3]` — passed
+  - `tests/unit/shell/test_environment.py::test_batch_files_refuse_metacharacters[!v!]` — passed
+  - `tests/unit/shell/test_environment.py::test_batch_files_refuse_metacharacters[%PATH%]` — passed
+  - `tests/unit/shell/test_environment.py::test_batch_files_refuse_metacharacters[^z]` — passed
+  - `tests/unit/shell/test_environment.py::test_batch_files_refuse_metacharacters[a&b]` — passed
+  - `tests/unit/shell/test_environment.py::test_batch_files_refuse_metacharacters[line\nbreak]` — passed
+  - `tests/unit/shell/test_environment.py::test_batch_files_refuse_metacharacters[q"q]` — passed
+  - `tests/unit/shell/test_environment.py::test_batch_files_refuse_metacharacters[x|y]` — passed
+  - `tests/unit/shell/test_environment.py::test_child_env_drops_secrets_and_applies_overrides` — passed
+  - `tests/unit/shell/test_environment.py::test_non_batch_targets_accept_any_argument` — passed
+  - `tests/unit/shell/test_environment.py::test_ordinary_names[HOME]` — passed
+  - `tests/unit/shell/test_environment.py::test_ordinary_names[JAVA_HOME]` — passed
+  - `tests/unit/shell/test_environment.py::test_ordinary_names[LANG]` — passed
+  - `tests/unit/shell/test_environment.py::test_ordinary_names[NUMBER_OF_PROCESSORS]` — passed
+  - `tests/unit/shell/test_environment.py::test_ordinary_names[PATH]` — passed
+  - `tests/unit/shell/test_environment.py::test_ordinary_names[SYSTEMROOT]` — passed
+  - `tests/unit/shell/test_environment.py::test_ordinary_names[TEMP]` — passed
+  - `tests/unit/shell/test_environment.py::test_ordinary_names[VIRTUAL_ENV]` — passed
+  - `tests/unit/shell/test_environment.py::test_relative_executable_must_stay_in_project` — passed
+  - `tests/unit/shell/test_environment.py::test_resolve_bare_name_uses_path_not_cwd` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[ANTHROPIC_API_KEY]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[AWS_SECRET_ACCESS_KEY]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[AZURE_CLIENT_SECRET]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[DB_PASSWORD]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[GH_PAT]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[GITHUB_TOKEN]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[MY_SERVICE_KEY]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[NPM_TOKEN]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[OPENAI_API_KEY]` — passed
+  - `tests/unit/shell/test_environment.py::test_sensitive_names[PANOS_TOKEN]` — passed
+- **US-011**
+  - `tests/integration/persistence/test_repositories.py::test_project_round_trip_preserves_policy_fields` — passed
+- **US-052**
+  - `tests/integration/persistence/test_job_service.py::test_invalid_transitions_are_refused_and_not_persisted` — passed
+  - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
+  - `tests/unit/jobs/test_state_machine.py::test_every_non_terminal_state_can_be_cancelled_and_paused` — passed

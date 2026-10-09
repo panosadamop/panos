@@ -1,0 +1,174 @@
+# Panos uv workspace root (virtual; see ADR-001).
+# Members are installed with `uv sync --all-packages`.
+
+[tool.uv.workspace]
+members = ["packages/*", "services/*"]
+
+[tool.uv.sources]
+panos-core = { workspace = true }
+panos-node-api = { workspace = true }
+panos-cli = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "panos-core",
+    "panos-node-api",
+    "panos-cli",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6.0",
+    "pytest-timeout>=2.3",
+    "hypothesis>=6.120",
+    "time-machine>=2.16",
+    "httpx>=0.28",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "import-linter>=2.1",
+    "types-pywin32>=308",
+    "types-pyyaml>=6.0",
+    "types-psutil>=6.1",
+]
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["packages/panos-core/src", "packages/panos-cli/src", "services/node-api/src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F",   # pycodestyle / pyflakes
+    "I",             # isort
+    "UP",            # pyupgrade
+    "B",             # bugbear
+    "S",             # bandit (security)
+    "SIM",           # simplify
+    "RUF",           # ruff-specific
+    "N",             # naming
+    "DTZ",           # timezone-aware datetimes
+    "ASYNC",         # async pitfalls
+    "T20",           # no print in library code
+    "PT",            # pytest style
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PT018", "S105", "S106", "S108", "S603", "S607"]
+"scripts/**" = ["T20"]
+"**/migrations/versions/*.py" = ["N999"]
+
+# ---------------------------------------------------------------- mypy
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+files = [
+    "packages/panos-core/src",
+    "packages/panos-cli/src",
+    "services/node-api/src",
+    "tests",
+    "scripts",
+]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[[tool.mypy.overrides]]
+module = ["alembic.*", "bashlex.*", "rfc8785.*"]
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+timeout = 60
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+markers = [
+    "req(*ids): requirement IDs verified by this test (see docs/traceability/requirements.yaml)",
+    "e2e: end-to-end tests that start real processes",
+    "windows: runs only on Windows",
+    "posix: runs only on POSIX systems",
+]
+filterwarnings = [
+    "error::DeprecationWarning:panos_.*",
+    # Starlette 1.x deprecates httpx for its TestClient; migrate when FastAPI's TestClient does.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
+
+# ---------------------------------------------------------------- coverage
+[tool.coverage.run]
+branch = true
+source = ["panos_core", "panos_node_api", "panos_cli"]
+omit = ["*/migrations/*"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_covered = true
+exclude_also = [
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+]
+
+# ---------------------------------------------------------------- import-linter
+# Enforces REPOSITORY_STRUCTURE.md boundary rules (NFR-PORT-001, NFR-MNT-004).
+[tool.importlinter]
+root_packages = ["panos_core", "panos_node_api", "panos_cli"]
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Domain is pure: no infrastructure, frameworks or SDKs"
+type = "forbidden"
+source_modules = ["panos_core.domain"]
+forbidden_modules = [
+    "panos_core.persistence",
+    "panos_core.platform",
+    "panos_core.config",
+    "panos_core.observability",
+    "panos_node_api",
+    "panos_cli",
+    "sqlalchemy",
+    "alembic",
+    "aiosqlite",
+    "fastapi",
+    "starlette",
+    "uvicorn",
+    "structlog",
+    "typer",
+    "httpx",
+]
+
+[[tool.importlinter.contracts]]
+name = "Core never depends on API or CLI"
+type = "forbidden"
+source_modules = ["panos_core"]
+forbidden_modules = ["panos_node_api", "panos_cli", "fastapi", "starlette", "uvicorn", "typer"]
+
+[[tool.importlinter.contracts]]
+name = "OS-specific adapters are only imported by the platform package"
+type = "forbidden"
+# Indirect use through the platform dispatcher is the intended path; direct imports are not.
+allow_indirect_imports = true
+source_modules = [
+    "panos_core.domain",
+    "panos_core.config",
+    "panos_core.observability",
+    "panos_core.persistence",
+    "panos_core.redaction",
+    "panos_node_api",
+    "panos_cli",
+]
+forbidden_modules = [
+    "panos_core.platform.windows",
+    "panos_core.platform.posix",
+]

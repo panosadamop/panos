@@ -1,0 +1,28 @@
+[project]
+name = "panos-core"
+version = "0.1.0"
+description = "Panos core: domain, orchestration, policy, tools, persistence and adapters"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "platformdirs>=4.3",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "aiosqlite>=0.20",
+    "alembic>=1.14",
+    "structlog>=24.4",
+    "filelock>=3.16",
+    "pyyaml>=6.0",
+    "rfc8785>=0.1.4",
+    "keyring>=25.5",
+    "bashlex>=0.18",
+    "psutil>=6.1",
+    "pywin32>=308; sys_platform == 'win32'",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/panos_core"]
