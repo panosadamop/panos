@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 
 import { unwrap } from "../api/client";
+import { Analytics } from "../components/Analytics";
 import { Connections } from "../components/Connections";
 import { Hub } from "../components/Hub";
 import { Knowledge } from "../components/Knowledge";
@@ -101,6 +102,7 @@ export function SettingsView() {
         </p>
       )}
 
+      <Analytics />
       <Connections />
       <Hub />
       <Knowledge />

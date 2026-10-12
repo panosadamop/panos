@@ -146,6 +146,34 @@ def ai_usage(
         )
 
 
+@ai_app.command("analytics")
+def ai_analytics(
+    days: Annotated[int, typer.Option(help="window in days")] = 30,
+    as_json: Annotated[bool, typer.Option("--json")] = False,
+) -> None:
+    """Model and cost analytics: totals, local share, latency, budget, top models and projects."""
+    d = call(lambda c: c.get("/ai/analytics", days=days))
+    if as_json:
+        print_json(d)
+        return
+    share = "—" if d["local_share"] is None else f"{d['local_share']:.0%}"
+    typer.echo(
+        f"last {days} days: {d['calls']} calls · ${d['cost_usd']:.4f} · "
+        f"{d['input_tokens'] + d['output_tokens']} tokens · local {share} · "
+        f"latency p50 {d['latency_ms']['p50']} ms, p95 {d['latency_ms']['p95']} ms"
+    )
+    b = d["budget"]
+    if b["monthly_usd"]:
+        used = f"{b['used_share']:.0%}"
+        typer.echo(f"this month: ${b['month_cost_usd']:.4f} of ${b['monthly_usd']:.2f} ({used})")
+    for title, key in (("models", "by_model"), ("projects", "by_project"), ("tasks", "by_task")):
+        rows = d[key][:5]
+        if rows:
+            typer.echo(f"top {title}:")
+            for r in rows:
+                typer.echo(f"  {r['name']:<36} {r['calls']:>6} calls  ${r['cost_usd']:.4f}")
+
+
 @ai_app.command("route")
 def ai_route(
     text: Annotated[str, typer.Argument()] = "hello",

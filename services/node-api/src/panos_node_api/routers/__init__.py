@@ -10,6 +10,7 @@ from panos_node_api.routers import (
     audit,
     connectors,
     conversation,
+    effort,
     events,
     jobs,
     knowledge,
@@ -38,6 +39,7 @@ for module in (
     connectors,
     knowledge,
     remote,
+    effort,
 ):
     api_router.include_router(module.router)
 

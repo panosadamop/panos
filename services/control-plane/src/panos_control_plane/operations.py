@@ -14,7 +14,7 @@ from panos_control_plane.db.orm import ApprovalMirror, DispatchRow, JobMirror, N
 from panos_control_plane.links import LinkError, LinkManager
 from panos_control_plane.nodes import NodeError
 from panos_control_plane.state import HubState
-from panos_core.remote.protocol import Control, Decision, Dispatch, Query, QueryName
+from panos_core.remote.protocol import Control, Converse, Decision, Dispatch, Query, QueryName
 
 
 def _now() -> datetime:
@@ -175,4 +175,39 @@ async def _ask(links: LinkManager, node_id: str, msg: Any) -> dict[str, Any]:
         raise NodeError("offline", str(exc)) from exc
     if not reply.ok:
         raise NodeError("refused", reply.error or "the node refused")
+    return dict(reply.data or {})
+
+
+CONVERSE_WAIT_S = 600.0  # local models on a CPU can take minutes
+
+
+async def converse(
+    state: HubState,
+    links: LinkManager,
+    *,
+    node: str,
+    text: str,
+    project: str | None,
+    conversation_id: str | None,
+    requested_by: str,
+) -> dict[str, Any]:
+    """Relay a message to a PC's conversation (ADR-030 §3). Only metadata is audited."""
+    target = await _target(state, links, node)
+    msg = Converse(
+        text=text, project=project, conversation_id=conversation_id, requested_by=requested_by
+    )
+    try:
+        reply = await links.request(target.id, msg, wait_s=CONVERSE_WAIT_S)
+    except LinkError as exc:
+        raise NodeError("offline", str(exc)) from exc
+    async with state.db() as session, session.begin():
+        await audit.record(
+            session,
+            requested_by,
+            "conversation.relayed",
+            node_id=target.id,
+            details={"ok": reply.ok, "project": project, "chars": len(text)},
+        )
+    if not reply.ok:
+        raise NodeError("refused", reply.error or "the PC could not answer")
     return dict(reply.data or {})

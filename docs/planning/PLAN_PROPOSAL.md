@@ -393,10 +393,30 @@ Legend: **Size** S ≤ 1 day, M 2–3 days, L ≈ 1 week (indicative, agent-assi
 
 **Out of M9:** internet or VPN reachability, cloud hosting, synchronising preferences, and copying projects between nodes.
 
-### M10 — Post-MVP (epic level)
+### M10 — Mobile companion, estimation learning, model/cost analytics (decomposed 2026-10-12)
 
-| ID | Epic | Traces |
-|---|---|---|
+**Owner decisions (2026-10-12):**
+- **Mobile:** both, **PWA first**. An installable phone web app served by the hub (passkeys, LAN only); the hub API stays ready for a native app later.
+- Phone: **text only** (no voice) for now.
+- **"Actual" effort:** hours the owner logs, **plus** tracker worklogs (Jira/Azure DevOps), **plus** Panos job metrics.
+- **Learning suggests calibrations; the owner approves them.** Nothing changes estimates until it is approved (BR-015 "approved").
+
+| ID | Item | Traces | Evidence | Size |
+|---|---|---|---|---|
+| M10-00 | ADR-030 (mobile companion: PWA from the hub, a hub-relayed conversation, no third-party push, the native-app contract) and ADR-031 (estimation learning: actual sources, approval of actuals, calibration model, approval of suggestions), both Proposed | BR-026, BR-015 | Reviewed ADRs | S |
+| M10-01 | Effort store (node, migration 0008): estimate baselines per story (points, hours, technologies, at approval/estimation time) and actuals (source manual \| tracker \| job, requirement key, role, hours, cost, date, external ref, `pending` → `approved`/`rejected` with approver). Audited | BR-015, BR-014 | Repository and service tests | M |
+| M10-02 | Manual time logging and review: `panos effort log US-003 2.5h --role developer`, `panos effort review/approve`. API; desktop form and list; dashboard view (through the hub) | BR-015 | API/CLI tests; Vitest + axe | M |
+| M10-03 | Tracker worklogs: import Jira issue worklogs and Azure DevOps completed work for work items linked as `workitem:` evidence. Imported as *pending* actuals (deduplicated by external id); allowlist extended (read-only) | BR-015, BR-016 | Mocked-API tests; dedup test | M |
+| M10-04 | Panos job metrics: active runtime, AI tokens and cost per job, attributed to the requirements the job implements. Kept as a separate **machine** series that is not mixed into human hours | BR-015, FR-024 | Attribution tests | S |
+| M10-05 | Calibration: hours-per-point per project, technology and role from **approved** actuals, with confidence (n, spread), plus an accuracy report (bias, MAPE). A **suggestion** must be approved before estimation uses it (per-technology overrides, versioned, audited). Estimates show "calibrated from N stories" | BR-015, BR-014 | Calibration math tests (golden); approval flow test | M |
+| M10-06 | Model/cost analytics: AI usage over time by provider, model, locality, task, project and job; cost per requirement and job; budget burn; local vs cloud share; latency. Node API + CLI + desktop; hub aggregate across PCs + dashboard charts | BR-014, FR-027, FR-021 | Aggregation tests; Vitest + axe | M |
+| M10-07 | Mobile PWA in `apps/dashboard`: phone layout, manifest, service worker (app shell only, **no** caching of API data). Companion views: conversation with a chosen PC (hub → node `converse` message, answered by that PC's conversation service under its policy), job monitoring, approvals. Passkeys on the phone; guide for trusting the hub CA on iOS/Android | BR-026, US-062 | Vitest + axe at phone width; protocol test; Chromium mobile-emulation check | L |
+| M10-08 | Native-app readiness: a documented mobile API contract (the existing versioned hub OpenAPI plus the conversation endpoint); notes on passkeys in native apps (needs an associated domain) | BR-026 | Doc review | S |
+| M10-09 | End-to-end and docs: a calibration round trip (log → approve → suggest → approve → estimate changes); a phone conversation through the hub to a real node; owner guide; M10 report | — | E2E; owner live check on a real phone | S |
+
+**Out of M10:** native app build, mobile voice, Web Push (it would go through vendors' internet push services), automatic calibration.
+
+---|---|---|
 | M10-01..03 | Mobile companion, estimate-vs-actual learning, model/cost analytics | BR-026, BR-015, BR-014 |
 
 ---

@@ -393,3 +393,29 @@ Report: [`docs/planning/reports/M8.md`](docs/planning/reports/M8.md). M8 not com
 - **Deviation:** `panos job start --node` from non-hub PCs is deferred; dispatch is available from the dashboard and with `panos hub dispatch`.
 
 Report: [`docs/planning/reports/M9.md`](docs/planning/reports/M9.md). M9 not committed. Awaiting the owner's live check with a second PC, ADR decisions and a commit decision.
+
+### 13. Commit of M9, then M10 — Mobile companion, estimation learning, analytics
+
+**Owner:** "commit M9 and approve M10". Answers to the M10 questions (2026-10-12):
+- mobile: **both, PWA first**;
+- phone: **text only**;
+- actual effort from **logged hours + tracker worklogs + Panos job metrics**;
+- learning: **suggest, the owner approves**.
+
+**Claude:**
+- Committed M9 as `a1febb1`.
+- Decomposed M10 into M10-00..09 in `PLAN_PROPOSAL.md`: ADR-030/031; effort store with approval of actuals; manual logging; tracker worklog import; job metrics as a separate machine series; calibration with suggestions the owner approves; model/cost analytics; a PWA companion with a hub-relayed conversation; native-app contract; end-to-end tests and docs.
+- Implemented M10:
+  - **ADRs:** ADR-030 and ADR-031 (Proposed).
+  - **Effort store** (migration 0008) with approval of actuals; manual logging; Jira/ADO worklog import (pending, deduplicated, ADO deltas); job metrics as a machine series.
+  - **Calibration:** median hours per point, suggestions the owner approves, estimates that state their calibration.
+  - **Model/cost analytics** on the node, combined across PCs on the hub.
+  - **Phone companion:** a PWA (manifest, shell-only service worker, phone layout, Talk view through a new hub → node `converse` message, approvals badge).
+  - **Desktop:** Effort view and analytics in Settings.
+  - **Docs:** owner guide `docs/planning/mobile-and-estimates.md`; native-app contract `docs/api/mobile-contract.md`.
+- **Corrected during design:**
+  - The suggested hours-per-point was changed from "base × factor" to the median of each story's actual hours ÷ points, so baselines made with different values cannot skew it.
+  - A `completes` flag was added so that unfinished stories do not bias the calibration.
+- **Found while testing:** Playwright's request client ignores the browser's certificate pin, so the manifest check moved into the page.
+
+Report: [`docs/planning/reports/M10.md`](docs/planning/reports/M10.md). The owner asked for M10 to be committed (2026-10-12). Still awaiting the owner's phone check and the ADR-030/031 decisions.

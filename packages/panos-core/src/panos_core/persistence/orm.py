@@ -1,11 +1,12 @@
 """ORM table definitions. Kept separate from domain entities (ADR-004)."""
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from sqlalchemy import (
     JSON,
     Boolean,
+    Date,
     Float,
     ForeignKey,
     Index,
@@ -353,3 +354,64 @@ class KnowledgeCollectionRow(Base):
     enabled: Mapped[bool] = mapped_column(Boolean)
     created_at: Mapped[datetime] = mapped_column(UTCDateTime)
     last_indexed_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
+
+
+# ---------------------------------------------------------------------- effort (M10, ADR-031)
+class EstimateBaselineRow(Base):
+    __tablename__ = "estimate_baseline"
+    __table_args__ = (UniqueConstraint("project_id", "version"),)
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str] = mapped_column(
+        ForeignKey("project.id", ondelete="CASCADE"), index=True
+    )
+    version: Mapped[int] = mapped_column(Integer)
+    technology: Mapped[str] = mapped_column(String(64))
+    hours_per_point: Mapped[float] = mapped_column(Float)
+    calibration_id: Mapped[str | None] = mapped_column(ID)
+    stories: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class EffortActualRow(Base):
+    __tablename__ = "effort_actual"
+    __table_args__ = (
+        UniqueConstraint("source", "external_ref"),
+        Index("ix_effort_actual_project_key", "project_id", "requirement_key"),
+    )
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    project_id: Mapped[str] = mapped_column(ForeignKey("project.id", ondelete="CASCADE"))
+    requirement_key: Mapped[str] = mapped_column(String(32))
+    source: Mapped[str] = mapped_column(String(16))
+    hours: Mapped[float] = mapped_column(Float)
+    role: Mapped[str] = mapped_column(String(32))
+    work_date: Mapped[date] = mapped_column(Date)
+    external_ref: Mapped[str | None] = mapped_column(String(256))
+    machine: Mapped[dict[str, float]] = mapped_column(JSON, default=dict)
+    note: Mapped[str] = mapped_column(Text, default="")
+    completes: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(16), index=True)
+    logged_by: Mapped[str] = mapped_column(String(200))
+    decided_by: Mapped[str | None] = mapped_column(String(200))
+    decided_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class CalibrationRow(Base):
+    __tablename__ = "calibration"
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    scope: Mapped[str] = mapped_column(String(96), index=True)
+    factor: Mapped[float] = mapped_column(Float)
+    hours_per_point: Mapped[float] = mapped_column(Float)
+    base_hours_per_point: Mapped[float] = mapped_column(Float)
+    stories: Mapped[int] = mapped_column(Integer)
+    spread: Mapped[float] = mapped_column(Float)
+    bias: Mapped[float] = mapped_column(Float)
+    mape: Mapped[float] = mapped_column(Float)
+    basis: Mapped[list[str]] = mapped_column(JSON, default=list)
+    status: Mapped[str] = mapped_column(String(16), index=True)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+    decided_by: Mapped[str | None] = mapped_column(String(200))
+    decided_at: Mapped[datetime | None] = mapped_column(UTCDateTime)

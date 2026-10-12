@@ -13,7 +13,7 @@ from tests.ai_fakes import MockAI, ScriptedAgents
 from tests.integration.api.test_cli_ai import cli  # noqa: F401 - fixture
 from tests.repos import copy_repo
 
-pytestmark = pytest.mark.req("FR-022", "US-050", "US-052")
+pytestmark = pytest.mark.req("BR-023", "FR-022", "US-050", "US-052")
 
 runner = CliRunner()
 SETTLED = {"COMPLETED", "BLOCKED", "FAILED", "CANCELLED", "WAITING_FOR_APPROVAL", "PAUSED"}

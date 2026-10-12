@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from panos_core.ai.adapters.factory import api_key_name
 from panos_core.ai.router import NoRouteError
 from panos_core.ai.types import ChatRequest, Complexity, Message, Role, TaskType
+from panos_core.analytics import node_analytics
 from panos_core.domain.clock import utc_now
 from panos_core.domain.enums import PrivacyMode
 from panos_node_api.routers.conversation import ai_error_response
@@ -207,3 +208,14 @@ async def route(body: RouteDryRun, container: Container) -> Any:
         est_latency_s=decision.est_latency_s,
         est_cost_usd=decision.est_cost_usd,
     )
+
+
+@router.get("/analytics")
+async def analytics(
+    container: Container, days: Annotated[int, Query(ge=1, le=366)] = 30
+) -> dict[str, Any]:
+    """Model/cost analytics (M10-06): series, breakdowns, local share, latency, budget burn."""
+    data: dict[str, Any] = await node_analytics(
+        container.uow_factory, container.projects, container.settings.ai.monthly_budget_usd, days
+    )
+    return data

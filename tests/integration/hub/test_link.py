@@ -20,6 +20,7 @@ from panos_core.remote.link import HubLink, RemoteRefusalError
 from panos_core.remote.protocol import (
     ApprovalUpdate,
     Control,
+    Converse,
     Decision,
     Dispatch,
     Hello,
@@ -111,6 +112,9 @@ class FakeNode:
     async def decision(self, msg: Decision) -> dict[str, Any]:
         self.decisions.append(msg)
         return {"approval_id": msg.approval_id, "status": "APPROVED" if msg.approve else "REJECTED"}
+
+    async def converse(self, msg: Converse) -> dict[str, Any]:
+        return {"conversation_id": "cnv_1", "text": f"echo: {msg.text}", "privacy": "LOCAL_ONLY"}
 
     async def query(self, msg: Query) -> Any:
         if msg.name == "job":

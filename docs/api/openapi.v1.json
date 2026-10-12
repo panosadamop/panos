@@ -84,6 +84,96 @@
         "title": "AccountView",
         "type": "object"
       },
+      "ActualView": {
+        "properties": {
+          "completes": {
+            "title": "Completes",
+            "type": "boolean"
+          },
+          "decided_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided By"
+          },
+          "external_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Ref"
+          },
+          "hours": {
+            "title": "Hours",
+            "type": "number"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "logged_by": {
+            "title": "Logged By",
+            "type": "string"
+          },
+          "machine": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Machine",
+            "type": "object"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "requirement_key": {
+            "title": "Requirement Key",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "work_date": {
+            "title": "Work Date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "requirement_key",
+          "source",
+          "hours",
+          "role",
+          "work_date",
+          "external_ref",
+          "machine",
+          "note",
+          "completes",
+          "status",
+          "logged_by",
+          "decided_by"
+        ],
+        "title": "ActualView",
+        "type": "object"
+      },
       "AnalyzeRequest": {
         "additionalProperties": false,
         "properties": {
@@ -599,6 +689,81 @@
         "title": "AzureDevOpsIn",
         "type": "object"
       },
+      "CalibrationView": {
+        "properties": {
+          "base_hours_per_point": {
+            "title": "Base Hours Per Point",
+            "type": "number"
+          },
+          "bias": {
+            "title": "Bias",
+            "type": "number"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "decided_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided By"
+          },
+          "factor": {
+            "title": "Factor",
+            "type": "number"
+          },
+          "hours_per_point": {
+            "title": "Hours Per Point",
+            "type": "number"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "mape": {
+            "title": "Mape",
+            "type": "number"
+          },
+          "scope": {
+            "title": "Scope",
+            "type": "string"
+          },
+          "spread": {
+            "title": "Spread",
+            "type": "number"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "stories": {
+            "title": "Stories",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "scope",
+          "factor",
+          "hours_per_point",
+          "base_hours_per_point",
+          "stories",
+          "spread",
+          "bias",
+          "mape",
+          "status",
+          "created_at",
+          "decided_by"
+        ],
+        "title": "CalibrationView",
+        "type": "object"
+      },
       "CapabilitiesResponse": {
         "properties": {
           "api_version": {
@@ -1025,6 +1190,24 @@
           "updated_at"
         ],
         "title": "ConversationView",
+        "type": "object"
+      },
+      "DecisionIn": {
+        "additionalProperties": false,
+        "properties": {
+          "decision": {
+            "enum": [
+              "approve",
+              "reject"
+            ],
+            "title": "Decision",
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision"
+        ],
+        "title": "DecisionIn",
         "type": "object"
       },
       "DecisionRequest": {
@@ -1988,6 +2171,58 @@
           "relation"
         ],
         "title": "LinkRequest",
+        "type": "object"
+      },
+      "LogIn": {
+        "additionalProperties": false,
+        "properties": {
+          "completes": {
+            "default": false,
+            "title": "Completes",
+            "type": "boolean"
+          },
+          "hours": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 200.0,
+            "title": "Hours",
+            "type": "number"
+          },
+          "note": {
+            "default": "",
+            "maxLength": 500,
+            "title": "Note",
+            "type": "string"
+          },
+          "requirement_key": {
+            "maxLength": 32,
+            "minLength": 3,
+            "title": "Requirement Key",
+            "type": "string"
+          },
+          "role": {
+            "default": "developer",
+            "maxLength": 32,
+            "title": "Role",
+            "type": "string"
+          },
+          "work_date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Work Date"
+          }
+        },
+        "required": [
+          "requirement_key",
+          "hours"
+        ],
+        "title": "LogIn",
         "type": "object"
       },
       "MessageRequest": {
@@ -3902,6 +4137,54 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/ai/analytics": {
+      "get": {
+        "description": "Model/cost analytics (M10-06): series, breakdowns, local share, latency, budget burn.",
+        "operationId": "analytics_api_v1_ai_analytics_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 366,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Analytics Api V1 Ai Analytics Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Analytics",
+        "tags": [
+          "ai"
+        ]
+      }
+    },
     "/api/v1/ai/models": {
       "get": {
         "operationId": "models_api_v1_ai_models_get",
@@ -5016,6 +5299,188 @@
         "summary": "Get Conversation",
         "tags": [
           "conversation"
+        ]
+      }
+    },
+    "/api/v1/effort/calibrations": {
+      "get": {
+        "operationId": "list_calibrations_api_v1_effort_calibrations_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CalibrationView"
+                  },
+                  "title": "Response List Calibrations Api V1 Effort Calibrations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Calibrations",
+        "tags": [
+          "effort"
+        ]
+      }
+    },
+    "/api/v1/effort/calibrations/suggest": {
+      "post": {
+        "operationId": "suggest_api_v1_effort_calibrations_suggest_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CalibrationView"
+                  },
+                  "title": "Response Suggest Api V1 Effort Calibrations Suggest Post",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Suggest",
+        "tags": [
+          "effort"
+        ]
+      }
+    },
+    "/api/v1/effort/calibrations/{calibration_id}/decision": {
+      "post": {
+        "operationId": "decide_calibration_api_v1_effort_calibrations__calibration_id__decision_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "calibration_id",
+            "required": true,
+            "schema": {
+              "title": "Calibration Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecisionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalibrationView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Decide Calibration",
+        "tags": [
+          "effort"
+        ]
+      }
+    },
+    "/api/v1/effort/{actual_id}/decision": {
+      "post": {
+        "operationId": "decide_actual_api_v1_effort__actual_id__decision_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "actual_id",
+            "required": true,
+            "schema": {
+              "title": "Actual Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecisionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActualView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Decide Actual",
+        "tags": [
+          "effort"
         ]
       }
     },
@@ -6179,6 +6644,223 @@
         ]
       }
     },
+    "/api/v1/projects/{ref}/effort": {
+      "get": {
+        "operationId": "list_effort_api_v1_projects__ref__effort_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Source"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ActualView"
+                  },
+                  "title": "Response List Effort Api V1 Projects  Ref  Effort Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Effort",
+        "tags": [
+          "effort"
+        ]
+      },
+      "post": {
+        "operationId": "log_effort_api_v1_projects__ref__effort_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActualView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Log Effort",
+        "tags": [
+          "effort"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/effort/import": {
+      "post": {
+        "description": "Tracker worklogs of linked work items, as pending actuals (M10-03).",
+        "operationId": "import_tracker_api_v1_projects__ref__effort_import_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Import Tracker Api V1 Projects  Ref  Effort Import Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Import Tracker",
+        "tags": [
+          "effort"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/effort/report": {
+      "get": {
+        "operationId": "effort_report_api_v1_projects__ref__effort_report_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Effort Report Api V1 Projects  Ref  Effort Report Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Effort Report",
+        "tags": [
+          "effort"
+        ]
+      }
+    },
     "/api/v1/projects/{ref}/estimate": {
       "get": {
         "operationId": "project_estimate_api_v1_projects__ref__estimate_get",
@@ -6220,6 +6902,51 @@
         "summary": "Project Estimate",
         "tags": [
           "requirements"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/estimate/baseline": {
+      "post": {
+        "description": "Estimate now and keep it as the baseline for estimate-vs-actual (ADR-031 \u00a71).",
+        "operationId": "record_baseline_api_v1_projects__ref__estimate_baseline_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Record Baseline Api V1 Projects  Ref  Estimate Baseline Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Record Baseline",
+        "tags": [
+          "effort"
         ]
       }
     },

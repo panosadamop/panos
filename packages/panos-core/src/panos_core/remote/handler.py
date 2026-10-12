@@ -17,14 +17,21 @@ from datetime import UTC, datetime, timedelta
 from typing import Any, Final
 
 from panos_core import API_VERSION, __version__
+from panos_core.ai.ports import ProviderError
+from panos_core.ai.privacy import PrivacyViolationError
+from panos_core.ai.router import NoRouteError
+from panos_core.analytics import node_analytics
 from panos_core.approvals import ApprovalService
 from panos_core.approvals.service import ApprovalError
 from panos_core.audit import AuditService
 from panos_core.config import PanosSettings
+from panos_core.conversation import ConversationService
+from panos_core.conversation.service import ConversationError
 from panos_core.domain import Node, Project
 from panos_core.domain.enums import JobStatus, PrivacyMode
 from panos_core.domain.errors import EntityNotFoundError
 from panos_core.domain.models import ActionApproval, Job, JobStep
+from panos_core.effort.service import EffortService
 from panos_core.jobs import JobService
 from panos_core.jobs.runner import JobError, JobRunner
 from panos_core.persistence import UnitOfWorkFactory
@@ -34,6 +41,7 @@ from panos_core.remote.link import RemoteRefusalError
 from panos_core.remote.protocol import (
     ApprovalUpdate,
     Control,
+    Converse,
     Decision,
     Dispatch,
     Hello,
@@ -123,7 +131,13 @@ class NodeRemoteHandler:
         tools: Callable[[], list[str]],
         features: Sequence[str] = (),
         name: str | None = None,
+        conversations: ConversationService | None = None,
+        effort: EffortService | None = None,
+        monthly_budget_usd: float | None = None,
     ) -> None:
+        self._conversations = conversations
+        self._effort = effort
+        self._budget = monthly_budget_usd
         self._settings = settings
         self._node = node
         self._projects = projects
@@ -136,6 +150,9 @@ class NodeRemoteHandler:
         self._tools = tools
         self._features = list(features)
         self._name = name or node.name
+
+    def attach_conversations(self, conversations: ConversationService) -> None:
+        self._conversations = conversations
 
     # ------------------------------------------------------------------ announcements
     async def hello(self) -> Hello:
@@ -297,6 +314,19 @@ class NodeRemoteHandler:
             ]
         if msg.name == "usage":
             return await self._usage(int(p.get("days") or 30))
+        if msg.name == "analytics":
+            return await node_analytics(
+                self._uow_factory, self._projects, self._budget, int(p.get("days") or 30)
+            )
+        if msg.name == "effort":
+            ref = _str(p.get("project"))
+            if not ref or self._effort is None:
+                raise RemoteRefusalError("effort needs a project")
+            try:
+                project = await self._projects.get(ref)
+            except ProjectError as exc:
+                raise RemoteRefusalError(str(exc)) from exc
+            return await self._effort.report(project)
         if msg.name == "traceability":
             ref = _str(p.get("project"))
             if not ref:
@@ -307,6 +337,32 @@ class NodeRemoteHandler:
                 raise RemoteRefusalError(str(exc)) from exc
             return await self._requirements.traceability(project.id)
         raise RemoteRefusalError(f"unknown query {msg.name}")  # pragma: no cover
+
+    async def converse(self, msg: Converse) -> dict[str, Any]:
+        """Answered by this PC's conversation service, under its policy and routing."""
+        if self._conversations is None:
+            raise RemoteRefusalError("conversation is not available on this PC")
+        try:
+            reply = await self._conversations.send(
+                msg.text,
+                conversation_id=msg.conversation_id,
+                project_ref=msg.project,
+                actor=f"remote:{msg.requested_by}",
+            )
+        except ConversationError as exc:
+            raise RemoteRefusalError(str(exc)) from exc
+        except (NoRouteError, PrivacyViolationError, ProviderError) as exc:
+            raise RemoteRefusalError(str(exc)) from exc
+        return {
+            "conversation_id": reply.conversation_id,
+            "text": reply.text,
+            "privacy": reply.privacy.value,
+            "intent": reply.intent,
+            "provider": reply.provider,
+            "model": reply.model,
+            "locality": reply.locality,
+            "sources": list(reply.sources),
+        }
 
     async def _usage(self, days: int) -> dict[str, Any]:
         since = datetime.now(UTC) - timedelta(days=max(1, min(days, 366)))

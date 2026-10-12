@@ -6,6 +6,7 @@ import { ApprovalsView } from "./views/Approvals";
 import { AppsView } from "./views/Apps";
 import { AuditView } from "./views/Audit";
 import { ConversationView } from "./views/Conversation";
+import { EffortView } from "./views/Effort";
 import { JobsView } from "./views/Jobs";
 import { ProjectsView } from "./views/Projects";
 import { SettingsView } from "./views/Settings";
@@ -17,6 +18,7 @@ export type ViewId =
   | "jobs"
   | "approvals"
   | "projects"
+  | "effort"
   | "apps"
   | "settings"
   | "audit"
@@ -27,6 +29,7 @@ const VIEWS: { id: ViewId; label: MessageKey; render: () => ReactNode }[] = [
   { id: "jobs", label: "nav.jobs", render: () => <JobsView /> },
   { id: "approvals", label: "nav.approvals", render: () => <ApprovalsView /> },
   { id: "projects", label: "nav.projects", render: () => <ProjectsView /> },
+  { id: "effort", label: "nav.effort", render: () => <EffortView /> },
   { id: "apps", label: "nav.apps", render: () => <AppsView /> },
   { id: "settings", label: "nav.settings", render: () => <SettingsView /> },
   { id: "audit", label: "nav.audit", render: () => <AuditView /> },
@@ -43,7 +46,7 @@ export function App({ initial = "conversation" }: { initial?: ViewId }) {
     ["notification", "job.status"],
   );
 
-  // Alt+1…8 switch views (keyboard access, NFR-ACC-001).
+  // Alt+1…9 switch views (keyboard access, NFR-ACC-001).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!e.altKey) return;

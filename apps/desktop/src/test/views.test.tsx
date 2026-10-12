@@ -47,6 +47,13 @@ beforeEach(() => {
   api.on("GET", "/api/v1/remote", { joined: true, hub_url: "https://hubpc:48700", node_id: "nod_1", name: "laptop",
     link: "connected", last_error: null, certificate_expires: "2027-01-10T00:00:00Z", ca_fingerprint: "SHA256:aa",
     accept_remote_approvals: true });
+  api.on("GET", "/api/v1/ai/analytics", { calls: 4, cost_usd: 0.03, local_share: 0.5,
+    latency_ms: { p50: 800, p95: 3000 }, by_model: [{ name: "ollama/qwen", calls: 2, cost_usd: 0 },
+      { name: "anthropic/claude", calls: 2, cost_usd: 0.03 }], by_project: [] });
+  api.on("GET", "/api/v1/projects/orders/effort", []);
+  api.on("GET", "/api/v1/projects/orders/effort/report", { logged_hours: 0, pending: 0, baselines: 0,
+    finished: [], machine: { jobs: 0, runtime_s: 0, tokens: 0, cost_usd: 0 } });
+  api.on("GET", "/api/v1/effort/calibrations", []);
   api.on("GET", "/api/v1/health", { status: "ok", version: "0.1.0", api_version: "v1", node_id: "nod_1",
     uptime_s: 12, database: "ok" });
 });
@@ -258,8 +265,46 @@ describe("[US-060] hub membership", () => {
   });
 });
 
+describe("[BR-015] effort and [BR-014] analytics", () => {
+  it("logs hours and approves a calibration suggestion", async () => {
+    let calibrations: unknown[] = [];
+    api.on("GET", "/api/v1/effort/calibrations", () => calibrations);
+    api.on("POST", "/api/v1/projects/orders/effort", (body: unknown) => ({ id: "act_1", status: "APPROVED",
+      source: "manual", role: "developer", work_date: "2026-10-12", external_ref: null, machine: {}, note: "",
+      logged_by: "user", decided_by: "user", ...(body as object) }));
+    api.on("POST", "/api/v1/effort/calibrations/suggest", () => {
+      calibrations = [{ id: "cal_1", scope: "overall", factor: 1.5, hours_per_point: 9, base_hours_per_point: 6,
+        stories: 5, spread: 0.1, bias: 0.5, mape: 0.5, status: "SUGGESTED", created_at: "", decided_by: null }];
+      return calibrations;
+    });
+    api.on("POST", "/api/v1/effort/calibrations/cal_1/decision", { id: "cal_1", status: "APPROVED" });
+    const { services: s } = services();
+    renderApp("effort", s);
+    await userEvent.type(await screen.findByLabelText("Requirement"), "us-003");
+    await userEvent.type(screen.getByLabelText("Hours"), "2.5");
+    await userEvent.click(screen.getByLabelText("Finished with this"));
+    await userEvent.click(screen.getByRole("button", { name: "Log hours" }));
+    expect(await screen.findByText("✓ US-003 2.5 h")).toBeInTheDocument();
+    expect(api.calls.find((c) => c.path === "/api/v1/projects/orders/effort")?.body).toMatchObject({
+      requirement_key: "US-003", hours: 2.5, completes: true });
+    await userEvent.click(screen.getByRole("button", { name: "Suggest calibration" }));
+    const row = (await screen.findByText(/overall: 6 →/)).closest("li")!;
+    await userEvent.click(within(row).getByRole("button", { name: "Approve" }));
+    await waitFor(() => expect(api.calls.some((c) => c.path === "/api/v1/effort/calibrations/cal_1/decision")).toBe(true));
+  });
+
+  it("shows this PC's AI analytics in Settings", async () => {
+    const { services: s } = services();
+    renderApp("settings", s);
+    expect(await screen.findByText(/4 calls · \$0.0300 · local 50%/)).toBeInTheDocument();
+    expect(screen.getAllByRole("meter")).toHaveLength(2);
+  });
+});
+
 describe("[NFR-ACC-002] accessibility (axe)", () => {
-  const views: ViewId[] = ["conversation", "jobs", "approvals", "projects", "apps", "settings", "audit", "status"];
+  const views: ViewId[] = [
+    "conversation", "jobs", "approvals", "projects", "effort", "apps", "settings", "audit", "status",
+  ];
   it.each(views)("%s has no axe violations", async (view) => {
     const { services: s } = services();
     const { container } = renderApp(view, s);

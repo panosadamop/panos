@@ -50,6 +50,8 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 | R-15 | **Web search engines block or degrade automated browsers.** Live check 2026-10-12: DuckDuckGo and Brave show a bot check; Bing returns irrelevant results. | Open (owner decision): research with given URLs works; search reports "blocked" clearly. Options: a search-API provider (e.g. Brave Search API with the owner's key, behind an adapter) or keep URL-driven research. No bot-detection evasion will be built. |
 | R-17 | **A compromised hub could dispatch jobs and approve actions** on every PC. | Accepted residual risk (ADR-028): jobs and approvals still run under each PC's policy, the hub never holds approval tokens, interactive approvals are refused remotely, a PC can refuse hub decisions (`remote.accept_remote_approvals`), and both sides audit. The hub has no file or shell message. |
 | R-18 | Browsers must trust a private CA for the dashboard; a careless "proceed anyway" would weaken it. | Mitigated: the guide installs the CA per device; passkeys bind to the hub's origin, so a fake site cannot use them. |
+| R-19 | **Phone trust setup:** iOS/Android must trust the hub CA; Android apps other than Chrome may ignore user CAs. | Accepted: documented per OS. Away from the LAN the companion does not work (by design). |
+| R-20 | **Calibration from little data** can mislead (e.g. 5 similar stories). | Mitigated: median plus spread and MAPE are shown; suggestions need approval; the threshold is configurable. |
 | R-16 | Connected accounts hold long-lived tokens that can change external systems. | Mitigated (ADR-026): keyring only, allowlists, P3 approval bound to the exact change set, LOCAL_ONLY by default, audit for connect/privacy/disconnect. |
 | R-13 | The MVP scope is very large. | Mitigated: strict milestone gates. |
 | R-14 | `sqlite-vec` is pre-1.0. | Mitigated: behind a port. |
@@ -168,6 +170,17 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - **Dashboard:** passkeys (WebAuthn, user verification required); HttpOnly SameSite=Strict session cookies plus a CSRF header; strict CSP without inline script or style. The hub CLI uses a loopback-only admin token.
 - **Testing without Docker:** an embedded PostgreSQL 16 (`pgserver`) or `PANOS_TEST_PG_URL`.
 
+## 5a-octies. Design points added in M10
+
+- **The companion is the dashboard as a PWA** (ADR-030). It caches only the app shell, never API data. There is no Web Push (it would need internet push services); a badge shows pending approvals while the app is open.
+- **Talking from the phone** goes hub → node `converse`, answered by that PC's conversation service under its policy. The hub audits metadata only.
+- **Estimation learning** (ADR-031):
+  - Only approved human hours of stories marked finished count.
+  - Tracker imports arrive pending and are deduplicated by external reference; Azure DevOps contributes deltas of its cumulative completed work.
+  - Job metrics are a separate machine series.
+  - Calibration suggests the median of actual hours ÷ points (overall and per technology, at least 5 stories) and applies only after approval. Estimates say when they are calibrated.
+- **Analytics** aggregate metered calls only (no prompt text), so the hub can combine PCs.
+
 ## 5b. Security incidents
 
 | Date | Event | Handling |
@@ -261,3 +274,9 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] The hub as a background service (Windows service / launchd / systemd) and an installer option; today `panos hub serve` runs in a terminal or at login.
 - [ ] The hub in the frozen sidecar is untested: the build was not rerun in M9. The hub was run from the development install; smoke-test `panos-node hub serve` before packaging it.
 - [ ] Hub database backups (beyond the Docker volume) and hub CA rotation.
+- [ ] Accept or amend ADR-030 and ADR-031 (Proposed in M10).
+- [ ] Owner live check on a real phone (iOS and/or Android): install the PWA, passkey, talk, approve (`docs/planning/mobile-and-estimates.md`).
+- [ ] Native app (React Native) and its sign-in method (native passkeys need an associated public domain).
+- [ ] Push notifications for approvals without internet push services (e.g. a LAN notification bridge) – open design question.
+- [ ] Effort: logging hours from the phone/dashboard (today: CLI and desktop), and per-role calibration (the role split is still configured).
+- [ ] Analytics charts over time in the dashboard (today: totals, meters and tables; the daily series is in the API).

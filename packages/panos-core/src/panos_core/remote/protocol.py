@@ -127,12 +127,23 @@ class Decision(_Msg):
     decided_by: str = Field(max_length=200)
 
 
-QueryName = Literal["job", "approval", "audit", "usage", "traceability", "projects"]
+QueryName = Literal[
+    "job", "approval", "audit", "usage", "traceability", "projects", "analytics", "effort"
+]
 
 
 class Query(_Msg):
     name: QueryName
     params: dict[str, str | int | None] = Field(default_factory=dict)
+
+
+class Converse(_Msg):
+    """A message from the phone/dashboard to this PC's conversation (ADR-030 §3)."""
+
+    text: str = Field(min_length=1, max_length=8000)
+    project: str | None = Field(default=None, max_length=128)
+    conversation_id: str | None = Field(default=None, max_length=64)
+    requested_by: str = Field(max_length=200)
 
 
 NODE_TO_HUB: Final[dict[str, type[_Msg]]] = {
@@ -149,6 +160,7 @@ HUB_TO_NODE: Final[dict[str, type[_Msg]]] = {
     "control": Control,
     "decision": Decision,
     "query": Query,
+    "converse": Converse,
     "reply": Reply,  # acknowledgements (e.g. to hello)
 }
 _TYPE_OF: Final = {

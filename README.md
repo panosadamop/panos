@@ -158,6 +158,16 @@ pnpm --dir apps/dashboard build                          # the hub serves the bu
 
 The hub can only dispatch, control and query jobs and relay approval decisions. It has no access to files or shell ([ADR-028](docs/adr/ADR-028-control-plane.md), [ADR-029](docs/adr/ADR-029-node-identity.md)).
 
+Phone, estimates and analytics (M10). The hub dashboard installs on a phone as an app (PWA): talk to a PC, follow jobs and approve actions. Panos also learns better estimates from actual effort you approve. Guide: [`docs/planning/mobile-and-estimates.md`](docs/planning/mobile-and-estimates.md).
+
+```bash
+uv run panos effort baseline -p shop                      # keep today's estimate as the baseline
+uv run panos effort log US-003 2.5h -p shop --done        # your hours; `panos effort import -p shop` for Jira/ADO worklogs
+uv run panos effort suggest                               # calibrated hours/point from finished stories …
+uv run panos effort calibration approve <id>              # … used only after you approve
+uv run panos ai analytics --days 30                       # calls, cost, local share, latency, budget, top models
+```
+
 The `justfile` wraps the same commands (`just check`). CI runs them on Windows, macOS and Linux for Python 3.12 and 3.14 (`.github/workflows/ci.yml`).
 
 Runtime data never lives in the repository. It is stored in per-user directories; `panos config path` shows them. The default project workspace is `~/Panos/Projects`.

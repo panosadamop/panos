@@ -116,6 +116,20 @@ async def test_dispatch_runs_under_the_target_policy_and_is_approved_from_the_hu
         detail = (await hub.get(f"/jobs/{job_id}")).json()
         assert "hello from the laptop" in str(detail["live"]["result"]) or detail["live"]["result"]
 
+        # ADR-030: a message from the phone/dashboard is answered by that PC's conversation.
+        talk = await hub.post("/converse", json={"node": "laptop", "text": "list projects"})
+        assert talk.status_code == 200, talk.text
+        assert talk.json()["intent"] == "list_projects" and "shop" in talk.json()["text"]
+        assert (
+            await hub.post("/converse", json={"node": "nobody", "text": "hi"})
+        ).status_code == 404
+        combined = (await hub.get("/analytics", params={"days": 7})).json()
+        assert [n["name"] for n in combined["nodes"]] == ["laptop"]
+        assert "by_model" in combined["combined"]
+        hub_log = (await hub.get("/audit")).json()
+        relayed = [e for e in hub_log if e["event_type"] == "conversation.relayed"]
+        assert relayed and "list projects" not in str(relayed)  # metadata only, no text
+
     # The node's own audit shows who decided, and that the dispatch came from the hub.
     audit = (await asyncio.to_thread(node.get, "/api/v1/audit", params={"limit": 200})).json()[
         "events"

@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+    "/api/v1/ai/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Analytics
+         * @description Model/cost analytics (M10-06): series, breakdowns, local share, latency, budget burn.
+         */
+        get: operations["analytics_api_v1_ai_analytics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/ai/models": {
         parameters: {
             query?: never;
@@ -452,6 +472,74 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/effort/calibrations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Calibrations */
+        get: operations["list_calibrations_api_v1_effort_calibrations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/effort/calibrations/suggest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Suggest */
+        post: operations["suggest_api_v1_effort_calibrations_suggest_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/effort/calibrations/{calibration_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decide Calibration */
+        post: operations["decide_calibration_api_v1_effort_calibrations__calibration_id__decision_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/effort/{actual_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decide Actual */
+        post: operations["decide_actual_api_v1_effort__actual_id__decision_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -817,6 +905,61 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/projects/{ref}/effort": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Effort */
+        get: operations["list_effort_api_v1_projects__ref__effort_get"];
+        put?: never;
+        /** Log Effort */
+        post: operations["log_effort_api_v1_projects__ref__effort_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{ref}/effort/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import Tracker
+         * @description Tracker worklogs of linked work items, as pending actuals (M10-03).
+         */
+        post: operations["import_tracker_api_v1_projects__ref__effort_import_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{ref}/effort/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Effort Report */
+        get: operations["effort_report_api_v1_projects__ref__effort_report_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/projects/{ref}/estimate": {
         parameters: {
             query?: never;
@@ -828,6 +971,26 @@ export interface paths {
         get: operations["project_estimate_api_v1_projects__ref__estimate_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{ref}/estimate/baseline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record Baseline
+         * @description Estimate now and keep it as the baseline for estimate-vs-actual (ADR-031 §1).
+         */
+        post: operations["record_baseline_api_v1_projects__ref__estimate_baseline_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1354,6 +1517,37 @@ export interface components {
             /** Status */
             status: string;
         };
+        /** ActualView */
+        ActualView: {
+            /** Completes */
+            completes: boolean;
+            /** Decided By */
+            decided_by: string | null;
+            /** External Ref */
+            external_ref: string | null;
+            /** Hours */
+            hours: number;
+            /** Id */
+            id: string;
+            /** Logged By */
+            logged_by: string;
+            /** Machine */
+            machine: {
+                [key: string]: number;
+            };
+            /** Note */
+            note: string;
+            /** Requirement Key */
+            requirement_key: string;
+            /** Role */
+            role: string;
+            /** Source */
+            source: string;
+            /** Status */
+            status: string;
+            /** Work Date */
+            work_date: string;
+        };
         /** AnalyzeRequest */
         AnalyzeRequest: {
             /**
@@ -1543,6 +1737,33 @@ export interface components {
             /** Pat */
             pat: string;
         };
+        /** CalibrationView */
+        CalibrationView: {
+            /** Base Hours Per Point */
+            base_hours_per_point: number;
+            /** Bias */
+            bias: number;
+            /** Created At */
+            created_at: string;
+            /** Decided By */
+            decided_by: string | null;
+            /** Factor */
+            factor: number;
+            /** Hours Per Point */
+            hours_per_point: number;
+            /** Id */
+            id: string;
+            /** Mape */
+            mape: number;
+            /** Scope */
+            scope: string;
+            /** Spread */
+            spread: number;
+            /** Status */
+            status: string;
+            /** Stories */
+            stories: number;
+        };
         /** CapabilitiesResponse */
         CapabilitiesResponse: {
             /** Api Version */
@@ -1687,6 +1908,14 @@ export interface components {
             title: string;
             /** Updated At */
             updated_at: string;
+        };
+        /** DecisionIn */
+        DecisionIn: {
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "approve" | "reject";
         };
         /** DecisionRequest */
         DecisionRequest: {
@@ -2009,6 +2238,30 @@ export interface components {
             source_key: string;
             /** Target */
             target: string;
+        };
+        /** LogIn */
+        LogIn: {
+            /**
+             * Completes
+             * @default false
+             */
+            completes: boolean;
+            /** Hours */
+            hours: number;
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /** Requirement Key */
+            requirement_key: string;
+            /**
+             * Role
+             * @default developer
+             */
+            role: string;
+            /** Work Date */
+            work_date?: string | null;
         };
         /** MessageRequest */
         MessageRequest: {
@@ -2665,6 +2918,39 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    analytics_api_v1_ai_analytics_get: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     models_api_v1_ai_models_get: {
         parameters: {
             query?: never;
@@ -3469,6 +3755,127 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConversationView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_calibrations_api_v1_effort_calibrations_get: {
+        parameters: {
+            query?: {
+                status?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CalibrationView"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    suggest_api_v1_effort_calibrations_suggest_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CalibrationView"][];
+                };
+            };
+        };
+    };
+    decide_calibration_api_v1_effort_calibrations__calibration_id__decision_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                calibration_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CalibrationView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    decide_actual_api_v1_effort__actual_id__decision_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                actual_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActualView"];
                 };
             };
             /** @description Validation Error */
@@ -4289,7 +4696,175 @@ export interface operations {
             };
         };
     };
+    list_effort_api_v1_projects__ref__effort_get: {
+        parameters: {
+            query?: {
+                status?: string | null;
+                source?: string | null;
+            };
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActualView"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    log_effort_api_v1_projects__ref__effort_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LogIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActualView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    import_tracker_api_v1_projects__ref__effort_import_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    effort_report_api_v1_projects__ref__effort_report_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     project_estimate_api_v1_projects__ref__estimate_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    record_baseline_api_v1_projects__ref__estimate_baseline_post: {
         parameters: {
             query?: never;
             header?: never;

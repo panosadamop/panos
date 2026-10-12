@@ -89,6 +89,7 @@ def jira(site_url: str) -> tuple[Endpoint, ...]:
         Endpoint("POST", host, r"/rest/api/3/search/jql"),
         Endpoint("GET", host, rf"/rest/api/3/issue/{_ISSUE_KEY}"),
         Endpoint("GET", host, rf"/rest/api/3/issue/{_ISSUE_KEY}/transitions"),
+        Endpoint("GET", host, rf"/rest/api/3/issue/{_ISSUE_KEY}/worklog"),  # read (M10-03)
         Endpoint("GET", host, r"/rest/api/3/issue/createmeta/[A-Z][A-Z0-9_]+/issuetypes"),
         # Writes: only for approved change sets (workitem.write, P3).
         Endpoint("POST", host, r"/rest/api/3/issue"),

@@ -33,6 +33,7 @@ from panos_core.domain.requirements import (
     RequirementType,
     TraceRelation,
 )
+from panos_core.effort.service import EffortService, technology_from
 from panos_core.persistence.unit_of_work import UnitOfWorkFactory
 from panos_core.projects import ProjectService
 from panos_core.repository import gitcli
@@ -85,6 +86,11 @@ class PipelineService:
         self._gateway = gateway
         self._estimation = estimation
         self._documents = documents or DocumentSettings()
+        self._effort: EffortService | None = None
+
+    def attach_effort(self, effort: "EffortService") -> None:
+        """Approved calibrations and estimate baselines (ADR-031)."""
+        self._effort = effort
 
     # ------------------------------------------------------------------ interview
     async def start(
@@ -423,12 +429,48 @@ class PipelineService:
         return await run_agent(role, task, gateway=self._gateway, ctx=ctx, privacy=privacy)
 
     # ------------------------------------------------------------------ outputs
-    async def estimate(self, project: Project) -> Estimate:
+    async def technology(self, project: Project) -> str:
+        items = await self.requirements.list_latest(project.id)
+        stack = stack_of(approved_facts(items), project.name)
+        async with self._uow_factory() as uow:
+            snapshot = await uow.snapshots.latest(project.id)
+        return technology_from(stack["pack"] if stack else None, snapshot)
+
+    async def estimate(
+        self, project: Project, *, record: bool = False, actor: str = "user"
+    ) -> Estimate:
+        """``record``: store the result as a baseline for estimate-vs-actual (explicit runs)."""
         items = await self.requirements.list_latest(project.id)
         async with self._uow_factory() as uow:
             interviews = await uow.requirements.interviews(project.id)
         open_questions = sum(1 for i in interviews for q in i.questions if q.skipped)
-        return estimate(items, self._estimation, open_questions=open_questions)
+        hpp, calibration, technology = None, None, "unknown"
+        if self._effort is not None:
+            technology = await self.technology(project)
+            hpp, calibration = await self._effort.hours_per_point(technology)
+        note = (
+            f"calibrated from {calibration.stories} finished stories ({calibration.scope}), "
+            f"approved by {calibration.decided_by} on {calibration.decided_at:%Y-%m-%d}"
+            if calibration and calibration.decided_at
+            else None
+        )
+        result = estimate(
+            items,
+            self._estimation,
+            open_questions=open_questions,
+            hours_per_point=hpp,
+            calibration_note=note,
+        )
+        if record and self._effort is not None and result.stories:
+            await self._effort.record_baseline(
+                project,
+                result,
+                technology=technology,
+                hours_per_point=hpp or self._estimation.hours_per_point,
+                calibration=calibration,
+                actor=actor,
+            )
+        return result
 
     async def _artifact_context(self, project: Project) -> ArtifactContext:
         items = await self.requirements.list_latest(project.id)

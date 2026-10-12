@@ -3,7 +3,7 @@
 import asyncio
 import contextlib
 import time
-from collections.abc import Sequence
+from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass, field
 
 import httpx
@@ -24,8 +24,9 @@ from panos_core.config import PanosSettings, ensure_directories
 from panos_core.connectors.service import ConnectorService
 from panos_core.conversation import ConversationService
 from panos_core.conversation.service import ContextFactory
-from panos_core.domain.enums import PrivacyMode
-from panos_core.domain.models import Node, Project
+from panos_core.domain.enums import JobStatus, PrivacyMode
+from panos_core.domain.models import Job, Node, Project
+from panos_core.effort.service import EffortService
 from panos_core.events import EventBus
 from panos_core.jobs import JobService
 from panos_core.jobs.context import JobContextFactory, JobServices
@@ -97,6 +98,7 @@ class NodeContainer:
     collections: CollectionService
     browser: BrowserEngine
     hub_link: HubLink
+    effort: EffortService
     publisher: RemotePublisher
     started_monotonic: float = field(default_factory=time.monotonic)
     background: list[asyncio.Task[object]] = field(default_factory=list)
@@ -213,6 +215,29 @@ class AIOverride:
     models: ModelRegistry
 
 
+def _job_effort_recorder(
+    effort: EffortService, requirements: RequirementsService, uow_factory: UnitOfWorkFactory
+) -> Callable[[Job], Awaitable[None]]:
+    """Machine metrics of finished jobs, attributed to the requirements they implement."""
+
+    async def record(job: Job) -> None:
+        if job.status not in (JobStatus.COMPLETED, JobStatus.FAILED) or job.project_id is None:
+            return
+        target = f"job:{job.id}"
+        keys = sorted(
+            {
+                link.source_key
+                for link in await requirements.links(job.project_id)
+                if link.target == target
+            }
+        )
+        async with uow_factory() as uow:
+            tokens, cost = await uow.ai_usage.totals_for_job(job.id)
+        await effort.record_job(job, keys, tokens, cost)
+
+    return record
+
+
 async def build_container(
     settings: PanosSettings,
     *,
@@ -285,6 +310,8 @@ async def build_container(
         settings.estimation,
         settings.documents,
     )
+    effort = EffortService(uow_factory, audit, settings.estimation)
+    pipeline.attach_effort(effort)
     notifications = NotificationService([EventChannel(events), LogChannel()])
     runner = JobRunner(
         JobServices(
@@ -315,11 +342,24 @@ async def build_container(
         requirements=requirements,
         uow_factory=uow_factory,
         tools=registry.names,
-        features=["projects", "jobs", "approvals", "requirements", "knowledge", "research"],
+        features=[
+            "projects",
+            "jobs",
+            "approvals",
+            "requirements",
+            "knowledge",
+            "research",
+            "conversation",
+            "effort",
+            "analytics",
+        ],
+        effort=effort,
+        monthly_budget_usd=settings.ai.monthly_budget_usd,
     )
     hub_link = HubLink(settings, secrets, remote_handler)
     publisher = RemotePublisher(hub_link, remote_handler, jobs, approvals)
     runner.add_listener(publisher.on_job_status)
+    runner.add_listener(_job_effort_recorder(effort, requirements, uow_factory))
     approvals.add_listener(publisher.on_approval_decided)
     screen = ScreenService(apps.desktop, gateway, audit)
     conversations = ConversationService(
@@ -336,6 +376,8 @@ async def build_container(
         _context_factory(uow_factory, node.id),
         collections,
     )
+
+    remote_handler.attach_conversations(conversations)
 
     async def voice_reply(text: str, conversation_id: str | None) -> tuple[str, str]:
         reply = await conversations.send(text, conversation_id=conversation_id, actor="user:voice")
@@ -389,6 +431,7 @@ async def build_container(
         browser=browser_engine,
         hub_link=hub_link,
         publisher=publisher,
+        effort=effort,
     )
 
     async def impact_task(project_id: str, changed_key: str, stale_keys: list[str]) -> None:

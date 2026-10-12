@@ -127,6 +127,8 @@ class EstimationSettings(BaseModel):
     currency: str = "EUR"
     velocity_points: int = Field(default=20, gt=0)  # per sprint
     sprint_weeks: int = Field(default=2, gt=0)
+    # Learning (ADR-031): finished stories needed before a calibration is suggested.
+    calibration_min_stories: int = Field(default=5, ge=2, le=100)
 
 
 class VoiceSettings(BaseModel):

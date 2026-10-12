@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+    "/api/v1/analytics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Analytics
+         * @description Model/cost analytics of every online PC, and combined totals.
+         */
+        get: operations["analytics_api_v1_analytics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/approvals": {
         parameters: {
             query?: never;
@@ -222,6 +242,26 @@ export interface paths {
         put?: never;
         /** Create Code */
         post: operations["create_code_api_v1_codes_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/converse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Converse
+         * @description Talk to a PC: its own conversation service answers (text is not stored on the hub).
+         */
+        post: operations["converse_api_v1_converse_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -479,6 +519,17 @@ export interface components {
             /** Purpose */
             purpose: string;
         };
+        /** ConverseIn */
+        ConverseIn: {
+            /** Conversation Id */
+            conversation_id?: string | null;
+            /** Node */
+            node: string;
+            /** Project */
+            project?: string | null;
+            /** Text */
+            text: string;
+        };
         /** DecisionIn */
         DecisionIn: {
             /**
@@ -701,6 +752,39 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    analytics_api_v1_analytics_get: {
+        parameters: {
+            query?: {
+                days?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_approvals_api_v1_approvals_get: {
         parameters: {
             query?: {
@@ -1075,6 +1159,41 @@ export interface operations {
             };
         };
     };
+    converse_api_v1_converse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConverseIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     create_dispatch_api_v1_dispatch_post: {
         parameters: {
             query?: never;
@@ -1355,7 +1474,7 @@ export interface operations {
             header?: never;
             path: {
                 ref: string;
-                view: "audit" | "usage" | "traceability" | "projects";
+                view: "audit" | "usage" | "traceability" | "projects" | "analytics" | "effort";
             };
             cookie?: never;
         };

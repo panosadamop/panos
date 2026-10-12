@@ -6,6 +6,7 @@ a build, ``/`` explains how to make one. Security headers: strict CSP (no inline
 same-origin connections only), no framing, no referrer.
 """
 
+import mimetypes
 import os
 from pathlib import Path
 from typing import Final
@@ -22,6 +23,10 @@ PLACEHOLDER: Final = """<!doctype html><html lang="en"><meta charset="utf-8">
 <title>Panos hub</title><body><h1>Panos hub</h1>
 <p>The dashboard is not built. Run <code>pnpm --dir apps/dashboard build</code>.</p>
 </body></html>"""
+
+
+# The PWA manifest (ADR-030) must be served as JSON, which not every platform registry knows.
+mimetypes.add_type("application/manifest+json", ".webmanifest")
 
 
 def dist_dir() -> Path | None:

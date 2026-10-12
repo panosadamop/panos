@@ -158,6 +158,24 @@ class JiraClient:
         )
         return self._item(data)
 
+    async def worklogs(self, key: str) -> list[dict[str, Any]]:
+        """Logged time on an issue: [{id, hours, started (ISO date), author}] (M10-03)."""
+        data = await self._http.request(
+            "GET",
+            f"{self._site}/rest/api/3/issue/{quote(key)}/worklog",
+            params={"maxResults": 1000},
+        )
+        return [
+            {
+                "id": str(w["id"]),
+                "hours": round(int(w.get("timeSpentSeconds", 0)) / 3600, 2),
+                "started": str(w.get("started", ""))[:10],
+                "author": (w.get("author") or {}).get("displayName", ""),
+            }
+            for w in (data or {}).get("worklogs", [])
+            if int(w.get("timeSpentSeconds", 0)) > 0
+        ]
+
     async def prepare(self, change: Change) -> PreparedRequest:
         base = f"{self._site}/rest/api/3/issue"
         if change.kind == "create":
@@ -296,6 +314,16 @@ class AzureDevOpsClient:
             params={"fields": ",".join(self.FIELDS), "api-version": ADO_API},
         )
         return self._item(data)
+
+    async def completed_work(self, key: str) -> float:
+        """Cumulative completed hours of a work item (Microsoft.VSTS.Scheduling.CompletedWork)."""
+        data = await self._http.request(
+            "GET",
+            f"{self._org}/_apis/wit/workitems/{int(key)}",
+            params={"fields": "Microsoft.VSTS.Scheduling.CompletedWork", "api-version": ADO_API},
+        )
+        value = (data or {}).get("fields", {}).get("Microsoft.VSTS.Scheduling.CompletedWork")
+        return float(value or 0.0)
 
     async def prepare(self, change: Change) -> PreparedRequest:
         patch = "application/json-patch+json"

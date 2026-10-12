@@ -56,6 +56,15 @@ beforeEach(() => {
   on("GET", "/api/v1/audit", [{ seq: 1, created_at: "2026-10-12T10:00:00Z", actor: "hub", event_type: "hub.started",
     node_id: null, details: {} }]);
   on("GET", "/api/v1/nodes/nod_a/usage", { total_cost_usd: 0.5, rows: [] });
+  on("GET", "/api/v1/analytics", { days: 30, combined: { calls: 12, cost_usd: 0.42, local_share: 0.75,
+    by_model: [{ name: "anthropic/claude", calls: 3, cost_usd: 0.42, input_tokens: 1, output_tokens: 1 },
+      { name: "ollama/qwen", calls: 9, cost_usd: 0, input_tokens: 1, output_tokens: 1 }] },
+    nodes: [{ node_id: "nod_a", name: "laptop", calls: 12, cost_usd: 0.42, local_share: 0.75,
+      latency_ms: { p50: 900, p95: 4000 }, budget: { monthly_usd: 20, month_cost_usd: 0.42, used_share: 0.021 },
+      by_project: [] }] });
+  on("GET", "/api/v1/nodes/nod_a/effort", { project: "shop", logged_hours: 45, pending: 2, baselines: 1,
+    finished: [{ key: "US-001", estimated_hours: 18, actual_hours: 27, ratio: 1.5 }],
+    machine: { jobs: 3, runtime_s: 120, tokens: 5000, cost_usd: 0.01 } });
 });
 
 function renderApp(view: ViewId = "overview", lang: "el" | "en" = "en") {
@@ -128,12 +137,50 @@ describe("[US-062] [AC-US062-01] dashboard", () => {
   });
 });
 
+describe("[BR-026] companion, [BR-014] analytics and [BR-015] effort", () => {
+  it("talks to a PC through the hub and shows which model answered", async () => {
+    on("POST", "/api/v1/converse", (body: unknown) => ({ conversation_id: "cnv_9",
+      text: `Projects: shop (${(body as { text: string }).text})`, privacy: "LOCAL_ONLY", intent: "list_projects",
+      provider: null, model: null, locality: "local", sources: [] }));
+    renderApp("talk");
+    await screen.findByRole("option", { name: "laptop" });
+    await userEvent.type(screen.getByPlaceholderText("Message the selected PC…"), "list projects{Enter}");
+    expect(await screen.findByText("Projects: shop (list projects)")).toBeInTheDocument();
+    expect(screen.getByText("laptop · no model needed · LOCAL_ONLY")).toBeInTheDocument();
+    await userEvent.type(screen.getByPlaceholderText("Message the selected PC…"), "again{Enter}");
+    await waitFor(() => expect(calls.filter((c) => c.path === "/api/v1/converse")).toHaveLength(2));
+    const second = calls.filter((c) => c.path === "/api/v1/converse")[1];
+    expect(second.body).toMatchObject({ node: "nod_a", conversation_id: "cnv_9" });
+    expect(second.csrf).toBe("csrf-1");
+  });
+
+  it("shows analytics with meters and an approvals badge", async () => {
+    renderApp("usage");
+    expect(await screen.findByText("$0.42")).toBeInTheDocument();
+    expect(screen.getByText("75%")).toBeInTheDocument();
+    expect(screen.getAllByRole("meter").length).toBeGreaterThanOrEqual(2);
+    await waitFor(() => expect(screen.getByRole("button", { name: /Approvals\s*1/ })).toBeInTheDocument());
+    expect(document.title).toBe("(1) Panos hub");
+  });
+
+  it("shows estimated versus actual effort of a project", async () => {
+    renderApp("effort");
+    await screen.findByRole("option", { name: "laptop · shop" });
+    await userEvent.selectOptions(screen.getByLabelText("Project"), "nod_a|shop");
+    await userEvent.click(screen.getByRole("button", { name: "Show" }));
+    expect(await screen.findByText("1.50")).toBeInTheDocument();
+    expect(screen.getByText(/45 h logged · 2 waiting for review/)).toBeInTheDocument();
+  });
+});
+
 describe("[NFR-ACC-001] languages and [NFR-ACC-002] accessibility", () => {
   it("has the same keys in Greek and English", () => {
     expect(Object.keys(MESSAGES.el).sort()).toEqual(Object.keys(MESSAGES.en).sort());
   });
 
-  const views: ViewId[] = ["overview", "nodes", "jobs", "approvals", "dispatch", "usage", "traceability", "audit"];
+  const views: ViewId[] = [
+    "talk", "overview", "nodes", "jobs", "approvals", "dispatch", "usage", "effort", "traceability", "audit",
+  ];
   it.each(views)("%s has no axe violations", async (view) => {
     const { container } = renderApp(view, "el");
     await screen.findByRole("heading", { level: 2 });

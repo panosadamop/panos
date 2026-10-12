@@ -28,6 +28,9 @@ PREFIXES: Final = {
     "skill": "skl",
     "connector": "con",
     "collection": "col",
+    "baseline": "bln",
+    "actual": "act",
+    "calibration": "cal",
 }
 
 _ID_RE: Final = re.compile(r"^[a-z]{3}_[0-9a-f]{32}$")

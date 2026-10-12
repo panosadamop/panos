@@ -24,6 +24,7 @@ from panos_core.remote.protocol import (
     MAX_FRAME_BYTES,
     ApprovalUpdate,
     Control,
+    Converse,
     Decision,
     Dispatch,
     Heartbeat,
@@ -58,6 +59,7 @@ class RemoteHandler(Protocol):
     async def control(self, msg: Control) -> dict[str, Any]: ...
     async def decision(self, msg: Decision) -> dict[str, Any]: ...
     async def query(self, msg: Query) -> Any: ...
+    async def converse(self, msg: Converse) -> dict[str, Any]: ...
 
 
 Connector = Callable[..., Awaitable[ClientConnection]]
@@ -247,6 +249,8 @@ class HubLink:
                 data = await self._handler.decision(msg)
             elif isinstance(msg, Query):
                 data = await self._handler.query(msg)
+            elif isinstance(msg, Converse):
+                data = await self._handler.converse(msg)
             else:  # pragma: no cover - the protocol allowlist already rejects others
                 raise RemoteRefusalError("unsupported request")
             reply = Reply(to=msg_id, ok=True, data=data)

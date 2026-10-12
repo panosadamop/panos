@@ -152,6 +152,53 @@
         "title": "CodeOut",
         "type": "object"
       },
+      "ConverseIn": {
+        "additionalProperties": false,
+        "properties": {
+          "conversation_id": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conversation Id"
+          },
+          "node": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Node",
+            "type": "string"
+          },
+          "project": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project"
+          },
+          "text": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "node",
+          "text"
+        ],
+        "title": "ConverseIn",
+        "type": "object"
+      },
       "DecisionIn": {
         "additionalProperties": false,
         "properties": {
@@ -777,6 +824,51 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/analytics": {
+      "get": {
+        "description": "Model/cost analytics of every online PC, and combined totals.",
+        "operationId": "analytics_api_v1_analytics_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 366,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Analytics Api V1 Analytics Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Analytics"
+      }
+    },
     "/api/v1/approvals": {
       "get": {
         "operationId": "list_approvals_api_v1_approvals_get",
@@ -1220,6 +1312,47 @@
         "summary": "Create Code"
       }
     },
+    "/api/v1/converse": {
+      "post": {
+        "description": "Talk to a PC: its own conversation service answers (text is not stored on the hub).",
+        "operationId": "converse_api_v1_converse_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConverseIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Converse Api V1 Converse Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Converse"
+      }
+    },
     "/api/v1/dispatch": {
       "post": {
         "operationId": "create_dispatch_api_v1_dispatch_post",
@@ -1619,7 +1752,9 @@
                 "audit",
                 "usage",
                 "traceability",
-                "projects"
+                "projects",
+                "analytics",
+                "effort"
               ],
               "title": "View",
               "type": "string"

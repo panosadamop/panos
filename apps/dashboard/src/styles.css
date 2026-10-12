@@ -85,3 +85,25 @@ fieldset label { display: block; margin: 0.25rem 0; }
 .tree { list-style: none; padding-left: 1rem; }
 .target { font-style: italic; }
 form { display: grid; gap: 0.4rem; max-width: 40rem; }
+
+/* Companion (phone) layout, ADR-030 */
+.badge { font-weight: bold; }
+.turns { list-style: none; padding: 0; display: grid; gap: 0.5rem; }
+.turn { border-radius: 0.75rem; padding: 0.5rem 0.75rem; border: 1px solid currentColor; }
+.turn-you { margin-left: 15%; }
+.turn-panos { margin-right: 15%; }
+.turn p { margin: 0.25rem 0; white-space: pre-wrap; }
+.composer { display: flex; gap: 0.5rem; max-width: none; grid-template-columns: none; }
+.composer input { flex: 1; min-height: 2.75rem; }
+.pickers { display: grid; grid-template-columns: auto 1fr; gap: 0.4rem; align-items: center; }
+meter { width: 8rem; vertical-align: middle; }
+@media (max-width: 640px) {
+  .shell header { position: sticky; top: 0; z-index: 1; }
+  .shell header h1 { font-size: 1.1rem; margin: 0.25rem 0; }
+  .shell nav { display: flex; overflow-x: auto; gap: 0.25rem; white-space: nowrap; }
+  .shell nav button { min-height: 2.75rem; }
+  table { display: block; overflow-x: auto; }
+  .turn-you { margin-left: 5%; }
+  .turn-panos { margin-right: 5%; }
+  button, select, input, textarea { font-size: 1rem; }
+}

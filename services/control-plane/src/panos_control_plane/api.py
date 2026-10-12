@@ -368,7 +368,7 @@ async def decide(
 @router.get("/nodes/{ref}/{view}")
 async def node_query(
     ref: str,
-    view: Literal["audit", "usage", "traceability", "projects"],
+    view: Literal["audit", "usage", "traceability", "projects", "analytics", "effort"],
     state: State,
     links: Links,
     _: Caller,
@@ -381,6 +381,71 @@ async def node_query(
         return await operations.query(state, links, node=ref, name=view, params=params)
     except nodes.NodeError as exc:
         raise problem(exc.reason, str(exc)) from exc
+
+
+# ===================================================================== conversation (ADR-030)
+class ConverseIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    node: str = Field(min_length=1, max_length=128)
+    text: str = Field(min_length=1, max_length=8000)
+    project: str | None = Field(default=None, max_length=128)
+    conversation_id: str | None = Field(default=None, max_length=64)
+
+
+@router.post("/converse")
+async def converse(body: ConverseIn, state: State, links: Links, who: Caller) -> dict[str, Any]:
+    """Talk to a PC: its own conversation service answers (text is not stored on the hub)."""
+    try:
+        return await operations.converse(
+            state,
+            links,
+            node=body.node,
+            text=body.text,
+            project=body.project,
+            conversation_id=body.conversation_id,
+            requested_by=who.actor,
+        )
+    except nodes.NodeError as exc:
+        raise problem(exc.reason, str(exc)) from exc
+
+
+# ===================================================================== analytics (M10-06)
+_SUMS = ("calls", "input_tokens", "output_tokens", "cost_usd")
+
+
+@router.get("/analytics")
+async def analytics(
+    state: State, links: Links, _: Caller, days: Annotated[int, Query(ge=1, le=366)] = 30
+) -> dict[str, Any]:
+    """Model/cost analytics of every online PC, and combined totals."""
+    per_node: list[dict[str, Any]] = []
+    for n in await nodes.list_nodes(state):
+        if n.revoked_at or not links.online(n.id):
+            continue
+        try:
+            data = await operations.query(
+                state, links, node=n.id, name="analytics", params={"days": days}
+            )
+        except nodes.NodeError:
+            continue
+        per_node.append({"node_id": n.id, "name": n.name, **data})
+    combined: dict[str, Any] = {k: 0 for k in _SUMS}
+    by_model: dict[str, dict[str, Any]] = {}
+    local_calls = 0
+    for d in per_node:
+        for k in _SUMS:
+            combined[k] = round(combined[k] + d.get(k, 0), 6)
+        local_calls += round((d.get("local_share") or 0) * d.get("calls", 0))
+        for m in d.get("by_model", []):
+            row = by_model.setdefault(m["name"], {"name": m["name"], **{k: 0 for k in _SUMS}})
+            for k in _SUMS:
+                row[k] = round(row[k] + m.get(k, 0), 6)
+    combined["local_share"] = (
+        round(local_calls / combined["calls"], 3) if combined["calls"] else None
+    )
+    combined["by_model"] = sorted(by_model.values(), key=lambda r: -r["cost_usd"])
+    return {"days": days, "combined": combined, "nodes": per_node}
 
 
 # ===================================================================== hub audit

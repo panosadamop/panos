@@ -16,3 +16,8 @@ createRoot(document.getElementById("root")!).render(
     </I18nProvider>
   </StrictMode>,
 );
+
+// ADR-030: installable companion. The worker caches the app shell only, never API data.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+}

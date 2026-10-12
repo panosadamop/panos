@@ -16,6 +16,7 @@ from panos_cli.common import (
     not_running,
 )
 from panos_cli.connect import connect_app
+from panos_cli.effort import effort_app
 from panos_cli.hub import hub_app, node_app
 from panos_cli.jobs import job_app, research
 from panos_cli.knowledge import knowledge_app
@@ -136,6 +137,7 @@ app.add_typer(knowledge_app, name="knowledge")
 app.command("research")(research)
 app.add_typer(hub_app, name="hub")
 app.add_typer(node_app, name="node")
+app.add_typer(effort_app, name="effort")
 
 
 @app.command("voice-worker", hidden=True)

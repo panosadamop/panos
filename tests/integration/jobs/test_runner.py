@@ -21,7 +21,7 @@ from tests.ai_fakes import MockAI
 from tests.fakes import FakeDesktop
 from tests.integration.jobs.conftest import calc_project, wait_for
 
-pytestmark = pytest.mark.req("FR-022", "US-052", "US-050")
+pytestmark = pytest.mark.req("BR-023", "FR-022", "US-052", "US-050")
 
 TERMINAL_OR_WAITING = (
     JobStatus.COMPLETED,

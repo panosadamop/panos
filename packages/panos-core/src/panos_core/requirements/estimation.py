@@ -63,15 +63,22 @@ class Estimate:
 
 
 def estimate(
-    items: list[Requirement], cfg: EstimationSettings, *, open_questions: int = 0
+    items: list[Requirement],
+    cfg: EstimationSettings,
+    *,
+    open_questions: int = 0,
+    hours_per_point: float | None = None,
+    calibration_note: str | None = None,
 ) -> Estimate:
+    """``hours_per_point``/``calibration_note``: an approved calibration (ADR-031)."""
+    hpp = hours_per_point or cfg.hours_per_point
     stories = [i for i in items if i.type == RequirementType.US]
     rows: list[StoryEstimate] = []
     for story in sorted(stories, key=lambda s: s.key):
         raw = story.attributes.get("points")
         estimated = isinstance(raw, int | float) and raw > 0
         points = int(raw) if estimated else cfg.default_points  # type: ignore[arg-type]
-        hours = round(points * cfg.hours_per_point, 1)
+        hours = round(points * hpp, 1)
         rows.append(
             StoryEstimate(
                 key=story.key,
@@ -114,9 +121,11 @@ def estimate(
         sprints.append(current)
 
     assumptions = [
-        f"{cfg.hours_per_point:g} h per story point, {cfg.hours_per_day:g} h per person-day",
+        f"{hpp:g} h per story point, {cfg.hours_per_day:g} h per person-day",
         f"velocity {cfg.velocity_points} points per {cfg.sprint_weeks}-week sprint",
     ]
+    if calibration_note:
+        assumptions.append(calibration_note)
     defaulted = [r.key for r in rows if not r.estimated]
     if defaulted:
         assumptions.append(
