@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 
 import { unwrap } from "../api/client";
 import { Connections } from "../components/Connections";
+import { Hub } from "../components/Hub";
 import { Knowledge } from "../components/Knowledge";
 import { getAutostart, setAutostart } from "../desktop";
 import { useI18n, type Lang } from "../i18n";
@@ -101,6 +102,7 @@ export function SettingsView() {
       )}
 
       <Connections />
+      <Hub />
       <Knowledge />
 
       <fieldset>

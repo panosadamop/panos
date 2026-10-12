@@ -48,6 +48,8 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 | R-11 | Licences: Piper GPL-3.0, openWakeWord models and some voices non-commercial, Qwen 3B research licence. | Accepted for personal use (D-6). Revisit if Panos is ever distributed. |
 | R-12 | Gmail has no draft-only OAuth scope (`gmail.compose` can send). | Mitigated (M8, ADR-026): the send endpoints are not on the allowlist, a draft id can never be `send`, and the registry refuses an `email.send` tool. Residual: the token itself could send if extracted from the keyring. |
 | R-15 | **Web search engines block or degrade automated browsers.** Live check 2026-10-12: DuckDuckGo and Brave show a bot check; Bing returns irrelevant results. | Open (owner decision): research with given URLs works; search reports "blocked" clearly. Options: a search-API provider (e.g. Brave Search API with the owner's key, behind an adapter) or keep URL-driven research. No bot-detection evasion will be built. |
+| R-17 | **A compromised hub could dispatch jobs and approve actions** on every PC. | Accepted residual risk (ADR-028): jobs and approvals still run under each PC's policy, the hub never holds approval tokens, interactive approvals are refused remotely, a PC can refuse hub decisions (`remote.accept_remote_approvals`), and both sides audit. The hub has no file or shell message. |
+| R-18 | Browsers must trust a private CA for the dashboard; a careless "proceed anyway" would weaken it. | Mitigated: the guide installs the CA per device; passkeys bind to the hub's origin, so a fake site cannot use them. |
 | R-16 | Connected accounts hold long-lived tokens that can change external systems. | Mitigated (ADR-026): keyring only, allowlists, P3 approval bound to the exact change set, LOCAL_ONLY by default, audit for connect/privacy/disconnect. |
 | R-13 | The MVP scope is very large. | Mitigated: strict milestone gates. |
 | R-14 | `sqlite-vec` is pre-1.0. | Mitigated: behind a port. |
@@ -155,6 +157,17 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - **Research is a job** (pause/resume/cancel at safe points; read pages are kept in the state). Page footnote markers like `[5]` are stripped before answering: in the live run they made qwen2.5:3b cite the page's footnote instead of the source number.
 - **New chat intents** (Greek/English): unread mail, today's/tomorrow's agenda with conflicts, and "research …". Mail and calendar replies need no model and keep the content's privacy label.
 
+## 5a-septies. Design points added in M9
+
+- **The hub is a separate service on one of the owner's PCs** (PostgreSQL, LAN only). Nodes dial out over mTLS and open no inbound ports.
+- **Identity is a client certificate from the hub's private CA**, bound to the node id (CN plus URI SAN). It is checked against the registry on every connection; revocation is immediate (and applied within 5 s when written by another process); renewal happens over the link.
+- **Joining pins the CA by fingerprint**; enrollment codes are 128-bit, single-use and expire after 10 minutes.
+- **An allowlisted protocol** (pydantic-validated by direction) is the only way the hub reaches a node. There is no file, shell, tool or settings message.
+- **The target decides:** dispatched jobs go through the node's runner and policy; remote approval decisions go through the node's approval service, which issues the token itself.
+- **Privacy:** the hub stores metadata only for LOCAL_ONLY projects. Step summaries, results and approval summaries are fetched live for display and not stored.
+- **Dashboard:** passkeys (WebAuthn, user verification required); HttpOnly SameSite=Strict session cookies plus a CSRF header; strict CSP without inline script or style. The hub CLI uses a loopback-only admin token.
+- **Testing without Docker:** an embedded PostgreSQL 16 (`pgserver`) or `PANOS_TEST_PG_URL`.
+
 ## 5b. Security incidents
 
 | Date | Event | Handling |
@@ -182,6 +195,9 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - `types-pywin32` annotates `CreateJobObject` as returning `None` (stub bug).
 - Windows `CreateProcess` and `shutil.which` search the current directory first. Resolve executables explicitly.
 - A frozen Playwright looks for browsers inside the bundle (`_internal/playwright/driver/.local-browsers`). Set `PLAYWRIGHT_BROWSERS_PATH` to the per-user cache. Found only by the frozen smoke test (M8).
+- Tests that start processes must not leave `stderr=PIPE` unread: once the pipe buffer fills, the child blocks on logging (seen in the M9 end-to-end test as a 90 s "hang").
+- Redirected output on Windows is cp1252: the CLI now replaces characters it cannot encode (an arrow crashed `panos node join`).
+- An async test that runs a server on its own event loop must call a synchronous TestClient from a worker thread, or the server cannot answer.
 - PyInstaller does not detect modules imported by name at runtime: the SQLAlchemy dialect driver (`aiosqlite`) needs `--hidden-import`, and Alembic's `env.py`/migrations need `--add-data` (they are loaded as source files). **Smoke-test the frozen build, not just `version`.**
 - openWakeWord's Linux dependency `tflite-runtime` has no Python 3.12+ wheels. The ONNX models give identical results without it.
 - Silero VAD v5 expects a 64-sample context before every 512-sample chunk; without it the scores are wrong.
@@ -238,3 +254,10 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] Long Drive/OneDrive index runs: the token is refreshed on a 401 and the request retried once; this is tested per request but not on a real run that outlives the access token.
 - [ ] Mail/calendar CLI commands (today they are reachable through chat intents and tools only).
 - [ ] Website collections: optional same-site crawling depth (today only the listed pages).
+- [ ] Accept or amend ADR-028 and ADR-029 (Proposed in M9).
+- [ ] Owner live check with a second real PC (macOS or Linux): join, dashboard passkey, dispatch, remote approval, revoke (`docs/planning/multi-pc-setup.md`).
+- [ ] `panos job start --node` from non-hub PCs: needs upward request messages through the hub (deviation from M9-04).
+- [ ] Push updates to the dashboard (today it polls every 5 s).
+- [ ] The hub as a background service (Windows service / launchd / systemd) and an installer option; today `panos hub serve` runs in a terminal or at login.
+- [ ] The hub in the frozen sidecar is untested: the build was not rerun in M9. The hub was run from the development install; smoke-test `panos-node hub serve` before packaging it.
+- [ ] Hub database backups (beyond the Docker volume) and hub CA rotation.

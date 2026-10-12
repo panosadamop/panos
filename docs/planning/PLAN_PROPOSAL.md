@@ -365,17 +365,38 @@ Legend: **Size** S ≤ 1 day, M 2–3 days, L ≈ 1 week (indicative, agent-assi
 
 **Out of M8:** Microsoft 365 mail/calendar, Outlook COM, Thunderbird; browser form submission (stays P4, not implemented).
 
-### M9–M10 — Post-MVP (epic level; M8 decomposed above)
+### M9 — Multi-PC control plane and web dashboard (decomposed 2026-10-12)
+
+**Owner decisions (2026-10-12):**
+- The control plane runs as a **hub on one of the owner's PCs** (a role of the Panos node), with PostgreSQL in Docker next to it. No cloud.
+- **LAN only**: nothing listens on the internet.
+- The dashboard sign-in is a **passkey (WebAuthn)**.
+- **Real test machines:** this Windows PC, plus a Mac or Linux PC for the exit check.
+
+**Principles** (ARCHITECTURE "Control Plane", SECURITY boundary 6):
+- Execution always stays on the target node, under the target node's own policy.
+- Project files are never copied between nodes.
+- The hub can only reach nodes through an allowlisted message protocol: no files, no shell (AC-US062-02).
+
+| ID | Item | Traces | Evidence | Size |
+|---|---|---|---|---|
+| M9-00 | ADR-028 (control plane: hub role, trust model, what is mirrored, privacy filter for LOCAL_ONLY projects) and ADR-029 (node identity: private CA, one-time enrollment, mTLS, revocation, rotation), both Proposed | BR-024, NFR-SEC-006 | Reviewed ADRs | S |
+| M9-01 | Hub service: `services/control-plane` (FastAPI, async SQLAlchemy on **PostgreSQL**, its own migrations), Docker Compose for PostgreSQL, `panos hub init / serve / status`. Tests use an embedded or CI PostgreSQL | BR-024, ADR-004 | Repository tests on PostgreSQL; migration test | M |
+| M9-02 | PKI and enrollment: a hub CA and a server certificate (LAN hostname SANs); short-lived one-time enrollment codes. The node generates its key and a CSR; the hub signs a client certificate bound to the node id. Keys stay in a protected file plus the keyring. Revocation is checked on every connection; rotation before expiry. `panos hub enroll-code`, `panos node join`, `panos hub nodes [revoke]` | NFR-SEC-006, AC-US061-01 | Tests: wrong CA, expired, revoked, replayed code, CN/node-id mismatch all refused | L |
+| M9-03 | Node link: an outbound mTLS WebSocket from node to hub (no inbound port on nodes). Presence and heartbeat; capabilities and project inventory (names, privacy, technologies; no file contents); reconnect with backoff; offline detection; `hub.enabled` switch | FR-026, US-060, AC-US060-01 | Two-node tests over real TLS on loopback | M |
+| M9-04 | Remote dispatch: pick a target node and project. The target is shown before approval (AC-US061-02). The job is created by the target's runner under the target's policy (AC-US061-03). Status, steps and pause/resume/cancel are relayed. Only enrolled, non-revoked, online nodes can be targeted (AC-US061-01). Dispatch from the dashboard and `panos hub dispatch` (*`panos job start --node` from other PCs deferred, see ADR-028 notes*); the desktop shows the hub link | FR-026, US-061, AC-US061-01..03 | Dispatch, policy-on-target and revocation tests | M |
+| M9-05 | Shared approvals: pending approvals are mirrored to the hub. A decision can be made from the dashboard or any node; the target node verifies it and issues the single-use token itself. A node can refuse remote decisions (`hub.accept_remote_approvals`). Audited on both sides | FR-026, BR-010 | Approval relay and tamper tests | M |
+| M9-06 | Read-only aggregates: an allowlisted request/response protocol (status, jobs, audit, AI usage/cost, traceability). It carries no file or command operations. LOCAL_ONLY projects share metadata only (no diffs, tool output or content) | FR-027, AC-US062-02, NFR-PRV-001 | Protocol allowlist test; privacy filter test | M |
+| M9-07 | Dashboard auth: passkeys (py_webauthn), with the first passkey enrolled by a one-time code from the hub CLI. Session cookie (HttpOnly, SameSite=Strict) plus CSRF. HTTPS with the hub certificate; the RP ID is the hub's LAN hostname. Guide for trusting the hub CA | NFR-SEC-006 | WebAuthn ceremony tests with a soft authenticator; session/CSRF tests | M |
+| M9-08 | Web dashboard `apps/dashboard` (React/TS, generated client, el/en, axe): nodes, projects, jobs (live), approvals, logs, AI usage/cost, traceability. Served by the hub | BR-025, FR-027, US-062, AC-US062-01/02 | Vitest + axe; API tests | L |
+| M9-09 | End-to-end and docs: hub plus two nodes (subprocesses, real mTLS) dispatching a job and approving it remotely. Owner guide for Windows + macOS/Linux (install, join, trust the CA, firewall rule), README, M9 report | — | E2E; live check on two real PCs by the owner | M |
+
+**Out of M9:** internet or VPN reachability, cloud hosting, synchronising preferences, and copying projects between nodes.
+
+### M10 — Post-MVP (epic level)
 
 | ID | Epic | Traces |
 |---|---|---|
-| M8-01 | Email read/search/summarize/draft adapters (M365 Graph without Mail.Send, Gmail with endpoint allowlist, Thunderbird local mbox/maildir read); injection tests | BR-019, FR-017, US-043, AC-US043-01..03 |
-| M8-02 | Calendar read/free-busy/conflicts + approval-gated writes | BR-020, FR-018, US-044 |
-| M8-03 | Browser research tool (read/navigate/extract; P4 submission/upload) | BR-022, FR-016, US-045 |
-| M8-04 | Knowledge adapters: Office/PDF docs, Git history, company folders, SharePoint/OneDrive/Google Drive, selected websites | BR-012, FR-019 |
-| M8-05 | Document exports DOCX/XLSX/PPTX/PDF | BR-028, FR-029 |
-| M8-06 | Jira/Azure DevOps read + prepared changes + approval-gated writes | BR-016, US-042 |
-| M9-01..04 | Control plane (PostgreSQL), node enrollment + mTLS identity + revocation, remote dispatch, React web dashboard | BR-024, BR-025, FR-026, FR-027, NFR-SEC-006, US-060..062, AC-US061-01..03 |
 | M10-01..03 | Mobile companion, estimate-vs-actual learning, model/cost analytics | BR-026, BR-015, BR-014 |
 
 ---

@@ -23,6 +23,7 @@ FEATURES: tuple[str, ...] = (
     "knowledge",
     "connectors",
     "collections",
+    "remote",
 )
 
 

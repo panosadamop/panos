@@ -8,12 +8,16 @@ members = ["packages/*", "services/*"]
 panos-core = { workspace = true }
 panos-node-api = { workspace = true }
 panos-cli = { workspace = true }
+panos-control-plane = { workspace = true }
 
 [dependency-groups]
 dev = [
     "panos-core[anthropic,voice,browser]",
     "panos-node-api",
     "panos-cli",
+    "panos-control-plane",
+    # Embedded PostgreSQL for hub tests (no Docker needed); the real hub uses Docker Compose.
+    "pgserver>=0.1.4",
     "pytest>=8.3",
     "pytest-asyncio>=0.24",
     "pytest-cov>=6.0",
@@ -59,6 +63,9 @@ select = [
 # RUF001-003: Greek text is first-class in this bilingual product, not a confusable typo.
 ignore = ["ASYNC240", "RUF001", "RUF002", "RUF003"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["panos_core", "panos_node_api", "panos_cli", "panos_control_plane"]
+
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "PT018", "ASYNC221", "S105", "S106", "S108", "S603", "S607"]
 "scripts/**" = ["T20"]
@@ -74,6 +81,7 @@ files = [
     "packages/panos-core/src",
     "packages/panos-cli/src",
     "services/node-api/src",
+    "services/control-plane/src",
     "tests",
     "scripts",
 ]
@@ -86,7 +94,7 @@ disallow_incomplete_defs = false
 
 [[tool.mypy.overrides]]
 module = ["alembic.*", "bashlex.*", "rfc8785.*", "sqlite_vec.*", "onnxruntime.*",
-          "faster_whisper.*", "sounddevice.*", "piper.*", "soundfile.*"]
+          "faster_whisper.*", "sounddevice.*", "piper.*", "soundfile.*", "asyncpg.*", "pgserver.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
@@ -122,7 +130,9 @@ filterwarnings = [
 # ---------------------------------------------------------------- coverage
 [tool.coverage.run]
 branch = true
-source = ["panos_core", "panos_node_api", "panos_cli"]
+# SQLAlchemy's async layer runs ORM code in greenlets: trace them too.
+concurrency = ["thread", "greenlet"]
+source = ["panos_core", "panos_node_api", "panos_cli", "panos_control_plane"]
 omit = ["*/migrations/*"]
 
 [tool.coverage.report]
@@ -138,7 +148,7 @@ exclude_also = [
 # ---------------------------------------------------------------- import-linter
 # Enforces REPOSITORY_STRUCTURE.md boundary rules (NFR-PORT-001, NFR-MNT-004).
 [tool.importlinter]
-root_packages = ["panos_core", "panos_node_api", "panos_cli"]
+root_packages = ["panos_core", "panos_node_api", "panos_cli", "panos_control_plane"]
 include_external_packages = true
 
 [[tool.importlinter.contracts]]
@@ -167,7 +177,21 @@ forbidden_modules = [
 name = "Core never depends on API or CLI"
 type = "forbidden"
 source_modules = ["panos_core"]
-forbidden_modules = ["panos_node_api", "panos_cli", "fastapi", "starlette", "uvicorn", "typer"]
+forbidden_modules = [
+    "panos_node_api",
+    "panos_cli",
+    "panos_control_plane",
+    "fastapi",
+    "starlette",
+    "uvicorn",
+    "typer",
+]
+
+[[tool.importlinter.contracts]]
+name = "The hub never imports the node API (it reaches nodes only through the link protocol)"
+type = "forbidden"
+source_modules = ["panos_control_plane"]
+forbidden_modules = ["panos_node_api"]
 
 [[tool.importlinter.contracts]]
 name = "OS-specific adapters are only imported by the platform package"

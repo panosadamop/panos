@@ -15,6 +15,7 @@ from panos_node_api.routers import (
     knowledge,
     node,
     projects,
+    remote,
     requirements,
     screen,
     voice,
@@ -36,6 +37,7 @@ for module in (
     screen,
     connectors,
     knowledge,
+    remote,
 ):
     api_router.include_router(module.router)
 

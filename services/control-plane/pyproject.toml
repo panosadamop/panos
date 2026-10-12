@@ -1,0 +1,22 @@
+[project]
+name = "panos-control-plane"
+version = "0.1.0"
+description = "Panos hub: node registry, remote dispatch, shared approvals and the web dashboard (ADR-028)"
+requires-python = ">=3.12"
+dependencies = [
+    "panos-core",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+    "webauthn>=2.2",
+    "websockets>=13.0",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/panos_control_plane"]

@@ -16,6 +16,7 @@ from panos_cli.common import (
     not_running,
 )
 from panos_cli.connect import connect_app
+from panos_cli.hub import hub_app, node_app
 from panos_cli.jobs import job_app, research
 from panos_cli.knowledge import knowledge_app
 from panos_cli.projects import apps_app, project_app, screen
@@ -133,6 +134,8 @@ app.add_typer(voice_app, name="voice")
 app.add_typer(connect_app, name="connect")
 app.add_typer(knowledge_app, name="knowledge")
 app.command("research")(research)
+app.add_typer(hub_app, name="hub")
+app.add_typer(node_app, name="node")
 
 
 @app.command("voice-worker", hidden=True)
@@ -212,6 +215,13 @@ def approvals_reject(approval_id: str, comment: Annotated[str, typer.Option()] =
 
 
 def main() -> None:
+    # Redirected output on Windows defaults to cp1252: never crash on "→" or Greek text.
+    import sys
+
+    for stream in (sys.stdout, sys.stderr):
+        encoding = (getattr(stream, "encoding", "") or "").lower().replace("-", "")
+        if encoding != "utf8" and hasattr(stream, "reconfigure"):
+            stream.reconfigure(errors="replace")
     app()
 
 

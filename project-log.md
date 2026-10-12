@@ -357,3 +357,39 @@ These decisions are recorded in `PLAN_PROPOSAL.md` §M8. *The exact wording of t
 - M8-08: ADR-026 and ADR-027 (Proposed), `docs/planning/connectors-setup.md`, README.
 
 Report: [`docs/planning/reports/M8.md`](docs/planning/reports/M8.md). M8 not committed. Awaiting the owner's live checks, decisions (R-15, ADR-026/027) and a commit decision.
+
+### 12. Commit of M8, then M9 — Multi-PC control plane and web dashboard
+
+**Owner:** "commit M8 and approve M9". Answers to the M9 questions (2026-10-12):
+- the hub runs **on one of my PCs**;
+- **LAN only**;
+- dashboard sign-in by **passkey (WebAuthn)**;
+- test machines: **this PC plus a Mac or Linux PC**.
+
+**Claude:**
+- Committed M8 as `9442fa8`.
+- Decomposed M9 into M9-00..09 in `PLAN_PROPOSAL.md`: ADR-028/029; the hub service on PostgreSQL; a private CA with one-time enrollment, mTLS and revocation; an outbound node link; remote dispatch under the target's policy; shared approvals verified by the target; allowlisted read-only aggregates with a LOCAL_ONLY metadata filter; passkey auth; the React dashboard; two-node end-to-end tests and the owner guide.
+- Noted for M9-01: the Docker daemon is not running on this PC and there is no local PostgreSQL. Tests will use an embedded PostgreSQL (or CI's), and Docker Compose is for the owner's hub.
+- Implemented M9:
+  - **ADRs:** ADR-028 and ADR-029 (Proposed).
+  - **Hub service** (`services/control-plane`): PostgreSQL schema and migrations, a hash-chained hub audit, CA and server certificate, Docker Compose.
+  - **Identity:** one-time enrollment with CA pinning; an mTLS node link with revocation (immediate, plus a sweep) and renewal over the link.
+  - **Protocol:** allowlisted messages.
+  - **Node side:** a link client, a handler that uses the node's own runner, policy and approvals, and a mirror publisher with the LOCAL_ONLY privacy filter.
+  - **Hub operations:** dispatch, control, shared approval decisions, live read-only queries.
+  - **Dashboard auth:** passkeys, sessions and CSRF.
+  - **React dashboard** (`apps/dashboard`, 8 views, el/en, axe) served under a strict CSP.
+  - **Surfaces:** CLI `panos hub …` / `panos node …`, node API `/remote`, desktop Settings → Hub.
+  - **Docs:** owner guide `docs/planning/multi-pc-setup.md`.
+- **Found and fixed while testing:**
+  - The project inventory was sent only at connect (a project registered later never reached the hub). It is now republished on change.
+  - The CLI crashed on "→" with redirected cp1252 output.
+  - The end-to-end "hang" was an unread stderr pipe in the test harness.
+- **Verified:**
+  - real TLS on loopback;
+  - a real node app joined, ran a dispatched command and was approved from the hub;
+  - passkeys with a software authenticator and in real Chromium;
+  - real `panos` processes on both sides (join, dispatch, policy on the target, revoke).
+- **Deviation:** `panos job start --node` from non-hub PCs is deferred; dispatch is available from the dashboard and with `panos hub dispatch`.
+
+Report: [`docs/planning/reports/M9.md`](docs/planning/reports/M9.md). M9 not committed. Awaiting the owner's live check with a second PC, ADR decisions and a commit decision.

@@ -1,7 +1,8 @@
 """Shared fixtures. Every test runs with isolated per-user directories."""
 
+import os
 import sys
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Iterator
 from pathlib import Path
 
 import pytest
@@ -65,3 +66,18 @@ def pytest_runtest_setup(item: pytest.Item) -> None:
         pytest.skip("Windows-only test")
     if item.get_closest_marker("posix") and sys.platform == "win32":
         pytest.skip("POSIX-only test")
+
+
+@pytest.fixture(scope="session")
+def pg_admin_url(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
+    """A PostgreSQL server for hub tests: ``PANOS_TEST_PG_URL`` or an embedded one (M9)."""
+    url = os.environ.get("PANOS_TEST_PG_URL")
+    if url:
+        yield url
+        return
+    pgserver = pytest.importorskip("pgserver")
+    server = pgserver.get_server(tmp_path_factory.mktemp("pg"), cleanup_mode="stop")
+    try:
+        yield str(server.get_uri())
+    finally:
+        server.cleanup()

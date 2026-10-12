@@ -31,3 +31,5 @@ ADRs are binding once **Accepted**. Status changes and superseding decisions are
 | [ADR-025](ADR-025-screenshots.md) | Screenshot handling | Accepted |
 | [ADR-026](ADR-026-connectors.md) | External connectors (mail, calendar, drives, trackers) | Proposed (M8) |
 | [ADR-027](ADR-027-browser-research.md) | Browser research | Proposed (M8) |
+| [ADR-028](ADR-028-control-plane.md) | Control plane (hub) for multiple PCs | Proposed (M9) |
+| [ADR-029](ADR-029-node-identity.md) | Node identity, enrollment and mTLS | Proposed (M9) |

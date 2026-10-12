@@ -1095,6 +1095,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/remote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Remote Status */
+        get: operations["remote_status_api_v1_remote_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/remote/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Join */
+        post: operations["join_api_v1_remote_join_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/remote/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Leave */
+        post: operations["leave_api_v1_remote_leave_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/screen/analyze": {
         parameters: {
             query?: never;
@@ -1929,6 +1980,23 @@ export interface components {
             /** Status Reason */
             status_reason: string;
         };
+        /** JoinIn */
+        JoinIn: {
+            /** Code */
+            code: string;
+            /** Fingerprint */
+            fingerprint: string;
+            /**
+             * Hub Url
+             * @example https://hubpc:48700
+             */
+            hub_url: string;
+            /**
+             * Name
+             * @description default: the node name
+             */
+            name?: string | null;
+        };
         /** KeyRequest */
         KeyRequest: {
             /** Key */
@@ -2138,6 +2206,27 @@ export interface components {
             tier: number;
             /** Uri */
             uri: string;
+        };
+        /** RemoteStatus */
+        RemoteStatus: {
+            /** Accept Remote Approvals */
+            accept_remote_approvals: boolean;
+            /** Ca Fingerprint */
+            ca_fingerprint?: string | null;
+            /** Certificate Expires */
+            certificate_expires?: string | null;
+            /** Hub Url */
+            hub_url?: string | null;
+            /** Joined */
+            joined: boolean;
+            /** Last Error */
+            last_error?: string | null;
+            /** Link */
+            link: string;
+            /** Name */
+            name?: string | null;
+            /** Node Id */
+            node_id: string;
         };
         /** ReplyView */
         ReplyView: {
@@ -4855,6 +4944,79 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remote_status_api_v1_remote_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RemoteStatus"];
+                };
+            };
+        };
+    };
+    join_api_v1_remote_join_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JoinIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RemoteStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    leave_api_v1_remote_leave_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RemoteStatus"];
                 };
             };
         };

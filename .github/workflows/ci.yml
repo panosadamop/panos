@@ -38,8 +38,10 @@ jobs:
         run: uv run lint-imports
       - name: Requirement registry
         run: uv run python scripts/trace_registry.py --check
-      - name: OpenAPI schema up to date
-        run: uv run python scripts/export_openapi.py --check
+      - name: OpenAPI schemas up to date
+        run: |
+          uv run python scripts/export_openapi.py --check
+          uv run python scripts/export_hub_openapi.py --check
       - name: Tests
         run: >
           uv run pytest --cov --cov-report=term-missing
@@ -71,6 +73,12 @@ jobs:
         run: pnpm --filter panos-desktop test
       - name: Generated API and event types up to date
         run: pnpm --filter panos-desktop check:gen
+      - name: Hub dashboard (types, Vitest + axe, generated client, build)
+        run: |
+          pnpm --filter panos-dashboard typecheck
+          pnpm --filter panos-dashboard test
+          pnpm --filter panos-dashboard check:gen
+          pnpm --filter panos-dashboard build
 
   shell:
     runs-on: windows-latest

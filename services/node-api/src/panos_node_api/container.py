@@ -47,6 +47,9 @@ from panos_core.platform.desktop import DesktopAdapter, default_desktop
 from panos_core.policy import PolicyEngine
 from panos_core.projects import ProjectService
 from panos_core.projects.context import project_tool_context
+from panos_core.remote.handler import NodeRemoteHandler
+from panos_core.remote.link import HubLink
+from panos_core.remote.publisher import RemotePublisher
 from panos_core.repository import AnalysisService
 from panos_core.requirements import RequirementsService
 from panos_core.requirements.pipeline import PipelineService
@@ -93,6 +96,8 @@ class NodeContainer:
     connectors: ConnectorService
     collections: CollectionService
     browser: BrowserEngine
+    hub_link: HubLink
+    publisher: RemotePublisher
     started_monotonic: float = field(default_factory=time.monotonic)
     background: list[asyncio.Task[object]] = field(default_factory=list)
 
@@ -112,7 +117,19 @@ class NodeContainer:
                 await provider.close()
         await self.gateway.refresh_health(force=True)
 
+    def start_remote(self) -> bool:
+        """Link to the hub if this node has joined one (ADR-028)."""
+        if self.hub_link.start():
+            self.publisher.start()
+            return True
+        return False
+
+    async def stop_remote(self) -> None:
+        await self.publisher.stop()
+        await self.hub_link.stop()
+
     async def close(self) -> None:
+        await self.stop_remote()
         await self.voice.stop()
         await self.connectors.close()
         await self.browser.close()
@@ -287,6 +304,23 @@ async def build_container(
     )
     runner.add_listener(notifications.on_job_status)
     approvals.add_listener(runner.on_approval)
+    remote_handler = NodeRemoteHandler(
+        settings=settings,
+        node=node,
+        projects=projects,
+        runner=runner,
+        jobs=jobs,
+        approvals=approvals,
+        audit=audit,
+        requirements=requirements,
+        uow_factory=uow_factory,
+        tools=registry.names,
+        features=["projects", "jobs", "approvals", "requirements", "knowledge", "research"],
+    )
+    hub_link = HubLink(settings, secrets, remote_handler)
+    publisher = RemotePublisher(hub_link, remote_handler, jobs, approvals)
+    runner.add_listener(publisher.on_job_status)
+    approvals.add_listener(publisher.on_approval_decided)
     screen = ScreenService(apps.desktop, gateway, audit)
     conversations = ConversationService(
         uow_factory,
@@ -353,6 +387,8 @@ async def build_container(
         connectors=connectors,
         collections=collections,
         browser=browser_engine,
+        hub_link=hub_link,
+        publisher=publisher,
     )
 
     async def impact_task(project_id: str, changed_key: str, stale_keys: list[str]) -> None:
@@ -397,6 +433,7 @@ async def build_container(
 
     container.conversations.attach_job_starter(start_coding_job)
     container.conversations.attach_research_starter(start_research_job)
+    container.start_remote()
     # Discovery reads the registry/filesystem; run it after startup so /health is not delayed.
     container.background.append(asyncio.create_task(_refresh_apps(apps)))
     log.info(

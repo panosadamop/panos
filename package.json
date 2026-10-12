@@ -4,7 +4,7 @@
   "packageManager": "pnpm@10.6.2",
   "scripts": {
     "gen": "pnpm --filter panos-desktop gen",
-    "check": "pnpm --filter panos-desktop check",
-    "test": "pnpm --filter panos-desktop test"
+    "check": "pnpm --filter panos-desktop check && pnpm --filter panos-dashboard check",
+    "test": "pnpm --filter panos-desktop test && pnpm --filter panos-dashboard test"
   }
 }

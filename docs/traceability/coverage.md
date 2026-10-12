@@ -1,17 +1,17 @@
 # Requirement test coverage
 
-_Generated 2026-10-12 09:33 UTC by `pytest --req-report`. Do not edit by hand._
+_Generated 2026-10-12 12:13 UTC by `pytest --req-report`. Do not edit by hand._
 
 A requirement counts as *covered* when at least one test is tagged with it. Coverage grows milestone by milestone; untested requirements belong to later milestones.
 
 | Type | Total | Covered | Passing |
 |---|---|---|---|
-| BR | 29 | 24 | 23 |
-| FR | 30 | 28 | 27 |
-| NFR | 31 | 20 | 20 |
+| BR | 29 | 25 | 24 |
+| FR | 30 | 29 | 28 |
+| NFR | 31 | 21 | 21 |
 | EPIC | 7 | 0 | 0 |
-| US | 30 | 27 | 25 |
-| AC | 90 | 74 | 71 |
+| US | 30 | 30 | 28 |
+| AC | 90 | 80 | 77 |
 
 ## Covered requirements
 
@@ -38,6 +38,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | BR-020 | Calendar | passed | 10 |
 | BR-021 | Screen understanding | passed | 5 |
 | BR-022 | Browser boundary | passed | 14 |
+| BR-024 | Multi-PC | passed | 12 |
 | BR-027 | Offline operation | passed | 2 |
 | BR-028 | Documents | passed | 21 |
 | BR-029 | Workspace | passed | 4 |
@@ -66,6 +67,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | FR-023 | Limits | passed | 5 |
 | FR-024 | Checkpoints | passed | 5 |
 | FR-025 | Notifications | passed | 2 |
+| FR-026 | Multi-node | passed | 11 |
 | FR-028 | Audit | passed | 18 |
 | FR-029 | Document generation | passed | 21 |
 | FR-030 | Claude skills | passed | 2 |
@@ -77,7 +79,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | NFR-PERF-004 | Indexing runs incrementally after initial project ingestion. | passed | 2 |
 | NFR-PORT-002 | Windows/macOS/Linux behavior lives behind adapter contracts. *One c... | passed | 4 |
 | NFR-PORT-003 | AI/STT/TTS/vector/integration providers are pluggable. | passed | 14 |
-| NFR-PRV-001 | Wake-word detection operates locally. | passed | 1 |
+| NFR-PRV-001 | Wake-word detection operates locally. | passed | 5 |
 | NFR-PRV-002 | Screenshots are ephemeral by default. | passed | 1 |
 | NFR-PRV-003 | Knowledge sources retain provenance and access scope. | passed | 23 |
 | NFR-PRV-004 | Project privacy policy overrides model preference/cost. | passed | 1 |
@@ -89,6 +91,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | NFR-SEC-003 | Encrypt credentials/secrets at rest using OS-backed secure storage ... | passed | 4 |
 | NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 97 |
 | NFR-SEC-005 | Local-only content must be technically blocked from cloud-provider ... | passed | 18 |
+| NFR-SEC-006 | Remote nodes use mutual authentication, encrypted transport and rev... | passed | 17 |
 | US-001 | As a user, I can activate Panos by saying `Panos` so I can work han... | partial | 3 |
 | US-002 | I can use a global hotkey when voice activation is inconvenient. | partial | 2 |
 | US-003 | I can speak Greek, English or mixed technical language. | passed | 1 |
@@ -116,6 +119,9 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | US-050 | Panos can work autonomously while I do something else. | passed | 11 |
 | US-051 | Panos notifies me when approval or a business decision is needed. | passed | 2 |
 | US-052 | I can pause/resume/cancel a job. | passed | 15 |
+| US-060 | I can see all authorized Panos PCs and their state. | passed | 1 |
+| US-061 | I can dispatch an approved task to another PC. | passed | 2 |
+| US-062 | I can monitor tasks and approvals in a React web dashboard. | passed | 3 |
 | AC-US001-01 | Wake-word detection works without internet. | skipped | 1 |
 | AC-US001-02 | Ambient audio is not sent to cloud providers. | skipped | 1 |
 | AC-US001-03 | Detection starts a command utterance session and gives visible feed... | partial | 2 |
@@ -190,6 +196,12 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | AC-US052-01 | The user can pause, resume and cancel a job from CLI, desktop and v... | passed | 4 |
 | AC-US052-02 | Cancel stops running tool processes (including child processes) and... | passed | 2 |
 | AC-US052-03 | Pause takes effect at the next safe point; resume continues from th... | passed | 1 |
+| AC-US060-01 | The user sees all authorized nodes with platform, capabilities, sta... | passed | 1 |
+| AC-US061-01 | Only authenticated authorized nodes are targetable. | passed | 2 |
+| AC-US061-02 | User can see target node before approval/execution. | passed | 1 |
+| AC-US061-03 | Remote task actions remain subject to target-node permissions. | passed | 5 |
+| AC-US062-01 | The dashboard shows nodes, projects, jobs, approvals, logs, AI usag... | passed | 1 |
+| AC-US062-02 | The dashboard cannot access node files directly or execute arbitrar... | passed | 4 |
 
 ## Tests per requirement
 
@@ -628,6 +640,26 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
 - **AC-US052-03**
   - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
+- **AC-US060-01**
+  - `tests/integration/hub/test_link.py::test_link_mirrors_dispatches_and_relays_decisions` — passed
+- **AC-US061-01**
+  - `tests/integration/hub/test_link.py::test_join_pins_the_ca_and_uses_codes_once` — passed
+  - `tests/integration/hub/test_link.py::test_revocation_closes_the_link_and_stops_reconnects` — passed
+- **AC-US061-02**
+  - `tests/integration/hub/test_link.py::test_link_mirrors_dispatches_and_relays_decisions` — passed
+- **AC-US061-03**
+  - `tests/integration/hub/test_link.py::test_link_mirrors_dispatches_and_relays_decisions` — passed
+  - `tests/integration/hub/test_real_node.py::test_dispatch_runs_under_the_target_policy_and_is_approved_from_the_hub` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_announcements_and_privacy_filter` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_dispatch_is_decided_by_the_node` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_remote_decisions_and_queries` — passed
+- **AC-US062-01**
+  - `tests/integration/hub/test_dashboard_browser.py::test_passkey_setup_and_sign_in_in_chromium` — passed
+- **AC-US062-02**
+  - `tests/integration/hub/test_link.py::test_link_mirrors_dispatches_and_relays_decisions` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_announcements_and_privacy_filter` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_dispatch_is_decided_by_the_node` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_remote_decisions_and_queries` — passed
 - **BR-001**
   - `tests/e2e/test_node_daemon.py::test_serve_status_and_authenticated_health` — passed
   - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
@@ -1057,6 +1089,19 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **BR-024**
+  - `tests/e2e/test_multi_pc.py::test_hub_node_join_dispatch_and_revoke_with_real_processes` — passed
+  - `tests/integration/hub/test_hub_service.py::test_audit_chain_detects_tampering` — passed
+  - `tests/integration/hub/test_hub_service.py::test_health_reports_the_ca_fingerprint` — passed
+  - `tests/integration/hub/test_hub_service.py::test_init_creates_encrypted_keys_and_a_stable_ca` — passed
+  - `tests/integration/hub/test_hub_service.py::test_migrations_create_the_hub_schema` — passed
+  - `tests/integration/hub/test_link.py::test_api_requires_authentication` — passed
+  - `tests/integration/hub/test_link.py::test_certificate_renewal_over_the_link` — passed
+  - `tests/integration/hub/test_link.py::test_join_pins_the_ca_and_uses_codes_once` — passed
+  - `tests/integration/hub/test_link.py::test_link_mirrors_dispatches_and_relays_decisions` — passed
+  - `tests/integration/hub/test_link.py::test_remote_approvals_can_be_refused_by_the_node` — passed
+  - `tests/integration/hub/test_link.py::test_revocation_closes_the_link_and_stops_reconnects` — passed
+  - `tests/integration/hub/test_real_node.py::test_dispatch_runs_under_the_target_policy_and_is_approved_from_the_hub` — passed
 - **BR-027**
   - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
   - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
@@ -1839,6 +1884,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **FR-025**
   - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
   - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+- **FR-026**
+  - `tests/e2e/test_multi_pc.py::test_hub_node_join_dispatch_and_revoke_with_real_processes` — passed
+  - `tests/integration/hub/test_link.py::test_api_requires_authentication` — passed
+  - `tests/integration/hub/test_link.py::test_certificate_renewal_over_the_link` — passed
+  - `tests/integration/hub/test_link.py::test_join_pins_the_ca_and_uses_codes_once` — passed
+  - `tests/integration/hub/test_link.py::test_link_mirrors_dispatches_and_relays_decisions` — passed
+  - `tests/integration/hub/test_link.py::test_remote_approvals_can_be_refused_by_the_node` — passed
+  - `tests/integration/hub/test_link.py::test_revocation_closes_the_link_and_stops_reconnects` — passed
+  - `tests/integration/hub/test_real_node.py::test_dispatch_runs_under_the_target_policy_and_is_approved_from_the_hub` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_announcements_and_privacy_filter` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_dispatch_is_decided_by_the_node` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_remote_decisions_and_queries` — passed
 - **FR-028**
   - `tests/e2e/test_node_daemon.py::test_cli_audit_and_approvals_against_live_node` — passed
   - `tests/integration/api/test_approvals_api.py::test_approval_endpoints_require_auth` — passed
@@ -1959,6 +2016,10 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_adapters.py::test_remote_ollama_is_cloud_and_refuses_local_only` — passed
   - `tests/unit/ai/test_adapters.py::test_slow_local_generation_is_a_clear_non_retryable_timeout` — passed
 - **NFR-PRV-001**
+  - `tests/integration/hub/test_link.py::test_link_mirrors_dispatches_and_relays_decisions` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_announcements_and_privacy_filter` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_dispatch_is_decided_by_the_node` — passed
+  - `tests/integration/jobs/test_remote_handler.py::test_remote_decisions_and_queries` — passed
   - `tests/unit/voice/test_voice_unit.py::test_no_audio_is_ever_written_to_disk` — passed
 - **NFR-PRV-002**
   - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
@@ -2519,6 +2580,24 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_privacy_context.py::test_envelopes_cannot_be_forged_from_inside` — passed
   - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
   - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
+- **NFR-SEC-006**
+  - `tests/integration/hub/test_dashboard_browser.py::test_passkey_setup_and_sign_in_in_chromium` — passed
+  - `tests/integration/hub/test_hub_service.py::test_audit_chain_detects_tampering` — passed
+  - `tests/integration/hub/test_hub_service.py::test_health_reports_the_ca_fingerprint` — passed
+  - `tests/integration/hub/test_hub_service.py::test_init_creates_encrypted_keys_and_a_stable_ca` — passed
+  - `tests/integration/hub/test_hub_service.py::test_migrations_create_the_hub_schema` — passed
+  - `tests/integration/hub/test_link.py::test_api_requires_authentication` — passed
+  - `tests/integration/hub/test_link.py::test_certificate_renewal_over_the_link` — passed
+  - `tests/integration/hub/test_link.py::test_join_pins_the_ca_and_uses_codes_once` — passed
+  - `tests/integration/hub/test_link.py::test_link_mirrors_dispatches_and_relays_decisions` — passed
+  - `tests/integration/hub/test_link.py::test_remote_approvals_can_be_refused_by_the_node` — passed
+  - `tests/integration/hub/test_link.py::test_revocation_closes_the_link_and_stops_reconnects` — passed
+  - `tests/integration/hub/test_passkeys.py::test_first_passkey_needs_a_one_time_code_then_signs_in` — passed
+  - `tests/integration/hub/test_passkeys.py::test_wrong_origin_or_key_is_refused` — passed
+  - `tests/unit/remote/test_pki_protocol.py::test_fingerprints_and_encrypted_keys` — passed
+  - `tests/unit/remote/test_pki_protocol.py::test_mutual_tls_accepts_only_hub_issued_nodes` — passed
+  - `tests/unit/remote/test_pki_protocol.py::test_node_certificate_is_bound_to_the_node` — passed
+  - `tests/unit/remote/test_pki_protocol.py::test_protocol_allowlist_by_direction` — passed
 - **US-001**
   - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — skipped
   - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — skipped
@@ -2702,3 +2781,12 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/tools/test_shell_tool.py::test_cancel_kills_the_whole_process_tree` — passed
   - `tests/integration/voice/test_supervisor.py::test_routing_speech_control_vs_job_control_vs_conversation` — passed
   - `tests/unit/jobs/test_state_machine.py::test_every_non_terminal_state_can_be_cancelled_and_paused` — passed
+- **US-060**
+  - `tests/e2e/test_multi_pc.py::test_hub_node_join_dispatch_and_revoke_with_real_processes` — passed
+- **US-061**
+  - `tests/e2e/test_multi_pc.py::test_hub_node_join_dispatch_and_revoke_with_real_processes` — passed
+  - `tests/integration/hub/test_real_node.py::test_dispatch_runs_under_the_target_policy_and_is_approved_from_the_hub` — passed
+- **US-062**
+  - `tests/integration/hub/test_dashboard_browser.py::test_passkey_setup_and_sign_in_in_chromium` — passed
+  - `tests/integration/hub/test_passkeys.py::test_first_passkey_needs_a_one_time_code_then_signs_in` — passed
+  - `tests/integration/hub/test_passkeys.py::test_wrong_origin_or_key_is_refused` — passed

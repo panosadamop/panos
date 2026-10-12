@@ -24,9 +24,11 @@ trace:
 
 openapi:
     uv run python scripts/export_openapi.py
+    uv run python scripts/export_hub_openapi.py
 
 check: lint trace test
     uv run python scripts/export_openapi.py --check
+    uv run python scripts/export_hub_openapi.py --check
 
 serve:
     uv run panos serve

@@ -174,6 +174,33 @@ class BrowserSettings(BaseModel):
     page_timeout_s: float = Field(default=30.0, gt=0, le=120)
 
 
+class HubSettings(BaseModel):
+    """Control-plane hub on this PC (ADR-028). Used only by ``panos hub``."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    # None: read the URL from the keyring (``hub-database-url``, written by ``panos hub init``).
+    database_url: str | None = None
+    # LAN address to listen on; None = the address chosen at ``panos hub init``.
+    bind_host: str | None = None
+    api_port: int = Field(default=48700, ge=1024, le=65535)  # dashboard, API, enrollment
+    link_port: int = Field(default=48701, ge=1024, le=65535)  # node link (mTLS)
+    hostname: str | None = None  # dashboard host name (WebAuthn RP ID); default: this PC's name
+    enroll_code_minutes: int = Field(default=10, ge=1, le=60)
+    heartbeat_s: float = Field(default=15.0, gt=0, le=300)
+
+
+class RemoteSettings(BaseModel):
+    """This node's link to a hub (ADR-028/029). Active only after ``panos node join``."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    enabled: bool = True
+    accept_remote_approvals: bool = True
+    heartbeat_s: float = Field(default=15.0, gt=0, le=300)
+    reconnect_max_s: float = Field(default=60.0, gt=0, le=3600)
+
+
 class PanosSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="PANOS_",
@@ -200,6 +227,8 @@ class PanosSettings(BaseSettings):
     voice: VoiceSettings = Field(default_factory=VoiceSettings)
     documents: DocumentSettings = Field(default_factory=DocumentSettings)
     browser: BrowserSettings = Field(default_factory=BrowserSettings)
+    hub: HubSettings = Field(default_factory=HubSettings)
+    remote: RemoteSettings = Field(default_factory=RemoteSettings)
 
     @field_validator("data_dir", "config_dir", "log_dir", "runtime_dir", "workspace_dir")
     @classmethod

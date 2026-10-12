@@ -145,6 +145,19 @@ uv run panos project export shop                          # requirements as DOCX
 
 Panos never sends email (no send tool; send endpoints are blocked). Calendar and Jira/Azure DevOps changes need approval of the exact change. Browser research is read-only: no form submission or upload ([ADR-026](docs/adr/ADR-026-connectors.md), [ADR-027](docs/adr/ADR-027-browser-research.md)).
 
+Several PCs and the web dashboard (M9). One PC runs the **hub** (PostgreSQL in Docker, LAN only); the others join it with a one-time code and the hub's CA fingerprint. Jobs sent to a PC run there under that PC's own permissions. Guide: [`docs/planning/multi-pc-setup.md`](docs/planning/multi-pc-setup.md).
+
+```bash
+uv run panos hub init --hostname hubpc && docker compose -f <printed path> up -d && uv run panos hub serve
+uv run panos hub enroll-code --name laptop               # prints the join command for the other PC
+uv run panos node join https://hubpc:48700 --code … --fingerprint SHA256:…   # on the other PC
+uv run panos hub passkey-code                            # then open https://hubpc:48700 and set up a passkey
+uv run panos hub dispatch laptop "Run the tests" -p shop --kind command
+pnpm --dir apps/dashboard build                          # the hub serves the built dashboard
+```
+
+The hub can only dispatch, control and query jobs and relay approval decisions. It has no access to files or shell ([ADR-028](docs/adr/ADR-028-control-plane.md), [ADR-029](docs/adr/ADR-029-node-identity.md)).
+
 The `justfile` wraps the same commands (`just check`). CI runs them on Windows, macOS and Linux for Python 3.12 and 3.14 (`.github/workflows/ci.yml`).
 
 Runtime data never lives in the repository. It is stored in per-user directories; `panos config path` shows them. The default project workspace is `~/Panos/Projects`.

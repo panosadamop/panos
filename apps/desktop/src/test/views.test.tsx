@@ -44,6 +44,9 @@ beforeEach(() => {
   api.on("GET", "/api/v1/knowledge/collections", [{ id: "col_1", name: "company", kind: "folder",
     location: { path: "C:/company" }, connector_id: null, privacy_mode: "LOCAL_ONLY", enabled: true,
     created_at: "2026-10-09T10:00:00Z", last_indexed_at: null }]);
+  api.on("GET", "/api/v1/remote", { joined: true, hub_url: "https://hubpc:48700", node_id: "nod_1", name: "laptop",
+    link: "connected", last_error: null, certificate_expires: "2027-01-10T00:00:00Z", ca_fingerprint: "SHA256:aa",
+    accept_remote_approvals: true });
   api.on("GET", "/api/v1/health", { status: "ok", version: "0.1.0", api_version: "v1", node_id: "nod_1",
     uptime_s: 12, database: "ok" });
 });
@@ -233,6 +236,25 @@ describe("[BR-001] [FR-002] connections, knowledge and exports (M8-07)", () => {
     renderApp("projects", s);
     await userEvent.click(await screen.findByRole("button", { name: "Export documents" }));
     expect(await screen.findByText(/Exported: docs\/requirements\/exports\/requirements.docx/)).toBeInTheDocument();
+  });
+});
+
+describe("[US-060] hub membership", () => {
+  it("shows the link and joins with code and fingerprint", async () => {
+    api.on("GET", "/api/v1/remote", { joined: false, hub_url: null, node_id: "nod_1", name: null, link: "disabled",
+      last_error: null, certificate_expires: null, ca_fingerprint: null, accept_remote_approvals: true });
+    api.on("POST", "/api/v1/remote/join", { joined: true, hub_url: "https://hubpc:48700", node_id: "nod_1",
+      name: "laptop", link: "connecting", last_error: null, certificate_expires: null, ca_fingerprint: "x",
+      accept_remote_approvals: true });
+    const { services: s } = services();
+    renderApp("settings", s);
+    await userEvent.type(await screen.findByLabelText(/Hub address/), "https://hubpc:48700");
+    await userEvent.type(screen.getByLabelText("One-time code"), "ABCD-EFGH-IJKL");
+    await userEvent.type(screen.getByLabelText(/CA fingerprint/), "SHA256:" + "a".repeat(64));
+    await userEvent.click(screen.getByRole("button", { name: "Join the hub" }));
+    expect(await screen.findByText("Joined: https://hubpc:48700")).toBeInTheDocument();
+    expect(api.calls.find((c) => c.path === "/api/v1/remote/join")?.body).toMatchObject({
+      hub_url: "https://hubpc:48700", code: "ABCD-EFGH-IJKL" });
   });
 });
 
