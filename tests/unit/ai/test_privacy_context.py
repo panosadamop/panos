@@ -176,7 +176,7 @@ async def test_event_bus_envelope_and_slow_subscriber() -> None:
     assert bus.subscriber_count == 0
 
 
-@pytest.mark.req("NFR-PERF-002")
+@pytest.mark.req("NFR-PERF-002", "BR-001", "FR-002")
 @pytest.mark.parametrize(
     ("text", "kind", "target"),
     [
@@ -193,6 +193,19 @@ async def test_event_bus_envelope_and_slow_subscriber() -> None:
         ("φτιάξε ένα REST endpoint", "task", None),
         ("what does the OrderService do?", "chat", None),
         ("open the pod bay doors and explain why", "open_app", "the pod bay doors and explain why"),
+        # M8-07 (BR-001, FR-002): mail, calendar and research in both languages.
+        ("check my email", "inbox", None),
+        ("Do I have any new emails?", "inbox", None),
+        ("έχω νέα μηνύματα;", "inbox", None),
+        ("δείξε μου τα email", "inbox", None),
+        ("what do I have tomorrow?", "agenda", "tomorrow"),
+        ("show my calendar", "agenda", "today"),
+        ("τι έχω σήμερα;", "agenda", "today"),
+        ("το πρόγραμμά μου αύριο", "agenda", "tomorrow"),
+        ("γράψε ένα πρόγραμμα", "task", None),  # "program", not "schedule"
+        ("research solar output in Crete", "research", "solar output in Crete"),
+        ("ψάξε στο διαδίκτυο για τιμές φωτοβολταϊκών", "research", "τιμές φωτοβολταϊκών"),
+        ("κάνε έρευνα για αντλίες θερμότητας;", "research", "αντλίες θερμότητας"),
     ],
 )
 def test_intent_fast_path(text: str, kind: str, target: str | None) -> None:

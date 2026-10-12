@@ -8,9 +8,11 @@ from panos_node_api.routers import (
     approvals,
     apps,
     audit,
+    connectors,
     conversation,
     events,
     jobs,
+    knowledge,
     node,
     projects,
     requirements,
@@ -32,6 +34,8 @@ for module in (
     requirements,
     voice,
     screen,
+    connectors,
+    knowledge,
 ):
     api_router.include_router(module.router)
 

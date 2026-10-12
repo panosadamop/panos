@@ -1,45 +1,48 @@
 # Requirement test coverage
 
-_Generated 2026-10-09 13:56 UTC by `pytest --req-report`. Do not edit by hand._
+_Generated 2026-10-12 09:33 UTC by `pytest --req-report`. Do not edit by hand._
 
 A requirement counts as *covered* when at least one test is tagged with it. Coverage grows milestone by milestone; untested requirements belong to later milestones.
 
 | Type | Total | Covered | Passing |
 |---|---|---|---|
-| BR | 29 | 21 | 21 |
-| FR | 30 | 25 | 25 |
+| BR | 29 | 24 | 23 |
+| FR | 30 | 28 | 27 |
 | NFR | 31 | 20 | 20 |
 | EPIC | 7 | 0 | 0 |
-| US | 30 | 23 | 23 |
-| AC | 90 | 66 | 66 |
+| US | 30 | 27 | 25 |
+| AC | 90 | 74 | 71 |
 
 ## Covered requirements
 
 | ID | Title | Status | Tests |
 |---|---|---|---|
-| BR-001 | Unified assistant | passed | 2 |
+| BR-001 | Unified assistant | passed | 28 |
 | BR-002 | Cross-platform | passed | 4 |
 | BR-003 | Hybrid AI | passed | 20 |
 | BR-004 | Local-only privacy | passed | 14 |
-| BR-005 | Voice | passed | 26 |
+| BR-005 | Voice | partial | 26 |
 | BR-006 | Desktop productivity | passed | 16 |
 | BR-007 | Development assistant | passed | 11 |
 | BR-008 | Technology breadth | passed | 24 |
 | BR-009 | Requirements lifecycle | passed | 11 |
 | BR-010 | Approval hierarchy | passed | 5 |
 | BR-011 | Existing projects | passed | 17 |
+| BR-012 | Knowledge | passed | 10 |
 | BR-013 | Claude skills | passed | 3 |
 | BR-014 | Estimation | passed | 3 |
+| BR-016 | Project management integrations | passed | 11 |
 | BR-017 | Git governance | passed | 82 |
 | BR-018 | Docker governance | passed | 60 |
-| BR-019 | Email boundary | passed | 9 |
+| BR-019 | Email boundary | passed | 34 |
+| BR-020 | Calendar | passed | 10 |
 | BR-021 | Screen understanding | passed | 5 |
-| BR-022 | Browser boundary | passed | 4 |
+| BR-022 | Browser boundary | passed | 14 |
 | BR-027 | Offline operation | passed | 2 |
-| BR-028 | Documents | passed | 12 |
+| BR-028 | Documents | passed | 21 |
 | BR-029 | Workspace | passed | 4 |
-| FR-001 | Activation | passed | 20 |
-| FR-002 | Conversation | passed | 27 |
+| FR-001 | Activation | partial | 20 |
+| FR-002 | Conversation | passed | 53 |
 | FR-003 | Application registry | passed | 29 |
 | FR-004 | Project registry | passed | 69 |
 | FR-005 | Repository onboarding | passed | 35 |
@@ -53,38 +56,41 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | FR-013 | Git | passed | 51 |
 | FR-014 | Docker/Kubernetes | passed | 29 |
 | FR-015 | Screen analysis | passed | 5 |
-| FR-019 | Knowledge ingestion | passed | 6 |
-| FR-020 | Knowledge retrieval | passed | 21 |
+| FR-016 | Browser research | passed | 11 |
+| FR-017 | Email | passed | 5 |
+| FR-018 | Calendar | passed | 5 |
+| FR-019 | Knowledge ingestion | passed | 17 |
+| FR-020 | Knowledge retrieval | passed | 30 |
 | FR-021 | AI routing | passed | 23 |
 | FR-022 | Long-running jobs | passed | 29 |
 | FR-023 | Limits | passed | 5 |
 | FR-024 | Checkpoints | passed | 5 |
 | FR-025 | Notifications | passed | 2 |
 | FR-028 | Audit | passed | 18 |
-| FR-029 | Document generation | passed | 12 |
+| FR-029 | Document generation | passed | 21 |
 | FR-030 | Claude skills | passed | 2 |
 | NFR-MNT-001 | Typed interfaces and versioned schemas. *mypy `--strict`, TypeScrip... | passed | 1 |
 | NFR-MNT-004 | No provider-specific behavior in domain services. *Enforced by impo... | passed | 14 |
 | NFR-OBS-001 | Structured logs with correlation/job/step IDs. | passed | 3 |
 | NFR-OBS-002 | Metrics for latency, failures, AI tokens/cost, tool outcomes and qu... | passed | 1 |
-| NFR-PERF-002 | Simple local commands should not require a cloud round trip. | passed | 16 |
+| NFR-PERF-002 | Simple local commands should not require a cloud round trip. | passed | 28 |
 | NFR-PERF-004 | Indexing runs incrementally after initial project ingestion. | passed | 2 |
 | NFR-PORT-002 | Windows/macOS/Linux behavior lives behind adapter contracts. *One c... | passed | 4 |
 | NFR-PORT-003 | AI/STT/TTS/vector/integration providers are pluggable. | passed | 14 |
 | NFR-PRV-001 | Wake-word detection operates locally. | passed | 1 |
 | NFR-PRV-002 | Screenshots are ephemeral by default. | passed | 1 |
-| NFR-PRV-003 | Knowledge sources retain provenance and access scope. | passed | 15 |
+| NFR-PRV-003 | Knowledge sources retain provenance and access scope. | passed | 23 |
 | NFR-PRV-004 | Project privacy policy overrides model preference/cost. | passed | 1 |
 | NFR-REL-001 | Persist job state before consequential steps. | passed | 4 |
 | NFR-REL-002 | Recover safely after runtime/UI crashes. | passed | 3 |
 | NFR-REL-004 | Failed tasks must not be reported as successful. | passed | 1 |
 | NFR-SEC-001 | Least privilege by default. | passed | 134 |
-| NFR-SEC-002 | No unrestricted LLM shell/desktop access. | passed | 235 |
+| NFR-SEC-002 | No unrestricted LLM shell/desktop access. | passed | 262 |
 | NFR-SEC-003 | Encrypt credentials/secrets at rest using OS-backed secure storage ... | passed | 4 |
-| NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 76 |
+| NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 97 |
 | NFR-SEC-005 | Local-only content must be technically blocked from cloud-provider ... | passed | 18 |
-| US-001 | As a user, I can activate Panos by saying `Panos` so I can work han... | passed | 3 |
-| US-002 | I can use a global hotkey when voice activation is inconvenient. | passed | 2 |
+| US-001 | As a user, I can activate Panos by saying `Panos` so I can work han... | partial | 3 |
+| US-002 | I can use a global hotkey when voice activation is inconvenient. | partial | 2 |
 | US-003 | I can speak Greek, English or mixed technical language. | passed | 1 |
 | US-004 | I can stop speech without cancelling work. | passed | 12 |
 | US-005 | I can mark a project or folder local-only, and Panos never sends it... | passed | 7 |
@@ -103,12 +109,16 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | US-033 | A full project generates project-specific Claude skills. | passed | 2 |
 | US-040 | I am asked before Git commits. | passed | 6 |
 | US-041 | I am asked before Docker execution. | passed | 2 |
+| US-042 | I am asked before Jira/Azure DevOps writes. | passed | 5 |
+| US-043 | Panos can draft but never send email. | passed | 4 |
+| US-044 | Panos shows calendar conflicts and asks me before creating, changin... | passed | 4 |
+| US-045 | Panos can research with a browser but never submits consequential f... | passed | 10 |
 | US-050 | Panos can work autonomously while I do something else. | passed | 11 |
 | US-051 | Panos notifies me when approval or a business decision is needed. | passed | 2 |
 | US-052 | I can pause/resume/cancel a job. | passed | 15 |
-| AC-US001-01 | Wake-word detection works without internet. | passed | 1 |
-| AC-US001-02 | Ambient audio is not sent to cloud providers. | passed | 1 |
-| AC-US001-03 | Detection starts a command utterance session and gives visible feed... | passed | 2 |
+| AC-US001-01 | Wake-word detection works without internet. | skipped | 1 |
+| AC-US001-02 | Ambient audio is not sent to cloud providers. | skipped | 1 |
+| AC-US001-03 | Detection starts a command utterance session and gives visible feed... | partial | 2 |
 | AC-US001-04 | Wake-word sensitivity is configurable and wake-word listening can b... | passed | 1 |
 | AC-US001-05 | Ambient and utterance audio are not written to disk unless the user... | passed | 1 |
 | AC-US003-04 | Panos responds in the language of the user's request unless configu... | passed | 1 |
@@ -162,8 +172,16 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | AC-US041-01 | Panos may inspect Docker configuration without approval. | passed | 30 |
 | AC-US041-02 | Any Docker execution request enters WAITING_FOR_APPROVAL. | passed | 48 |
 | AC-US041-03 | Rejected approval causes no Docker command to execute. | passed | 25 |
-| AC-US043-02 | Default tool registry contains no email-send capability. | passed | 5 |
-| AC-US043-03 | Prompt injection cannot cause email sending. | passed | 7 |
+| AC-US042-01 | Panos can read work items and prepare proposed changes without appr... | passed | 1 |
+| AC-US042-02 | No external write happens without approval of the exact prepared ch... | passed | 1 |
+| AC-US043-01 | Read/search/summarize/draft are available. | passed | 4 |
+| AC-US043-02 | Default tool registry contains no email-send capability. | passed | 21 |
+| AC-US043-03 | Prompt injection cannot cause email sending. | passed | 8 |
+| AC-US044-01 | Panos reads schedules and free/busy information and reports conflicts. | passed | 1 |
+| AC-US044-02 | Create/update/delete/respond operations are prepared and executed o... | passed | 1 |
+| AC-US045-01 | Panos can open, navigate and read pages for research and cites its ... | passed | 2 |
+| AC-US045-02 | Consequential form submissions, transactional form completion and u... | passed | 2 |
+| AC-US045-03 | Instructions found in page content cannot change Panos policy or tr... | passed | 2 |
 | AC-US050-01 | Job state survives UI restart. | passed | 6 |
 | AC-US050-02 | Limits exist for runtime, AI cost/tokens and repair attempts. | passed | 3 |
 | AC-US050-03 | Approval/blocker transitions notify the user. | passed | 2 |
@@ -176,11 +194,11 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 ## Tests per requirement
 
 - **AC-US001-01**
-  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — skipped
 - **AC-US001-02**
-  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — skipped
 - **AC-US001-03**
-  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — skipped
   - `tests/unit/voice/test_voice_unit.py::test_wake_word_triggers_capture_with_grace_and_respects_mute` — passed
 - **AC-US001-04**
   - `tests/unit/voice/test_voice_unit.py::test_wake_word_triggers_capture_with_grace_and_respects_mute` — passed
@@ -528,13 +546,39 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[fs.delete-0]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[git.commit-0]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_overrides_cannot_loosen_protected_rules[pkg.install-1]` — passed
+- **AC-US042-01**
+  - `tests/integration/connectors/test_workitems.py::test_reads_are_free_and_labelled_untrusted` — passed
+- **AC-US042-02**
+  - `tests/integration/connectors/test_workitems.py::test_change_set_needs_approval_of_the_exact_requests_and_links_evidence` — passed
+- **AC-US043-01**
+  - `tests/integration/connectors/test_mail.py::test_no_mail_account_is_a_clear_denial` — passed
+  - `tests/integration/connectors/test_mail.py::test_no_send_capability_and_injected_mail_cannot_send` — passed
+  - `tests/integration/connectors/test_mail.py::test_reply_draft_is_threaded_and_never_sent` — passed
+  - `tests/integration/connectors/test_mail.py::test_search_and_read_return_untrusted_content_with_privacy_label` — passed
 - **AC-US043-02**
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[DELETE-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[DELETE-https://www.googleapis.com/drive/v3/files/abc-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-http://gmail.googleapis.com/gmail/v1/users/me/messages-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://evil.example/gmail/v1/users/me/messages-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://gmail.googleapis.com/gmail/v1/users/me/messages-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/drafts-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/drafts/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2/modify-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2/trash-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/settings/forwardingAddresses-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://www.googleapis.com/upload/gmail/v1/users/me/messages/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[PUT-https://gmail.googleapis.com/gmail/v1/users/me/drafts/r-123-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[PUT-https://gmail.googleapis.com/gmail/v1/users/me/drafts/send-False]` — passed
+  - `tests/integration/connectors/test_mail.py::test_no_send_capability_and_injected_mail_cannot_send` — passed
   - `tests/integration/tools/test_runtime.py::test_default_registry_has_no_email_send_capability` — passed
   - `tests/integration/tools/test_runtime.py::test_registry_refuses_email_send_capability` — passed
   - `tests/security/test_email_and_injection.py::test_instructions_inside_file_content_are_just_data` — passed
   - `tests/security/test_email_and_injection.py::test_no_tool_in_the_default_runtime_can_send_email` — passed
   - `tests/security/test_email_and_injection.py::test_requesting_a_send_tool_fails_closed` — passed
 - **AC-US043-03**
+  - `tests/integration/connectors/test_mail.py::test_no_send_capability_and_injected_mail_cannot_send` — passed
   - `tests/security/test_email_and_injection.py::test_instructions_inside_file_content_are_just_data` — passed
   - `tests/security/test_email_and_injection.py::test_no_tool_in_the_default_runtime_can_send_email` — passed
   - `tests/security/test_email_and_injection.py::test_requesting_a_send_tool_fails_closed` — passed
@@ -542,6 +586,19 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **AC-US044-01**
+  - `tests/integration/connectors/test_calendar.py::test_events_report_only_real_conflicts` — passed
+- **AC-US044-02**
+  - `tests/integration/connectors/test_calendar.py::test_changes_need_approval_of_the_exact_operation` — passed
+- **AC-US045-01**
+  - `tests/integration/api/test_research_api.py::test_research_job_reads_sources_and_cites` — passed
+  - `tests/integration/tools/test_browser.py::test_reads_with_citation_and_never_submits` — passed
+- **AC-US045-02**
+  - `tests/integration/tools/test_browser.py::test_no_submit_or_upload_tool_can_exist` — passed
+  - `tests/integration/tools/test_browser.py::test_reads_with_citation_and_never_submits` — passed
+- **AC-US045-03**
+  - `tests/integration/api/test_research_api.py::test_research_job_reads_sources_and_cites` — passed
+  - `tests/integration/tools/test_browser.py::test_reads_with_citation_and_never_submits` — passed
 - **AC-US050-01**
   - `tests/e2e/test_job_recovery.py::test_hard_killed_node_recovers_job_as_paused` — passed
   - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
@@ -573,7 +630,33 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
 - **BR-001**
   - `tests/e2e/test_node_daemon.py::test_serve_status_and_authenticated_health` — passed
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
   - `tests/integration/api/test_routes.py::test_health_reports_ok_with_node_identity` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[Do I have any new emails?-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[Panos, show my projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf IntelliJ-open_app-IntelliJ]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf \u03ad\u03c1\u03b3\u03bf orders-api-open_project-orders-api]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ad\u03c7\u03c9 \u03bd\u03ad\u03b1 \u03bc\u03b7\u03bd\u03cd\u03bc\u03b1\u03c4\u03b1;-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b3\u03c1\u03ac\u03c8\u03b5 \u03ad\u03bd\u03b1 \u03c0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03b1-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b4\u03b5\u03af\u03be\u03b5 \u03bc\u03bf\u03c5 \u03c4\u03b1 email-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b4\u03b5\u03af\u03be\u03b5 \u03bc\u03bf\u03c5 \u03c4\u03b1 projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ba\u03ac\u03bd\u03b5 \u03ad\u03c1\u03b5\u03c5\u03bd\u03b1 \u03b3\u03b9\u03b1 \u03b1\u03bd\u03c4\u03bb\u03af\u03b5\u03c2 \u03b8\u03b5\u03c1\u03bc\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2;-research-\u03b1\u03bd\u03c4\u03bb\u03af\u03b5\u03c2 \u03b8\u03b5\u03c1\u03bc\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c4\u03b9 \u03ad\u03c7\u03c9 \u03c3\u03ae\u03bc\u03b5\u03c1\u03b1;-agenda-today]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c4\u03bf \u03c0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03ac \u03bc\u03bf\u03c5 \u03b1\u03cd\u03c1\u03b9\u03bf-agenda-tomorrow]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c6\u03c4\u03b9\u03ac\u03be\u03b5 \u03ad\u03bd\u03b1 REST endpoint-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c8\u03ac\u03be\u03b5 \u03c3\u03c4\u03bf \u03b4\u03b9\u03b1\u03b4\u03af\u03ba\u03c4\u03c5\u03bf \u03b3\u03b9\u03b1 \u03c4\u03b9\u03bc\u03ad\u03c2 \u03c6\u03c9\u03c4\u03bf\u03b2\u03bf\u03bb\u03c4\u03b1\u03ca\u03ba\u03ce\u03bd-research-\u03c4\u03b9\u03bc\u03ad\u03c2 \u03c6\u03c9\u03c4\u03bf\u03b2\u03bf\u03bb\u03c4\u03b1\u03ca\u03ba\u03ce\u03bd]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[check my email-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[implement the login endpoint-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[list projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open project orders-api-open_project-orders-api]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open the pod bay doors and explain why-open_app-the pod bay doors and explain why]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open vscode-open_app-vscode]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[research solar output in Crete-research-solar output in Crete]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[show installed apps-list_apps-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[show my calendar-agenda-today]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[status-status-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[what do I have tomorrow?-agenda-tomorrow]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[what does the OrderService do?-chat-None]` — passed
 - **BR-002**
   - `tests/contract/test_desktop_contract.py::test_capabilities_declare_every_operation` — passed
   - `tests/contract/test_desktop_contract.py::test_discovery_returns_catalogued_existing_apps` — passed
@@ -622,8 +705,8 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/voice/test_supervisor.py::test_start_without_models_explains` — passed
   - `tests/integration/voice/test_supervisor.py::test_voice_api` — passed
   - `tests/integration/voice/test_supervisor.py::test_worker_events_update_status_and_reach_the_event_bus` — passed
-  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
-  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — skipped
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — skipped
   - `tests/unit/voice/test_voice_unit.py::test_adapter_errors_do_not_kill_the_engine` — passed
   - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos stop-stop-None]` — passed
   - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos, open IntelliJ-utterance-open IntelliJ]` — passed
@@ -732,6 +815,17 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/projects/test_analysis.py::test_remote_urls_are_redacted` — passed
   - `tests/integration/projects/test_analysis.py::test_unknown_structure_asks_for_clarification` — passed
   - `tests/integration/projects/test_analysis.py::test_workspace_declared_monorepo_is_not_questioned` — passed
+- **BR-012**
+  - `tests/integration/api/test_connectors_api.py::test_collections_api_and_ranked_search` — passed
+  - `tests/integration/connectors/test_collections.py::test_folder_collection_is_incremental_and_ranked_after_the_project` — passed
+  - `tests/integration/connectors/test_collections.py::test_google_drive_folder_is_read_only_and_incremental` — passed
+  - `tests/integration/connectors/test_collections.py::test_html_to_text_drops_scripts_and_markup` — passed
+  - `tests/integration/connectors/test_collections.py::test_invalid_collections_are_rejected` — passed
+  - `tests/integration/connectors/test_collections.py::test_knowledge_search_tool_ranks_project_before_collections` — passed
+  - `tests/integration/connectors/test_collections.py::test_onedrive_follows_download_redirect_without_the_token` — passed
+  - `tests/integration/connectors/test_collections.py::test_websites_honour_robots_redirects_and_size_limits` — passed
+  - `tests/integration/projects/test_knowledge_documents.py::test_extractors_keep_location_markers_and_skip_damaged_files` — passed
+  - `tests/integration/projects/test_knowledge_documents.py::test_office_documents_and_git_history_are_searchable` — passed
 - **BR-013**
   - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
   - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
@@ -740,6 +834,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/requirements/test_pipeline.py::test_estimate_uses_points_rates_and_plans_sprints` — passed
   - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
   - `tests/unit/requirements/test_packs_estimation_skills.py::test_estimation_defaults_rates_priorities_and_confidence` — passed
+- **BR-016**
+  - `tests/integration/api/test_connectors_api.py::test_cli_connects_with_hidden_prompts` — passed
+  - `tests/integration/api/test_connectors_api.py::test_collections_api_and_ranked_search` — passed
+  - `tests/integration/api/test_connectors_api.py::test_connect_list_privacy_and_disconnect_never_return_secrets` — passed
+  - `tests/integration/api/test_connectors_api.py::test_google_features_match_the_service` — passed
+  - `tests/integration/api/test_connectors_api.py::test_knowledge_cli` — passed
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
+  - `tests/integration/connectors/test_workitems.py::test_azure_devops_changes_use_json_patch` — passed
+  - `tests/integration/connectors/test_workitems.py::test_change_set_needs_approval_of_the_exact_requests_and_links_evidence` — passed
+  - `tests/integration/connectors/test_workitems.py::test_invalid_change_sets_are_rejected_before_approval` — passed
+  - `tests/integration/connectors/test_workitems.py::test_partial_failure_reports_what_was_already_applied` — passed
+  - `tests/integration/connectors/test_workitems.py::test_reads_are_free_and_labelled_untrusted` — passed
 - **BR-017**
   - `tests/integration/jobs/test_coding_job.py::test_change_after_approval_invalidates_the_commit` — passed
   - `tests/integration/jobs/test_coding_job.py::test_feature_is_planned_checkpointed_implemented_tested_reviewed_and_committed` — passed
@@ -885,6 +991,31 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv8-docker.exec]` — passed
   - `tests/unit/shell/test_classifier.py::test_containers_and_infra[argv9-docker.exec]` — passed
 - **BR-019**
+  - `tests/integration/api/test_connectors_api.py::test_cli_connects_with_hidden_prompts` — passed
+  - `tests/integration/api/test_connectors_api.py::test_collections_api_and_ranked_search` — passed
+  - `tests/integration/api/test_connectors_api.py::test_connect_list_privacy_and_disconnect_never_return_secrets` — passed
+  - `tests/integration/api/test_connectors_api.py::test_google_features_match_the_service` — passed
+  - `tests/integration/api/test_connectors_api.py::test_knowledge_cli` — passed
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[DELETE-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[DELETE-https://www.googleapis.com/drive/v3/files/abc-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-http://gmail.googleapis.com/gmail/v1/users/me/messages-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://evil.example/gmail/v1/users/me/messages-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://gmail.googleapis.com/gmail/v1/users/me/messages-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/drafts-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/drafts/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2/modify-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2/trash-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/settings/forwardingAddresses-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://www.googleapis.com/upload/gmail/v1/users/me/messages/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[PUT-https://gmail.googleapis.com/gmail/v1/users/me/drafts/r-123-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[PUT-https://gmail.googleapis.com/gmail/v1/users/me/drafts/send-False]` — passed
+  - `tests/integration/connectors/test_mail.py::test_no_mail_account_is_a_clear_denial` — passed
+  - `tests/integration/connectors/test_mail.py::test_no_send_capability_and_injected_mail_cannot_send` — passed
+  - `tests/integration/connectors/test_mail.py::test_reply_draft_is_threaded_and_never_sent` — passed
+  - `tests/integration/connectors/test_mail.py::test_search_and_read_return_untrusted_content_with_privacy_label` — passed
   - `tests/integration/tools/test_runtime.py::test_default_registry_has_no_email_send_capability` — passed
   - `tests/integration/tools/test_runtime.py::test_registry_refuses_email_send_capability` — passed
   - `tests/security/test_email_and_injection.py::test_instructions_inside_file_content_are_just_data` — passed
@@ -894,6 +1025,17 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **BR-020**
+  - `tests/integration/api/test_connectors_api.py::test_cli_connects_with_hidden_prompts` — passed
+  - `tests/integration/api/test_connectors_api.py::test_collections_api_and_ranked_search` — passed
+  - `tests/integration/api/test_connectors_api.py::test_connect_list_privacy_and_disconnect_never_return_secrets` — passed
+  - `tests/integration/api/test_connectors_api.py::test_google_features_match_the_service` — passed
+  - `tests/integration/api/test_connectors_api.py::test_knowledge_cli` — passed
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
+  - `tests/integration/connectors/test_calendar.py::test_back_to_back_meetings_are_not_conflicts` — passed
+  - `tests/integration/connectors/test_calendar.py::test_changes_need_approval_of_the_exact_operation` — passed
+  - `tests/integration/connectors/test_calendar.py::test_events_report_only_real_conflicts` — passed
+  - `tests/integration/connectors/test_calendar.py::test_respond_keeps_other_attendees_and_delete_is_gated` — passed
 - **BR-021**
   - `tests/integration/screen/test_screen.py::test_asking_in_chat_captures_and_explains` — passed
   - `tests/integration/screen/test_screen.py::test_capture_failures_are_reported` — passed
@@ -901,6 +1043,16 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
   - `tests/integration/screen/test_screen.py::test_without_a_local_vision_model_local_screens_are_refused` — passed
 - **BR-022**
+  - `tests/integration/api/test_research_api.py::test_research_cli_prints_answer_and_sources` — passed
+  - `tests/integration/api/test_research_api.py::test_research_job_reads_sources_and_cites` — passed
+  - `tests/integration/api/test_research_api.py::test_research_with_given_urls_skips_unreadable_pages` — passed
+  - `tests/integration/tools/test_browser.py::test_a_search_page_without_results_is_reported_as_blocked` — passed
+  - `tests/integration/tools/test_browser.py::test_bing_wrapped_links_are_decoded` — passed
+  - `tests/integration/tools/test_browser.py::test_local_only_projects_cannot_reach_the_web` — passed
+  - `tests/integration/tools/test_browser.py::test_no_submit_or_upload_tool_can_exist` — passed
+  - `tests/integration/tools/test_browser.py::test_private_networks_are_blocked_by_default` — passed
+  - `tests/integration/tools/test_browser.py::test_reads_with_citation_and_never_submits` — passed
+  - `tests/integration/tools/test_browser.py::test_search_results_are_unwrapped_and_external` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.submit]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
@@ -909,6 +1061,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/ai/test_gateway.py::test_offline_cloud_falls_back_to_local_without_loops` — passed
   - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
 - **BR-028**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ACCEPTANCE_CRITERIA.md]` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ARCHITECTURE.md]` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[BACKLOG.md]` — passed
@@ -921,14 +1074,22 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[SPRINT_PLAN.md]` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[TEST_CASES.md]` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[openapi.yaml]` — passed
+  - `tests/unit/requirements/test_exports.py::test_docx_renders_greek_inline_styles` — passed
+  - `tests/unit/requirements/test_exports.py::test_markdown_subset_is_parsed_into_blocks_and_runs` — passed
+  - `tests/unit/requirements/test_exports.py::test_pdf_font_lookup_reports_a_clear_error` — passed
+  - `tests/unit/requirements/test_exports.py::test_specification_docx_has_every_document_with_headings_tables_and_lists` — passed
+  - `tests/unit/requirements/test_exports.py::test_specification_pdf_contains_greek_and_all_documents` — passed
+  - `tests/unit/requirements/test_exports.py::test_summary_deck_covers_scope_estimate_risks_and_open_decisions` — passed
+  - `tests/unit/requirements/test_exports.py::test_unknown_or_empty_formats_are_rejected` — passed
+  - `tests/unit/requirements/test_exports.py::test_workbook_sheets_are_filterable_and_complete` — passed
 - **BR-029**
   - `tests/integration/cli/test_cli.py::test_config_path_lists_workspace` — passed
   - `tests/integration/projects/test_project_service.py::test_create_in_workspace` — passed
   - `tests/unit/config/test_settings.py::test_default_workspace_is_home_panos_projects` — passed
   - `tests/unit/config/test_settings.py::test_ensure_directories_creates_workspace_and_dirs` — passed
 - **FR-001**
-  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
-  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — skipped
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — skipped
   - `tests/unit/voice/test_voice_unit.py::test_adapter_errors_do_not_kill_the_engine` — passed
   - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos stop-stop-None]` — passed
   - `tests/unit/voice/test_voice_unit.py::test_command_routing[Panos, open IntelliJ-utterance-open IntelliJ]` — passed
@@ -952,6 +1113,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/api/test_cli_ai.py::test_ai_commands` — passed
   - `tests/integration/api/test_cli_ai.py::test_ask_streams_answer_and_reports_routing` — passed
   - `tests/integration/api/test_cli_ai.py::test_ask_without_local_model_explains` — passed
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
   - `tests/integration/api/test_conversation_api.py::test_ai_endpoints` — passed
   - `tests/integration/api/test_conversation_api.py::test_api_keys_are_stored_in_secret_store_and_audited_without_value` — passed
   - `tests/integration/api/test_conversation_api.py::test_cloud_down_falls_back_to_local` — passed
@@ -975,6 +1137,31 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/voice/test_supervisor.py::test_start_without_models_explains` — passed
   - `tests/integration/voice/test_supervisor.py::test_voice_api` — passed
   - `tests/integration/voice/test_supervisor.py::test_worker_events_update_status_and_reach_the_event_bus` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[Do I have any new emails?-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[Panos, show my projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf IntelliJ-open_app-IntelliJ]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf \u03ad\u03c1\u03b3\u03bf orders-api-open_project-orders-api]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ad\u03c7\u03c9 \u03bd\u03ad\u03b1 \u03bc\u03b7\u03bd\u03cd\u03bc\u03b1\u03c4\u03b1;-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b3\u03c1\u03ac\u03c8\u03b5 \u03ad\u03bd\u03b1 \u03c0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03b1-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b4\u03b5\u03af\u03be\u03b5 \u03bc\u03bf\u03c5 \u03c4\u03b1 email-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b4\u03b5\u03af\u03be\u03b5 \u03bc\u03bf\u03c5 \u03c4\u03b1 projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ba\u03ac\u03bd\u03b5 \u03ad\u03c1\u03b5\u03c5\u03bd\u03b1 \u03b3\u03b9\u03b1 \u03b1\u03bd\u03c4\u03bb\u03af\u03b5\u03c2 \u03b8\u03b5\u03c1\u03bc\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2;-research-\u03b1\u03bd\u03c4\u03bb\u03af\u03b5\u03c2 \u03b8\u03b5\u03c1\u03bc\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c4\u03b9 \u03ad\u03c7\u03c9 \u03c3\u03ae\u03bc\u03b5\u03c1\u03b1;-agenda-today]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c4\u03bf \u03c0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03ac \u03bc\u03bf\u03c5 \u03b1\u03cd\u03c1\u03b9\u03bf-agenda-tomorrow]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c6\u03c4\u03b9\u03ac\u03be\u03b5 \u03ad\u03bd\u03b1 REST endpoint-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c8\u03ac\u03be\u03b5 \u03c3\u03c4\u03bf \u03b4\u03b9\u03b1\u03b4\u03af\u03ba\u03c4\u03c5\u03bf \u03b3\u03b9\u03b1 \u03c4\u03b9\u03bc\u03ad\u03c2 \u03c6\u03c9\u03c4\u03bf\u03b2\u03bf\u03bb\u03c4\u03b1\u03ca\u03ba\u03ce\u03bd-research-\u03c4\u03b9\u03bc\u03ad\u03c2 \u03c6\u03c9\u03c4\u03bf\u03b2\u03bf\u03bb\u03c4\u03b1\u03ca\u03ba\u03ce\u03bd]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[check my email-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[implement the login endpoint-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[list projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open project orders-api-open_project-orders-api]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open the pod bay doors and explain why-open_app-the pod bay doors and explain why]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open vscode-open_app-vscode]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[research solar output in Crete-research-solar output in Crete]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[show installed apps-list_apps-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[show my calendar-agenda-today]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[status-status-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[what do I have tomorrow?-agenda-tomorrow]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[what does the OrderService do?-chat-None]` — passed
 - **FR-003**
   - `tests/integration/api/test_projects_api.py::test_analyze_and_snapshot` — passed
   - `tests/integration/api/test_projects_api.py::test_apps_list_launch_and_preferences` — passed
@@ -1510,16 +1697,60 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/screen/test_screen.py::test_cloud_vision_needs_consent_and_a_standard_project` — passed
   - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
   - `tests/integration/screen/test_screen.py::test_without_a_local_vision_model_local_screens_are_refused` — passed
+- **FR-016**
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
+  - `tests/integration/api/test_research_api.py::test_research_cli_prints_answer_and_sources` — passed
+  - `tests/integration/api/test_research_api.py::test_research_job_reads_sources_and_cites` — passed
+  - `tests/integration/api/test_research_api.py::test_research_with_given_urls_skips_unreadable_pages` — passed
+  - `tests/integration/tools/test_browser.py::test_a_search_page_without_results_is_reported_as_blocked` — passed
+  - `tests/integration/tools/test_browser.py::test_bing_wrapped_links_are_decoded` — passed
+  - `tests/integration/tools/test_browser.py::test_local_only_projects_cannot_reach_the_web` — passed
+  - `tests/integration/tools/test_browser.py::test_no_submit_or_upload_tool_can_exist` — passed
+  - `tests/integration/tools/test_browser.py::test_private_networks_are_blocked_by_default` — passed
+  - `tests/integration/tools/test_browser.py::test_reads_with_citation_and_never_submits` — passed
+  - `tests/integration/tools/test_browser.py::test_search_results_are_unwrapped_and_external` — passed
+- **FR-017**
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
+  - `tests/integration/connectors/test_mail.py::test_no_mail_account_is_a_clear_denial` — passed
+  - `tests/integration/connectors/test_mail.py::test_no_send_capability_and_injected_mail_cannot_send` — passed
+  - `tests/integration/connectors/test_mail.py::test_reply_draft_is_threaded_and_never_sent` — passed
+  - `tests/integration/connectors/test_mail.py::test_search_and_read_return_untrusted_content_with_privacy_label` — passed
+- **FR-018**
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
+  - `tests/integration/connectors/test_calendar.py::test_back_to_back_meetings_are_not_conflicts` — passed
+  - `tests/integration/connectors/test_calendar.py::test_changes_need_approval_of_the_exact_operation` — passed
+  - `tests/integration/connectors/test_calendar.py::test_events_report_only_real_conflicts` — passed
+  - `tests/integration/connectors/test_calendar.py::test_respond_keeps_other_attendees_and_delete_is_gated` — passed
 - **FR-019**
+  - `tests/integration/api/test_connectors_api.py::test_collections_api_and_ranked_search` — passed
+  - `tests/integration/api/test_connectors_api.py::test_knowledge_cli` — passed
+  - `tests/integration/connectors/test_collections.py::test_folder_collection_is_incremental_and_ranked_after_the_project` — passed
+  - `tests/integration/connectors/test_collections.py::test_google_drive_folder_is_read_only_and_incremental` — passed
+  - `tests/integration/connectors/test_collections.py::test_html_to_text_drops_scripts_and_markup` — passed
+  - `tests/integration/connectors/test_collections.py::test_invalid_collections_are_rejected` — passed
+  - `tests/integration/connectors/test_collections.py::test_knowledge_search_tool_ranks_project_before_collections` — passed
+  - `tests/integration/connectors/test_collections.py::test_onedrive_follows_download_redirect_without_the_token` — passed
+  - `tests/integration/connectors/test_collections.py::test_websites_honour_robots_redirects_and_size_limits` — passed
   - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
   - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
   - `tests/integration/projects/test_knowledge.py::test_search_tool_reports_privacy_label` — passed
+  - `tests/integration/projects/test_knowledge_documents.py::test_extractors_keep_location_markers_and_skip_damaged_files` — passed
+  - `tests/integration/projects/test_knowledge_documents.py::test_office_documents_and_git_history_are_searchable` — passed
   - `tests/unit/knowledge/test_vectors.py::test_removed_files_drop_their_embeddings` — passed
   - `tests/unit/knowledge/test_vectors.py::test_vectors_are_incremental_and_hybrid_search_fuses_rankings[False]` — passed
   - `tests/unit/knowledge/test_vectors.py::test_vectors_are_incremental_and_hybrid_search_fuses_rankings[True]` — passed
 - **FR-020**
+  - `tests/integration/api/test_connectors_api.py::test_collections_api_and_ranked_search` — passed
+  - `tests/integration/api/test_connectors_api.py::test_knowledge_cli` — passed
   - `tests/integration/api/test_conversation_api.py::test_local_only_project_chat_uses_local_model_with_retrieval` — passed
   - `tests/integration/api/test_projects_api.py::test_index_and_search` — passed
+  - `tests/integration/connectors/test_collections.py::test_folder_collection_is_incremental_and_ranked_after_the_project` — passed
+  - `tests/integration/connectors/test_collections.py::test_google_drive_folder_is_read_only_and_incremental` — passed
+  - `tests/integration/connectors/test_collections.py::test_html_to_text_drops_scripts_and_markup` — passed
+  - `tests/integration/connectors/test_collections.py::test_invalid_collections_are_rejected` — passed
+  - `tests/integration/connectors/test_collections.py::test_knowledge_search_tool_ranks_project_before_collections` — passed
+  - `tests/integration/connectors/test_collections.py::test_onedrive_follows_download_redirect_without_the_token` — passed
+  - `tests/integration/connectors/test_collections.py::test_websites_honour_robots_redirects_and_size_limits` — passed
   - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
   - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
   - `tests/integration/projects/test_knowledge.py::test_search_tool_reports_privacy_label` — passed
@@ -1628,6 +1859,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/tools/test_runtime.py::test_read_runs_without_approval_and_is_not_audited_as_decision` — passed
   - `tests/unit/domain/test_models.py::test_audit_event_captures_actor_action_decision_and_metadata` — passed
 - **FR-029**
+  - `tests/integration/api/test_requirements_api.py::test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ACCEPTANCE_CRITERIA.md]` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[ARCHITECTURE.md]` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[BACKLOG.md]` — passed
@@ -1640,6 +1872,14 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[SPRINT_PLAN.md]` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[TEST_CASES.md]` — passed
   - `tests/unit/requirements/test_artifacts_golden.py::test_documents_match_golden_files[openapi.yaml]` — passed
+  - `tests/unit/requirements/test_exports.py::test_docx_renders_greek_inline_styles` — passed
+  - `tests/unit/requirements/test_exports.py::test_markdown_subset_is_parsed_into_blocks_and_runs` — passed
+  - `tests/unit/requirements/test_exports.py::test_pdf_font_lookup_reports_a_clear_error` — passed
+  - `tests/unit/requirements/test_exports.py::test_specification_docx_has_every_document_with_headings_tables_and_lists` — passed
+  - `tests/unit/requirements/test_exports.py::test_specification_pdf_contains_greek_and_all_documents` — passed
+  - `tests/unit/requirements/test_exports.py::test_summary_deck_covers_scope_estimate_risks_and_open_decisions` — passed
+  - `tests/unit/requirements/test_exports.py::test_unknown_or_empty_formats_are_rejected` — passed
+  - `tests/unit/requirements/test_exports.py::test_workbook_sheets_are_filterable_and_complete` — passed
 - **FR-030**
   - `tests/integration/requirements/test_pipeline.py::test_scaffold_requires_approved_stack_then_docs_and_versioned_skills` — passed
   - `tests/unit/requirements/test_packs_estimation_skills.py::test_skills_use_only_approved_facts_and_hash_changes_with_them` — passed
@@ -1670,18 +1910,30 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/e2e/test_node_daemon.py::test_cli_ask_against_live_node_and_real_local_model` — passed
   - `tests/integration/api/test_conversation_api.py::test_fast_path_commands_need_no_model` — passed
   - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[Do I have any new emails?-inbox-None]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[Panos, show my projects-list_projects-None]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf IntelliJ-open_app-IntelliJ]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ac\u03bd\u03bf\u03b9\u03be\u03b5 \u03c4\u03bf \u03ad\u03c1\u03b3\u03bf orders-api-open_project-orders-api]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ad\u03c7\u03c9 \u03bd\u03ad\u03b1 \u03bc\u03b7\u03bd\u03cd\u03bc\u03b1\u03c4\u03b1;-inbox-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b3\u03c1\u03ac\u03c8\u03b5 \u03ad\u03bd\u03b1 \u03c0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03b1-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b4\u03b5\u03af\u03be\u03b5 \u03bc\u03bf\u03c5 \u03c4\u03b1 email-inbox-None]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03b4\u03b5\u03af\u03be\u03b5 \u03bc\u03bf\u03c5 \u03c4\u03b1 projects-list_projects-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03ba\u03ac\u03bd\u03b5 \u03ad\u03c1\u03b5\u03c5\u03bd\u03b1 \u03b3\u03b9\u03b1 \u03b1\u03bd\u03c4\u03bb\u03af\u03b5\u03c2 \u03b8\u03b5\u03c1\u03bc\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2;-research-\u03b1\u03bd\u03c4\u03bb\u03af\u03b5\u03c2 \u03b8\u03b5\u03c1\u03bc\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c4\u03b9 \u03ad\u03c7\u03c9 \u03c3\u03ae\u03bc\u03b5\u03c1\u03b1;-agenda-today]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c4\u03bf \u03c0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03ac \u03bc\u03bf\u03c5 \u03b1\u03cd\u03c1\u03b9\u03bf-agenda-tomorrow]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c6\u03c4\u03b9\u03ac\u03be\u03b5 \u03ad\u03bd\u03b1 REST endpoint-task-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[\u03c8\u03ac\u03be\u03b5 \u03c3\u03c4\u03bf \u03b4\u03b9\u03b1\u03b4\u03af\u03ba\u03c4\u03c5\u03bf \u03b3\u03b9\u03b1 \u03c4\u03b9\u03bc\u03ad\u03c2 \u03c6\u03c9\u03c4\u03bf\u03b2\u03bf\u03bb\u03c4\u03b1\u03ca\u03ba\u03ce\u03bd-research-\u03c4\u03b9\u03bc\u03ad\u03c2 \u03c6\u03c9\u03c4\u03bf\u03b2\u03bf\u03bb\u03c4\u03b1\u03ca\u03ba\u03ce\u03bd]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[check my email-inbox-None]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[implement the login endpoint-task-None]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[list projects-list_projects-None]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open project orders-api-open_project-orders-api]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open the pod bay doors and explain why-open_app-the pod bay doors and explain why]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[open vscode-open_app-vscode]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[research solar output in Crete-research-solar output in Crete]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[show installed apps-list_apps-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[show my calendar-agenda-today]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[status-status-None]` — passed
+  - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[what do I have tomorrow?-agenda-tomorrow]` — passed
   - `tests/unit/ai/test_privacy_context.py::test_intent_fast_path[what does the OrderService do?-chat-None]` — passed
 - **NFR-PERF-004**
   - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
@@ -1711,9 +1963,17 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **NFR-PRV-002**
   - `tests/integration/screen/test_screen.py::test_screenshot_is_local_only_in_memory_and_audited_without_image` — passed
 - **NFR-PRV-003**
+  - `tests/integration/api/test_connectors_api.py::test_cli_connects_with_hidden_prompts` — passed
+  - `tests/integration/api/test_connectors_api.py::test_collections_api_and_ranked_search` — passed
+  - `tests/integration/api/test_connectors_api.py::test_connect_list_privacy_and_disconnect_never_return_secrets` — passed
+  - `tests/integration/api/test_connectors_api.py::test_google_features_match_the_service` — passed
+  - `tests/integration/api/test_connectors_api.py::test_knowledge_cli` — passed
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
   - `tests/integration/projects/test_knowledge.py::test_disabled_knowledge_is_not_indexed` — passed
   - `tests/integration/projects/test_knowledge.py::test_incremental_indexing` — passed
   - `tests/integration/projects/test_knowledge.py::test_search_tool_reports_privacy_label` — passed
+  - `tests/integration/projects/test_knowledge_documents.py::test_extractors_keep_location_markers_and_skip_damaged_files` — passed
+  - `tests/integration/projects/test_knowledge_documents.py::test_office_documents_and_git_history_are_searchable` — passed
   - `tests/unit/knowledge/test_index.py::test_binary_and_oversized_files_are_skipped` — passed
   - `tests/unit/knowledge/test_index.py::test_chunking_tracks_line_ranges` — passed
   - `tests/unit/knowledge/test_index.py::test_fts_query_is_sanitised[!!!-None]` — passed
@@ -1875,6 +2135,33 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[src\\nul.txt-reserved]` — passed
   - `tests/unit/tools/test_paths.py::test_windows_syntax_rejections[trailing.-trailing]` — passed
 - **NFR-SEC-002**
+  - `tests/integration/api/test_connectors_api.py::test_cli_connects_with_hidden_prompts` — passed
+  - `tests/integration/api/test_connectors_api.py::test_collections_api_and_ranked_search` — passed
+  - `tests/integration/api/test_connectors_api.py::test_connect_list_privacy_and_disconnect_never_return_secrets` — passed
+  - `tests/integration/api/test_connectors_api.py::test_google_features_match_the_service` — passed
+  - `tests/integration/api/test_connectors_api.py::test_knowledge_cli` — passed
+  - `tests/integration/api/test_connectors_api.py::test_mail_calendar_and_research_from_chat` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_blocked_endpoint_is_never_sent` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_expired_tokens_are_refreshed_and_failed_refresh_needs_reauth` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[DELETE-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[DELETE-https://www.googleapis.com/drive/v3/files/abc-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-http://gmail.googleapis.com/gmail/v1/users/me/messages-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://evil.example/gmail/v1/users/me/messages-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://gmail.googleapis.com/gmail/v1/users/me/messages-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/drafts-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/drafts/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2/modify-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2/trash-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/settings/forwardingAddresses-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://www.googleapis.com/upload/gmail/v1/users/me/messages/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[PUT-https://gmail.googleapis.com/gmail/v1/users/me/drafts/r-123-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[PUT-https://gmail.googleapis.com/gmail/v1/users/me/drafts/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_loopback_flow_stores_tokens_only_in_the_keyring` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_jira_and_azure_devops_tokens_are_verified_and_kept_secret` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_microsoft_device_code_flow` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_tracker_allowlists_are_bound_to_the_account_and_have_no_delete` — passed
   - `tests/integration/projects/test_analysis.py::test_discovered_commands_run_without_approval_others_still_ask` — passed
   - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args3]` — passed
   - `tests/integration/projects/test_git_tools.py::test_option_injection_is_rejected[git.create_branch-args4]` — passed
@@ -2120,6 +2407,27 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/api/test_conversation_api.py::test_api_keys_are_stored_in_secret_store_and_audited_without_value` — passed
   - `tests/integration/api/test_conversation_api.py::test_standard_project_uses_cloud_with_redaction` — passed
   - `tests/integration/audit/test_audit_chain.py::test_metadata_is_redacted_before_hashing` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_blocked_endpoint_is_never_sent` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_expired_tokens_are_refreshed_and_failed_refresh_needs_reauth` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[DELETE-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[DELETE-https://www.googleapis.com/drive/v3/files/abc-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-http://gmail.googleapis.com/gmail/v1/users/me/messages-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://evil.example/gmail/v1/users/me/messages-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://gmail.googleapis.com/gmail/v1/users/me/messages-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[GET-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/drafts-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/drafts/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2/modify-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/18c2/trash-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/messages/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://gmail.googleapis.com/gmail/v1/users/me/settings/forwardingAddresses-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[POST-https://www.googleapis.com/upload/gmail/v1/users/me/messages/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[PUT-https://gmail.googleapis.com/gmail/v1/users/me/drafts/r-123-True]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_allowlist_has_no_send_or_destructive_endpoints[PUT-https://gmail.googleapis.com/gmail/v1/users/me/drafts/send-False]` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_google_loopback_flow_stores_tokens_only_in_the_keyring` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_jira_and_azure_devops_tokens_are_verified_and_kept_secret` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_microsoft_device_code_flow` — passed
+  - `tests/integration/connectors/test_connector_service.py::test_tracker_allowlists_are_bound_to_the_account_and_have_no_delete` — passed
   - `tests/unit/ai/test_privacy_context.py::test_cloud_redaction_removes_secrets_but_keeps_code` — passed
   - `tests/unit/observability/test_logging.py::test_secrets_are_redacted_in_log_file` — passed
   - `tests/unit/observability/test_logging.py::test_stdlib_logs_are_structured_and_redacted` — passed
@@ -2212,11 +2520,11 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/ai/test_router.py::test_local_only_never_routes_to_cloud_and_records_why` — passed
   - `tests/unit/ai/test_router.py::test_property_local_only_requests_never_get_a_cloud_model` — passed
 - **US-001**
-  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
-  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — passed
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — skipped
+  - `tests/integration/voice/test_voice_models.py::test_wake_word_works_with_networking_blocked` — skipped
   - `tests/unit/voice/test_voice_unit.py::test_wake_word_triggers_capture_with_grace_and_respects_mute` — passed
 - **US-002**
-  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — passed
+  - `tests/integration/voice/test_voice_models.py::test_full_pipeline_wake_word_to_transcript_to_speech` — skipped
   - `tests/unit/voice/test_voice_unit.py::test_push_to_talk_captures_until_silence_then_transcribes` — passed
 - **US-003**
   - `tests/unit/voice/test_voice_unit.py::test_language_runs_send_latin_words_to_the_english_voice` — passed
@@ -2336,6 +2644,33 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 - **US-041**
   - `tests/integration/jobs/test_runner.py::test_docker_inspection_needs_no_approval` — passed
   - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
+- **US-042**
+  - `tests/integration/connectors/test_workitems.py::test_azure_devops_changes_use_json_patch` — passed
+  - `tests/integration/connectors/test_workitems.py::test_change_set_needs_approval_of_the_exact_requests_and_links_evidence` — passed
+  - `tests/integration/connectors/test_workitems.py::test_invalid_change_sets_are_rejected_before_approval` — passed
+  - `tests/integration/connectors/test_workitems.py::test_partial_failure_reports_what_was_already_applied` — passed
+  - `tests/integration/connectors/test_workitems.py::test_reads_are_free_and_labelled_untrusted` — passed
+- **US-043**
+  - `tests/integration/connectors/test_mail.py::test_no_mail_account_is_a_clear_denial` — passed
+  - `tests/integration/connectors/test_mail.py::test_no_send_capability_and_injected_mail_cannot_send` — passed
+  - `tests/integration/connectors/test_mail.py::test_reply_draft_is_threaded_and_never_sent` — passed
+  - `tests/integration/connectors/test_mail.py::test_search_and_read_return_untrusted_content_with_privacy_label` — passed
+- **US-044**
+  - `tests/integration/connectors/test_calendar.py::test_back_to_back_meetings_are_not_conflicts` — passed
+  - `tests/integration/connectors/test_calendar.py::test_changes_need_approval_of_the_exact_operation` — passed
+  - `tests/integration/connectors/test_calendar.py::test_events_report_only_real_conflicts` — passed
+  - `tests/integration/connectors/test_calendar.py::test_respond_keeps_other_attendees_and_delete_is_gated` — passed
+- **US-045**
+  - `tests/integration/api/test_research_api.py::test_research_cli_prints_answer_and_sources` — passed
+  - `tests/integration/api/test_research_api.py::test_research_job_reads_sources_and_cites` — passed
+  - `tests/integration/api/test_research_api.py::test_research_with_given_urls_skips_unreadable_pages` — passed
+  - `tests/integration/tools/test_browser.py::test_a_search_page_without_results_is_reported_as_blocked` — passed
+  - `tests/integration/tools/test_browser.py::test_bing_wrapped_links_are_decoded` — passed
+  - `tests/integration/tools/test_browser.py::test_local_only_projects_cannot_reach_the_web` — passed
+  - `tests/integration/tools/test_browser.py::test_no_submit_or_upload_tool_can_exist` — passed
+  - `tests/integration/tools/test_browser.py::test_private_networks_are_blocked_by_default` — passed
+  - `tests/integration/tools/test_browser.py::test_reads_with_citation_and_never_submits` — passed
+  - `tests/integration/tools/test_browser.py::test_search_results_are_unwrapped_and_external` — passed
 - **US-050**
   - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
   - `tests/integration/api/test_jobs_api.py::test_job_api_errors` — passed

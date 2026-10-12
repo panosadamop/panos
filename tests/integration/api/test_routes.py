@@ -43,7 +43,8 @@ def test_capabilities_describe_node_and_features(client: TestClient) -> None:
     assert body["desktop"]["launch"] == "supported"
     assert "shell.run" in body["tools"]
     assert "fs.write" in body["tools"]
-    assert not any(t.startswith("email") for t in body["tools"])
+    assert "email.draft" in body["tools"]
+    assert "email.send" not in body["tools"]  # draft-only by design (FR-017)
 
 
 def test_node_identity_stable_across_app_restarts(

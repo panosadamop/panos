@@ -10,7 +10,17 @@ from dataclasses import dataclass
 from typing import Final, Literal
 
 IntentKind = Literal[
-    "screen", "list_projects", "open_project", "open_app", "list_apps", "status", "task", "chat"
+    "screen",
+    "list_projects",
+    "open_project",
+    "open_app",
+    "list_apps",
+    "status",
+    "inbox",
+    "agenda",
+    "research",
+    "task",
+    "chat",
 ]
 
 
@@ -21,6 +31,43 @@ class Intent:
 
 
 _PATTERNS: Final[tuple[tuple[IntentKind, re.Pattern[str]], ...]] = (
+    (
+        "inbox",
+        re.compile(
+            r"^(?:(?:check|show|read)(?: me)?(?: my)? (?:e-?mails?|inbox|mail)"
+            r"|(?:what(?:'s| is) in|anything (?:new )?in) my (?:inbox|mail)"
+            r"|(?:do i have|have i got|any) (?:any )?(?:new |unread )?(?:e-?mails?|mail)"
+            r"|(?:δείξε|έλεγξε|διάβασε)(?: μου)?(?: τα)? (?:e-?mails?|μηνύματα|εισερχόμενα|mail)"
+            r"(?: μου)?"
+            r"|(?:έχω|ήρθαν) (?:κάποια |νέα |καινούρια |αδιάβαστα )*(?:e-?mails?|μηνύματα|mail))"
+            r"[?;;.]?$",
+            re.I,
+        ),
+    ),
+    (
+        "agenda",
+        re.compile(
+            r"^(?:what(?:'s| is| do i have)(?: on)?(?: my)?(?: (?:calendar|schedule|agenda))?"
+            r" (?P<target>today|tomorrow)|what(?:'s| is) on my (?:calendar|schedule|agenda)"
+            r"|(?:show )?my (?:meetings|agenda|schedule|calendar)"
+            r"(?: for)?(?: (?P<t2>today|tomorrow))?"
+            r"|τι (?:έχω|ραντεβού έχω|συναντήσεις έχω|έχω στο ημερολόγιο) (?P<t3>σήμερα|αύριο)"
+            r"|(?:δείξε )?(?:μου )?(?:το )?(?:πρόγραμμ[αά]|ημερολόγι[οό]) μου"
+            r"(?: (?:για )?(?P<t4>σήμερα|αύριο))?)"
+            r"[?;;.]?$",
+            re.I,
+        ),
+    ),
+    (
+        "research",
+        re.compile(
+            r"^(?:research|look up|search the web for|find (?:sources|information) (?:on|about)"
+            r"|ψάξε(?: στο (?:διαδίκτυο|internet|ίντερνετ))? (?:για|πληροφορίες για)"
+            r"|κάνε (?:μια )?έρευνα (?:για|σχετικά με)|βρες πληροφορίες (?:για|σχετικά με))"
+            r" (?P<target>.+?)[?;;.]?$",
+            re.I,
+        ),
+    ),
     (
         "screen",
         re.compile(
@@ -75,7 +122,12 @@ def classify_intent(text: str) -> Intent:
     for kind, pattern in _PATTERNS:
         m = pattern.match(cleaned)
         if m:
-            target = m.groupdict().get("target")
+            groups = m.groupdict()
+            target = next((v for k, v in groups.items() if v and k[0] == "t"), None)
+            if kind == "agenda":
+                target = (
+                    "tomorrow" if target and target.lower() in ("tomorrow", "αύριο") else "today"
+                )
             return Intent(kind, target.strip() if target else None)
     if _TASK_RE.match(cleaned):
         return Intent("task")

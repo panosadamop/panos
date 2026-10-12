@@ -1,7 +1,10 @@
-/** Language, AI providers/keys, usage vs budget, voice switches, start at login (desktop only). */
+/** Language, AI providers/keys, usage vs budget, connected accounts, knowledge sources, voice
+ * switches, start at login (desktop only). */
 import { useEffect, useState, type FormEvent } from "react";
 
 import { unwrap } from "../api/client";
+import { Connections } from "../components/Connections";
+import { Knowledge } from "../components/Knowledge";
 import { getAutostart, setAutostart } from "../desktop";
 import { useI18n, type Lang } from "../i18n";
 import { useLive, useServices } from "../state";
@@ -96,6 +99,9 @@ export function SettingsView() {
             ` / ${t("settings.budget")}: $${usage.data.monthly_budget_usd.toFixed(2)}`}
         </p>
       )}
+
+      <Connections />
+      <Knowledge />
 
       <fieldset>
         <legend>{t("settings.voice")}</legend>

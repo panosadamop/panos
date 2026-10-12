@@ -26,6 +26,8 @@ PREFIXES: Final = {
     "trace_link": "trl",
     "interview": "itv",
     "skill": "skl",
+    "connector": "con",
+    "collection": "col",
 }
 
 _ID_RE: Final = re.compile(r"^[a-z]{3}_[0-9a-f]{32}$")

@@ -323,3 +323,37 @@ Report: [`docs/planning/reports/M6.md`](docs/planning/reports/M6.md). M6 not com
 
 Report: [`docs/planning/reports/M7.md`](docs/planning/reports/M7.md). M7 not committed. Awaiting approval for M8 and a commit decision.
 
+
+### 11. Commit of M7, then M8 — Integrations, research and documents
+
+**Owner:** approved the M7 commit and M8 (M7 is committed as `9de9a8c`), and decided on 2026-10-09:
+- Gmail / Google Calendar first;
+- Jira Cloud and Azure DevOps;
+- Playwright Chromium with an isolated profile;
+- Google Drive, OneDrive/SharePoint and selected websites as document sources.
+
+These decisions are recorded in `PLAN_PROPOSAL.md` §M8. *The exact wording of that exchange is not preserved: the session that started M8 ended without a log entry, and work resumed on 2026-10-12 with "continue from where we stopped".*
+
+**Claude (first session, reconstructed from the working tree):**
+- connector foundation (accounts, migration 0007, keyring secrets, Google loopback+PKCE, Microsoft device code, Jira/ADO tokens, allowlisted HTTP client);
+- Gmail (read, drafts only) and Google Calendar (approved writes) tools;
+- Jira/ADO clients and tools;
+- Office/PDF extraction and Git history in the index;
+- DOCX/PDF/XLSX/PPTX exports with `panos project export`.
+
+**Claude (2026-10-12):**
+- Fixed three breakages left in the tree (an import order, a mypy error, and a capabilities test still asserting "no email tools").
+- **Found and fixed:**
+  - `build_default_registry` dropped the requirements service, so work-item changes were never linked as evidence;
+  - a `create` change ignored the change-set project;
+  - a comment's id was reported as the work-item key (giving a wrong `/browse/` link).
+- Added work-item tests (approval binding, tampering, partial failure, JSON-patch).
+- M8-00 surfaces: `/connectors` API and `panos connect …`.
+- M8-04: knowledge collections (folders, websites with robots.txt and limits, Google Drive, OneDrive/SharePoint), FR-020 ranked search (`/knowledge/search`, `panos knowledge …`, `knowledge.search` tool, conversation retrieval). Graph downloads follow the redirect without the token. **Found:** `build_messages` re-sorts retrieval by scope, which would have undone the tier order, so the tier now sets the scope.
+- M8-03: read-only Playwright engine, `browser.read`/`browser.search`, a `research` job with citations, and `panos research`.
+  - **Found on real Chromium:** a page's own `form.submit()` (blocked correctly) replaced the page with an error page. An init script now neutralises submission.
+  - **Live checks:** DuckDuckGo/Brave show a bot check and Bing returns irrelevant results (R-15, an owner decision). Research with a given URL works end to end with qwen2.5:3b. The first answer cited the page's own footnote `[5]`; footnotes are now stripped, and the answer cites `[1]`.
+- M8-07: chat intents (unread mail, agenda with conflicts, research) in Greek/English; desktop Connected accounts, Knowledge sources and project export; regenerated OpenAPI/TS types.
+- M8-08: ADR-026 and ADR-027 (Proposed), `docs/planning/connectors-setup.md`, README.
+
+Report: [`docs/planning/reports/M8.md`](docs/planning/reports/M8.md). M8 not committed. Awaiting the owner's live checks, decisions (R-15, ADR-026/027) and a commit decision.

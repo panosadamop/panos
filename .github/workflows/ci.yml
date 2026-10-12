@@ -26,6 +26,8 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install
         run: uv sync --all-packages --locked
+      - name: Chromium for browser research tests (ADR-027)
+        run: uv run python -m playwright install --with-deps chromium
       - name: Format
         run: uv run ruff format --check
       - name: Lint

@@ -15,7 +15,9 @@ from panos_cli.common import (
     call,
     not_running,
 )
-from panos_cli.jobs import job_app
+from panos_cli.connect import connect_app
+from panos_cli.jobs import job_app, research
+from panos_cli.knowledge import knowledge_app
 from panos_cli.projects import apps_app, project_app, screen
 from panos_cli.requirements import interview_app, new, req_app
 from panos_cli.voice import voice_app
@@ -128,6 +130,9 @@ app.add_typer(job_app, name="job")
 app.add_typer(interview_app, name="interview")
 app.add_typer(req_app, name="req")
 app.add_typer(voice_app, name="voice")
+app.add_typer(connect_app, name="connect")
+app.add_typer(knowledge_app, name="knowledge")
+app.command("research")(research)
 
 
 @app.command("voice-worker", hidden=True)

@@ -130,7 +130,7 @@ def test_requirements_api_errors(client: TestClient, mock_ai: MockAI) -> None:
 
 
 @pytest.mark.usefixtures("cli")
-@pytest.mark.req("US-030", "US-031", "US-033", "AC-US031-01", "BR-013")
+@pytest.mark.req("US-030", "US-031", "US-033", "AC-US031-01", "BR-013", "FR-029", "BR-028")
 def test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide(
     client: TestClient, desktop: FakeDesktop, settings: Any
 ) -> None:
@@ -168,6 +168,19 @@ def test_cli_brief_to_scaffolded_project_with_skills_opened_in_ide(
     assert (root / "src" / "shop" / "main.py").is_file()
     assert (root / ".claude" / "skills" / "shop-domain" / "SKILL.md").is_file()
     assert (root / "docs" / "requirements" / "BACKLOG.md").is_file()
+    exported = runner.invoke(
+        app, ["project", "export", "shop", "-f", "docx", "-f", "xlsx", "-f", "pptx"]
+    )
+    assert exported.exit_code == 0, exported.output
+    exports = root / "docs" / "requirements" / "exports"
+    assert sorted(f.name for f in exports.iterdir()) == [
+        "REQUIREMENTS.xlsx",
+        "SPECIFICATION.docx",
+        "SUMMARY.pptx",
+    ]
+    assert (
+        client.post("/api/v1/projects/shop/exports", json={"formats": ["odt"]}).status_code == 422
+    )
     exe, args = desktop.launched[-1]
     assert "pycharm" in exe and str(root.resolve()) in args  # preferred IDE for the stack
     shown = runner.invoke(app, ["req", "show", "-p", "shop", "US-001"])

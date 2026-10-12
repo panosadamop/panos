@@ -3,9 +3,11 @@
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
 
+import httpx
 from fastapi import FastAPI
 
 from panos_core import API_VERSION, __version__
+from panos_core.browser import BrowserEngine
 from panos_core.config import PanosSettings
 from panos_core.platform.desktop import DesktopAdapter
 from panos_node_api.container import AIOverride, build_container
@@ -22,6 +24,8 @@ def create_app(
     on_shutdown: Callable[[], None] | None = None,
     desktop: DesktopAdapter | None = None,
     ai: AIOverride | None = None,
+    connector_transport: httpx.AsyncBaseTransport | None = None,
+    browser: BrowserEngine | None = None,
 ) -> FastAPI:
     """Build the node API.
 
@@ -35,7 +39,13 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        container = await build_container(settings, desktop=desktop, ai=ai)
+        container = await build_container(
+            settings,
+            desktop=desktop,
+            ai=ai,
+            connector_transport=connector_transport,
+            browser=browser,
+        )
         app.state.container = container
         app.state.auth = auth  # /ws/events authenticates in its first message
         try:

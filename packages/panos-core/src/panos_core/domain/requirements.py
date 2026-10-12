@@ -62,7 +62,7 @@ class InterviewStatus(StrEnum):
 
 
 KEY_RE: Final = re.compile(r"^(?:[A-Z]{2,10}-\d{3}|AC-US\d{3}-\d{2}|NFR-[A-Z]{2,5}-\d{3})$")
-EVIDENCE_RE: Final = re.compile(r"^(?:commit|file|job|test):[^\s]{1,500}$")
+EVIDENCE_RE: Final = re.compile(r"^(?:commit|file|job|test|workitem):[^\s]{1,500}$")
 
 RequirementId = Annotated[str, _id_of("requirement")]
 RequirementApprovalId = Annotated[str, _id_of("requirement_approval")]

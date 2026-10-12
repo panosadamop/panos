@@ -1,6 +1,89 @@
 {
   "components": {
     "schemas": {
+      "AccountPatch": {
+        "additionalProperties": false,
+        "properties": {
+          "privacy_mode": {
+            "$ref": "#/components/schemas/PrivacyMode"
+          }
+        },
+        "required": [
+          "privacy_mode"
+        ],
+        "title": "AccountPatch",
+        "type": "object"
+      },
+      "AccountView": {
+        "properties": {
+          "base_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Url"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "last_used_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Used At"
+          },
+          "privacy_mode": {
+            "title": "Privacy Mode",
+            "type": "string"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Scopes",
+            "type": "array"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "label",
+          "base_url",
+          "scopes",
+          "privacy_mode",
+          "status",
+          "created_at",
+          "last_used_at"
+        ],
+        "title": "AccountView",
+        "type": "object"
+      },
       "AnalyzeRequest": {
         "additionalProperties": false,
         "properties": {
@@ -490,6 +573,32 @@
         "title": "AuditList",
         "type": "object"
       },
+      "AzureDevOpsIn": {
+        "additionalProperties": false,
+        "properties": {
+          "org_url": {
+            "examples": [
+              "https://dev.azure.com/acme"
+            ],
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Org Url",
+            "type": "string"
+          },
+          "pat": {
+            "maxLength": 512,
+            "minLength": 8,
+            "title": "Pat",
+            "type": "string"
+          }
+        },
+        "required": [
+          "org_url",
+          "pat"
+        ],
+        "title": "AzureDevOpsIn",
+        "type": "object"
+      },
       "CapabilitiesResponse": {
         "properties": {
           "api_version": {
@@ -627,6 +736,236 @@
         "title": "ClearStaleRequest",
         "type": "object"
       },
+      "ClientIn": {
+        "additionalProperties": false,
+        "properties": {
+          "client_id": {
+            "maxLength": 256,
+            "minLength": 4,
+            "title": "Client Id",
+            "type": "string"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "maxLength": 512,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Secret"
+          },
+          "tenant": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9.-]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tenant"
+          }
+        },
+        "required": [
+          "client_id"
+        ],
+        "title": "ClientIn",
+        "type": "object"
+      },
+      "ClientView": {
+        "properties": {
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "registered": {
+            "title": "Registered",
+            "type": "boolean"
+          },
+          "tenant": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tenant"
+          }
+        },
+        "required": [
+          "kind",
+          "registered"
+        ],
+        "title": "ClientView",
+        "type": "object"
+      },
+      "CollectionIn": {
+        "additionalProperties": false,
+        "properties": {
+          "connector": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "account id (drives)",
+            "title": "Connector"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/CollectionKind"
+          },
+          "location": {
+            "additionalProperties": true,
+            "description": "folder: {path}; website: {urls}; google_drive: {folder_id}; onedrive: {drive_id, item_id?}",
+            "title": "Location",
+            "type": "object"
+          },
+          "name": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "privacy_mode": {
+            "$ref": "#/components/schemas/PrivacyMode",
+            "default": "LOCAL_ONLY"
+          }
+        },
+        "required": [
+          "name",
+          "kind",
+          "location"
+        ],
+        "title": "CollectionIn",
+        "type": "object"
+      },
+      "CollectionKind": {
+        "enum": [
+          "folder",
+          "website",
+          "google_drive",
+          "onedrive"
+        ],
+        "title": "CollectionKind",
+        "type": "string"
+      },
+      "CollectionPatch": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          },
+          "privacy_mode": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PrivacyMode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "title": "CollectionPatch",
+        "type": "object"
+      },
+      "CollectionView": {
+        "properties": {
+          "connector_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Connector Id"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "last_indexed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Indexed At"
+          },
+          "location": {
+            "additionalProperties": true,
+            "title": "Location",
+            "type": "object"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "privacy_mode": {
+            "title": "Privacy Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "location",
+          "connector_id",
+          "privacy_mode",
+          "enabled",
+          "created_at",
+          "last_indexed_at"
+        ],
+        "title": "CollectionView",
+        "type": "object"
+      },
       "Complexity": {
         "enum": [
           "low",
@@ -736,6 +1075,143 @@
         "title": "DecisionResponse",
         "type": "object"
       },
+      "ExportRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "formats": {
+            "items": {
+              "enum": [
+                "docx",
+                "pdf",
+                "xlsx",
+                "pptx"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Formats",
+            "type": "array"
+          }
+        },
+        "title": "ExportRequest",
+        "type": "object"
+      },
+      "FlowView": {
+        "properties": {
+          "account_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Account Id"
+          },
+          "auth_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Auth Url"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "connected",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "user_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Code"
+          },
+          "verification_uri": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verification Uri"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "status",
+          "auth_url",
+          "user_code",
+          "verification_uri",
+          "account_id",
+          "error"
+        ],
+        "title": "FlowView",
+        "type": "object"
+      },
+      "GoogleIn": {
+        "additionalProperties": false,
+        "properties": {
+          "features": {
+            "items": {
+              "enum": [
+                "mail",
+                "calendar",
+                "drive"
+              ],
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Features",
+            "type": "array"
+          },
+          "open_browser": {
+            "default": true,
+            "title": "Open Browser",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "features"
+        ],
+        "title": "GoogleIn",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -836,6 +1312,47 @@
         "title": "IndexStatsView",
         "type": "object"
       },
+      "IndexView": {
+        "properties": {
+          "chunks": {
+            "title": "Chunks",
+            "type": "integer"
+          },
+          "files_seen": {
+            "title": "Files Seen",
+            "type": "integer"
+          },
+          "indexed": {
+            "title": "Indexed",
+            "type": "integer"
+          },
+          "removed": {
+            "title": "Removed",
+            "type": "integer"
+          },
+          "skipped": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Skipped",
+            "type": "array"
+          },
+          "unchanged": {
+            "title": "Unchanged",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "files_seen",
+          "indexed",
+          "unchanged",
+          "removed",
+          "chunks",
+          "skipped"
+        ],
+        "title": "IndexView",
+        "type": "object"
+      },
       "InterviewStart": {
         "additionalProperties": false,
         "properties": {
@@ -934,6 +1451,39 @@
         "title": "InterviewView",
         "type": "object"
       },
+      "JiraIn": {
+        "additionalProperties": false,
+        "properties": {
+          "api_token": {
+            "maxLength": 512,
+            "minLength": 8,
+            "title": "Api Token",
+            "type": "string"
+          },
+          "email": {
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Email",
+            "type": "string"
+          },
+          "site_url": {
+            "examples": [
+              "acme.atlassian.net"
+            ],
+            "maxLength": 255,
+            "minLength": 3,
+            "title": "Site Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "site_url",
+          "email",
+          "api_token"
+        ],
+        "title": "JiraIn",
+        "type": "object"
+      },
       "JobBudget": {
         "additionalProperties": false,
         "description": "Job limits (FR-023). ``None`` means \"use the configured default\".",
@@ -1021,6 +1571,13 @@
             "title": "Kind",
             "type": "string"
           },
+          "max_sources": {
+            "default": 5,
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Max Sources",
+            "type": "integer"
+          },
           "objective": {
             "maxLength": 10000,
             "minLength": 3,
@@ -1038,6 +1595,21 @@
             ],
             "description": "project id or name",
             "title": "Project"
+          },
+          "urls": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 10,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Urls"
           }
         },
         "required": [
@@ -1599,6 +2171,15 @@
         "title": "PolicyOverrideRequest",
         "type": "object"
       },
+      "PrivacyMode": {
+        "description": "Project/content privacy classification (BR-004, ADR-008, ADR-024).\n\n``LOCAL_ONLY`` content must never reach a cloud provider.",
+        "enum": [
+          "LOCAL_ONLY",
+          "STANDARD"
+        ],
+        "title": "PrivacyMode",
+        "type": "string"
+      },
       "ProjectCreateRequest": {
         "additionalProperties": false,
         "properties": {
@@ -1830,6 +2411,69 @@
           "has_key"
         ],
         "title": "ProviderView",
+        "type": "object"
+      },
+      "RankedHitView": {
+        "properties": {
+          "content_hash": {
+            "title": "Content Hash",
+            "type": "string"
+          },
+          "end_line": {
+            "title": "End Line",
+            "type": "integer"
+          },
+          "indexed_at": {
+            "title": "Indexed At",
+            "type": "string"
+          },
+          "privacy_mode": {
+            "title": "Privacy Mode",
+            "type": "string"
+          },
+          "scope_id": {
+            "title": "Scope Id",
+            "type": "string"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "snippet": {
+            "title": "Snippet",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "start_line": {
+            "title": "Start Line",
+            "type": "integer"
+          },
+          "tier": {
+            "title": "Tier",
+            "type": "integer"
+          },
+          "uri": {
+            "title": "Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "tier",
+          "scope_id",
+          "uri",
+          "start_line",
+          "end_line",
+          "snippet",
+          "score",
+          "privacy_mode",
+          "content_hash",
+          "indexed_at"
+        ],
+        "title": "RankedHitView",
         "type": "object"
       },
       "ReplyView": {
@@ -3741,6 +4385,402 @@
         ]
       }
     },
+    "/api/v1/connectors": {
+      "get": {
+        "operationId": "list_accounts_api_v1_connectors_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AccountView"
+                  },
+                  "title": "Response List Accounts Api V1 Connectors Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Accounts",
+        "tags": [
+          "connectors"
+        ]
+      }
+    },
+    "/api/v1/connectors/azure-devops": {
+      "post": {
+        "operationId": "connect_azure_devops_api_v1_connectors_azure_devops_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AzureDevOpsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Connect Azure Devops",
+        "tags": [
+          "connectors"
+        ]
+      }
+    },
+    "/api/v1/connectors/clients/{kind}": {
+      "get": {
+        "operationId": "get_client_api_v1_connectors_clients__kind__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kind",
+            "required": true,
+            "schema": {
+              "enum": [
+                "google",
+                "microsoft"
+              ],
+              "title": "Kind",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Client",
+        "tags": [
+          "connectors"
+        ]
+      },
+      "put": {
+        "operationId": "set_client_api_v1_connectors_clients__kind__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kind",
+            "required": true,
+            "schema": {
+              "enum": [
+                "google",
+                "microsoft"
+              ],
+              "title": "Kind",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Client",
+        "tags": [
+          "connectors"
+        ]
+      }
+    },
+    "/api/v1/connectors/flows/{flow_id}": {
+      "get": {
+        "operationId": "get_flow_api_v1_connectors_flows__flow_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "flow_id",
+            "required": true,
+            "schema": {
+              "title": "Flow Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlowView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Flow",
+        "tags": [
+          "connectors"
+        ]
+      }
+    },
+    "/api/v1/connectors/google": {
+      "post": {
+        "operationId": "connect_google_api_v1_connectors_google_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlowView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Connect Google",
+        "tags": [
+          "connectors"
+        ]
+      }
+    },
+    "/api/v1/connectors/jira": {
+      "post": {
+        "operationId": "connect_jira_api_v1_connectors_jira_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JiraIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Connect Jira",
+        "tags": [
+          "connectors"
+        ]
+      }
+    },
+    "/api/v1/connectors/microsoft": {
+      "post": {
+        "operationId": "connect_microsoft_api_v1_connectors_microsoft_post",
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlowView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Connect Microsoft",
+        "tags": [
+          "connectors"
+        ]
+      }
+    },
+    "/api/v1/connectors/{ref}": {
+      "delete": {
+        "operationId": "disconnect_api_v1_connectors__ref__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Disconnect",
+        "tags": [
+          "connectors"
+        ]
+      },
+      "patch": {
+        "operationId": "update_account_api_v1_connectors__ref__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Account",
+        "tags": [
+          "connectors"
+        ]
+      }
+    },
     "/api/v1/conversation/messages": {
       "post": {
         "operationId": "send_message_api_v1_conversation_messages_post",
@@ -4433,6 +5473,293 @@
         ]
       }
     },
+    "/api/v1/knowledge/collections": {
+      "get": {
+        "operationId": "list_collections_api_v1_knowledge_collections_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CollectionView"
+                  },
+                  "title": "Response List Collections Api V1 Knowledge Collections Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "List Collections",
+        "tags": [
+          "knowledge"
+        ]
+      },
+      "post": {
+        "operationId": "add_collection_api_v1_knowledge_collections_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Collection",
+        "tags": [
+          "knowledge"
+        ]
+      }
+    },
+    "/api/v1/knowledge/collections/{ref}": {
+      "delete": {
+        "operationId": "remove_collection_api_v1_knowledge_collections__ref__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Remove Collection",
+        "tags": [
+          "knowledge"
+        ]
+      },
+      "patch": {
+        "operationId": "update_collection_api_v1_knowledge_collections__ref__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Update Collection",
+        "tags": [
+          "knowledge"
+        ]
+      }
+    },
+    "/api/v1/knowledge/collections/{ref}/index": {
+      "post": {
+        "operationId": "index_collection_api_v1_knowledge_collections__ref__index_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndexView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Index Collection",
+        "tags": [
+          "knowledge"
+        ]
+      }
+    },
+    "/api/v1/knowledge/search": {
+      "get": {
+        "description": "FR-020 ranking: the project first, then company knowledge, then websites.",
+        "operationId": "search_api_v1_knowledge_search_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "project",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Project"
+            }
+          },
+          {
+            "in": "query",
+            "name": "collection",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Collection"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RankedHitView"
+                  },
+                  "title": "Response Search Api V1 Knowledge Search Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Search",
+        "tags": [
+          "knowledge"
+        ]
+      }
+    },
     "/api/v1/preferences/ide/{technology}": {
       "put": {
         "operationId": "set_ide_preference_api_v1_preferences_ide__technology__put",
@@ -4762,6 +6089,61 @@
           }
         },
         "summary": "Project Estimate",
+        "tags": [
+          "requirements"
+        ]
+      }
+    },
+    "/api/v1/projects/{ref}/exports": {
+      "post": {
+        "description": "DOCX/PDF/XLSX/PPTX exports under docs/requirements/exports (FR-029, BR-028).",
+        "operationId": "export_documents_api_v1_projects__ref__exports_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ref",
+            "required": true,
+            "schema": {
+              "title": "Ref",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Export Documents Api V1 Projects  Ref  Exports Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Export Documents",
         "tags": [
           "requirements"
         ]

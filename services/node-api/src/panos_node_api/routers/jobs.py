@@ -27,6 +27,9 @@ class JobCreate(BaseModel):
     kind: str = "coding"
     commit: bool = True  # coding: request commit approval at the end (never auto-commits)
     argv: list[str] | None = Field(default=None, max_length=256)  # command jobs
+    # research jobs: read these pages instead of searching; how many sources to use
+    urls: list[str] | None = Field(default=None, max_length=10)
+    max_sources: int = Field(default=5, ge=1, le=10)
     budget: JobBudget = Field(default_factory=JobBudget)
 
 
@@ -131,6 +134,12 @@ async def create_job(body: JobCreate, container: Container) -> JobView:
     job_input: dict[str, Any] = {"commit": body.commit} if body.kind == "coding" else {}
     if body.argv:
         job_input["argv"] = body.argv
+    if body.kind == "research":
+        job_input = {
+            "question": body.objective,
+            "urls": body.urls or [],
+            "max_sources": body.max_sources,
+        }
     try:
         job = await container.runner.submit(
             body.objective,

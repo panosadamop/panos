@@ -11,7 +11,7 @@ panos-cli = { workspace = true }
 
 [dependency-groups]
 dev = [
-    "panos-core[anthropic,voice]",
+    "panos-core[anthropic,voice,browser]",
     "panos-node-api",
     "panos-cli",
     "pytest>=8.3",
@@ -29,6 +29,7 @@ dev = [
     "types-pyyaml>=6.0",
     "types-psutil>=6.1",
     "pyinstaller>=6.10",
+    "types-openpyxl>=3.1.5.20260827",
 ]
 
 # ---------------------------------------------------------------- ruff
@@ -87,6 +88,11 @@ disallow_incomplete_defs = false
 module = ["alembic.*", "bashlex.*", "rfc8785.*", "sqlite_vec.*", "onnxruntime.*",
           "faster_whisper.*", "sounddevice.*", "piper.*", "soundfile.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# python-docx / python-pptx ship partial annotations; their untyped calls are fine here.
+module = ["panos_core.documents.*", "panos_core.requirements.exports"]
+disallow_untyped_calls = false
 
 [tool.pydantic-mypy]
 init_forbid_extra = true

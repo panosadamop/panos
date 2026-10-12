@@ -323,3 +323,33 @@ class GeneratedSkillRow(Base):
     source_keys: Mapped[list[str]] = mapped_column(JSON, default=list)
     path: Mapped[str] = mapped_column(Text)
     generated_at: Mapped[datetime] = mapped_column(UTCDateTime)
+
+
+class ConnectorAccountRow(Base):
+    __tablename__ = "connector_account"
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    kind: Mapped[str] = mapped_column(String(32))
+    label: Mapped[str] = mapped_column(String(256))
+    base_url: Mapped[str | None] = mapped_column(Text)
+    scopes: Mapped[list[str]] = mapped_column(JSON, default=list)
+    privacy_mode: Mapped[str] = mapped_column(String(16))
+    status: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+    last_used_at: Mapped[datetime | None] = mapped_column(UTCDateTime)
+
+
+class KnowledgeCollectionRow(Base):
+    __tablename__ = "knowledge_collection"
+
+    id: Mapped[str] = mapped_column(ID, primary_key=True)
+    name: Mapped[str] = mapped_column(String(64), unique=True)
+    kind: Mapped[str] = mapped_column(String(32))
+    location: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    connector_id: Mapped[str | None] = mapped_column(
+        ForeignKey("connector_account.id", ondelete="SET NULL")
+    )
+    privacy_mode: Mapped[str] = mapped_column(String(16))
+    enabled: Mapped[bool] = mapped_column(Boolean)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime)
+    last_indexed_at: Mapped[datetime | None] = mapped_column(UTCDateTime)

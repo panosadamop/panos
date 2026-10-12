@@ -227,6 +227,14 @@ class KnowledgeIndex:
         )
         conn.execute("DELETE FROM source WHERE id = ?", (row[0],))
 
+    def relabel(self, project_id: str, privacy_mode: str) -> None:
+        """Apply a changed privacy label to every indexed source of a scope."""
+        with self._lock, self._connect() as conn:
+            conn.execute(
+                "UPDATE source SET privacy_mode = ? WHERE project_id = ?",
+                (privacy_mode, project_id),
+            )
+
     def remove_project(self, project_id: str) -> None:
         with self._lock, self._connect() as conn:
             for (uri,) in conn.execute(
@@ -389,12 +397,22 @@ class KnowledgeIndex:
 
 
 def document_from_bytes(uri: str, data: bytes) -> Document | None:
-    """Text documents only: binary content (NUL bytes) and oversized files are skipped."""
-    if len(data) > MAX_FILE_BYTES or b"\x00" in data[:8192]:
+    """Text files, plus Office/PDF files through their extractors (M8-04). Other binary
+    content (NUL bytes) and oversized files are skipped."""
+    from panos_core.knowledge.extract import extract_text, extractable
+
+    text: str | None
+    if extractable(uri):
+        text = extract_text(uri, data)
+    elif len(data) > MAX_FILE_BYTES or b"\x00" in data[:8192]:
+        return None
+    else:
+        text = data.decode("utf-8", errors="replace")
+    if text is None:
         return None
     return Document(
         uri=uri,
-        text=data.decode("utf-8", errors="replace"),
+        text=text,
         content_hash=hashlib.sha256(data).hexdigest(),
         size=len(data),
     )

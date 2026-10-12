@@ -147,6 +147,33 @@ class VoiceSettings(BaseModel):
     model_dir: Path | None = None  # default: <data_dir>/models/voice
 
 
+class DocumentSettings(BaseModel):
+    """Office/PDF exports (FR-029)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    # Folder with a Unicode TrueType font for PDF (Arial/DejaVu/Liberation file names);
+    # default: the system font folders.
+    pdf_font_dir: Path | None = None
+
+
+class BrowserSettings(BaseModel):
+    """Browser research (ADR-027): read-only Chromium with an isolated profile."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    # GET search page; ``{query}`` is replaced by the URL-encoded query. Live check
+    # (2026-10-12): DuckDuckGo and Brave answer the headless browser with a bot check (a clear
+    # "blocked" error); Bing answers with irrelevant results. Research with given URLs is
+    # unaffected; a search-API provider is an open owner decision (considerations.md).
+    search_url: str = "https://html.duckduckgo.com/html/?q={query}"
+    # Loopback/private-network pages (routers, intranet admin) are blocked unless allowed.
+    allow_private_networks: bool = False
+    headless: bool = True
+    max_sources: int = Field(default=5, ge=1, le=10)
+    page_timeout_s: float = Field(default=30.0, gt=0, le=120)
+
+
 class PanosSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="PANOS_",
@@ -171,6 +198,8 @@ class PanosSettings(BaseSettings):
     jobs: JobSettings = Field(default_factory=JobSettings)
     estimation: EstimationSettings = Field(default_factory=EstimationSettings)
     voice: VoiceSettings = Field(default_factory=VoiceSettings)
+    documents: DocumentSettings = Field(default_factory=DocumentSettings)
+    browser: BrowserSettings = Field(default_factory=BrowserSettings)
 
     @field_validator("data_dir", "config_dir", "log_dir", "runtime_dir", "workspace_dir")
     @classmethod

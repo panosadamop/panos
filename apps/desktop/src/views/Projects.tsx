@@ -22,6 +22,13 @@ export function ProjectsView() {
     setMessage(r.data ? `✓ ${r.data.chunks} chunks` : String((r.error as { detail?: string })?.detail));
   };
 
+  const exportDocs = async (ref: string) => {
+    const r = await api.POST("/api/v1/projects/{ref}/exports", { params: { path: { ref } }, body: {} });
+    setMessage(
+      r.data ? `✓ ${t("projects.exported")}: ${(r.data.files as string[]).join(", ")}` : String((r.error as { detail?: string })?.detail),
+    );
+  };
+
   return (
     <section aria-labelledby="proj-title">
       <h2 id="proj-title">{t("nav.projects")}</h2>
@@ -53,6 +60,9 @@ export function ProjectsView() {
                 </button>
                 <button type="button" onClick={() => void index(p.name)}>
                   {t("projects.index")}
+                </button>
+                <button type="button" onClick={() => void exportDocs(p.name)}>
+                  {t("projects.export")}
                 </button>
               </td>
             </tr>

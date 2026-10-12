@@ -13,6 +13,8 @@ LOCAL_USER = "user"
 
 _REASON_STATUS = {
     "not_found": 404,
+    "conflict": 409,
+    "upstream": 502,
     "duplicate": 409,
     "not_pending": 409,
     "expired": 409,

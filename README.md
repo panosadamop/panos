@@ -129,6 +129,22 @@ uv run python scripts/build_sidecar.py --voice  # frozen node for the installer 
 pnpm --dir apps/desktop tauri build --config src-tauri/tauri.bundle.conf.json   # NSIS installer
 ```
 
+Integrations, research and documents (M8). Accounts use your own OAuth apps and tokens; secrets stay in the OS keyring, and connected content is `LOCAL_ONLY` unless you relax it per account. Setup: [`docs/planning/connectors-setup.md`](docs/planning/connectors-setup.md).
+
+```bash
+uv run panos connect client google --id <client-id>       # your Google desktop OAuth client
+uv run panos connect google -f mail -f calendar           # Gmail (read + drafts only) and Calendar
+uv run panos connect jira acme.atlassian.net --email me@example.com
+uv run panos ask "έχω νέα μηνύματα;"                       # unread mail; "τι έχω σήμερα;" for the calendar
+uv run panos knowledge add-folder company "D:/Company/Policies" && uv run panos knowledge index company
+uv run panos knowledge search "annual leave" -p shop       # project first, then company knowledge (FR-020)
+uv run python -m playwright install chromium              # once, for browser research
+uv run panos research "how much does a 5 kW PV system produce in Crete?"
+uv run panos project export shop                          # requirements as DOCX/PDF, backlog XLSX, deck PPTX
+```
+
+Panos never sends email (no send tool; send endpoints are blocked). Calendar and Jira/Azure DevOps changes need approval of the exact change. Browser research is read-only: no form submission or upload ([ADR-026](docs/adr/ADR-026-connectors.md), [ADR-027](docs/adr/ADR-027-browser-research.md)).
+
 The `justfile` wraps the same commands (`just check`). CI runs them on Windows, macOS and Linux for Python 3.12 and 3.14 (`.github/workflows/ci.yml`).
 
 Runtime data never lives in the repository. It is stored in per-user directories; `panos config path` shows them. The default project workspace is `~/Panos/Projects`.

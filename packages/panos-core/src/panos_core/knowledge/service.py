@@ -9,6 +9,8 @@ from typing import Protocol
 from panos_core.audit import AuditService
 from panos_core.domain import Project
 from panos_core.domain.enums import PrivacyMode
+from panos_core.knowledge.extract import MAX_DOCUMENT_BYTES, extractable
+from panos_core.knowledge.git_history import history_document
 from panos_core.knowledge.index import (
     MAX_FILE_BYTES,
     Document,
@@ -39,7 +41,7 @@ def _collect(project: Project, known: dict[str, str]) -> tuple[list[Document], s
     changed: list[Document] = []
     seen: set[str] = set()
     for f in iter_project_files(root):
-        if f.size > MAX_FILE_BYTES:
+        if f.size > (MAX_DOCUMENT_BYTES if extractable(f.rel) else MAX_FILE_BYTES):
             continue
         try:
             data = f.path.read_bytes()
@@ -72,6 +74,12 @@ class KnowledgeService:
             return IndexStats(0, 0, 0, 0, 0)
         known = await asyncio.to_thread(self.index.known_hashes, project.id)
         changed, seen, total = await asyncio.to_thread(_collect, project, known)
+        history = await history_document(Path(project.path))
+        if history is not None:
+            seen.add(history.uri)
+            total += 1
+            if known.get(history.uri) != history.content_hash:
+                changed.append(history)
         indexed, removed, chunks = await asyncio.to_thread(
             self.index.update, project.id, str(project.privacy_mode), changed, seen
         )

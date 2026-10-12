@@ -19,7 +19,8 @@ from typing import Any
 from panos_core.agents import AgentTask, run_agent
 from panos_core.ai.gateway import AIGateway, CallContext
 from panos_core.audit import AuditService
-from panos_core.config.settings import EstimationSettings
+from panos_core.config.settings import DocumentSettings, EstimationSettings
+from panos_core.documents import find_fonts
 from panos_core.domain import Project
 from panos_core.domain.clock import utc_now
 from panos_core.domain.enums import PrivacyMode
@@ -38,6 +39,7 @@ from panos_core.repository import gitcli
 from panos_core.requirements import packs as stack_packs
 from panos_core.requirements.artifacts import ArtifactContext, render_all
 from panos_core.requirements.estimation import Estimate, estimate
+from panos_core.requirements.exports import FORMATS, export
 from panos_core.requirements.roles import (
     ANALYST_QUESTIONS,
     ANALYST_SPEC,
@@ -50,6 +52,7 @@ from panos_core.requirements.skills import approved_facts, build_skills, render_
 
 T = RequirementType
 DOCS_DIR = "docs/requirements"
+EXPORTS_DIR = f"{DOCS_DIR}/exports"
 MAX_QUESTIONS = 8
 
 
@@ -73,6 +76,7 @@ class PipelineService:
         projects: ProjectService,
         gateway: AIGateway,
         estimation: EstimationSettings,
+        documents: DocumentSettings | None = None,
     ) -> None:
         self._uow_factory = uow_factory
         self._audit = audit
@@ -80,6 +84,7 @@ class PipelineService:
         self._projects = projects
         self._gateway = gateway
         self._estimation = estimation
+        self._documents = documents or DocumentSettings()
 
     # ------------------------------------------------------------------ interview
     async def start(
@@ -425,16 +430,41 @@ class PipelineService:
         open_questions = sum(1 for i in interviews for q in i.questions if q.skipped)
         return estimate(items, self._estimation, open_questions=open_questions)
 
-    async def documents(self, project: Project, *, actor: str = "user") -> list[str]:
+    async def _artifact_context(self, project: Project) -> ArtifactContext:
         items = await self.requirements.list_latest(project.id)
-        links = list(await self.requirements.links(project.id))
-        ctx = ArtifactContext(
+        return ArtifactContext(
             project=project.name,
             items=items,
-            links=links,
+            links=list(await self.requirements.links(project.id)),
             estimate=await self.estimate(project),
             stack=stack_of(approved_facts(items), project.name),
         )
+
+    async def export(
+        self, project: Project, formats: list[str] | None = None, *, actor: str = "user"
+    ) -> list[str]:
+        """Write DOCX/PDF/XLSX/PPTX exports to ``docs/requirements/exports`` (FR-029)."""
+        ctx = await self._artifact_context(project)
+        wanted = formats or list(FORMATS)
+        fonts = find_fonts(self._documents.pdf_font_dir) if "pdf" in wanted else None
+        files = export(ctx, wanted, fonts=fonts)
+        root = Path(project.path) / EXPORTS_DIR
+        root.mkdir(parents=True, exist_ok=True)
+        written = []
+        for name, content in files.items():
+            (root / name).write_bytes(content)
+            written.append(f"{EXPORTS_DIR}/{name}")
+        await self._audit.record(
+            actor=actor,
+            event_type="requirements.exported",
+            action="requirements.export",
+            project_id=project.id,
+            metadata={"files": written},
+        )
+        return written
+
+    async def documents(self, project: Project, *, actor: str = "user") -> list[str]:
+        ctx = await self._artifact_context(project)
         root = Path(project.path) / DOCS_DIR
         root.mkdir(parents=True, exist_ok=True)
         written = []

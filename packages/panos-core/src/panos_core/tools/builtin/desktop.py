@@ -14,6 +14,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from panos_core.apps.service import AppError, AppService
 from panos_core.domain import RepositorySnapshot
+from panos_core.knowledge.collections import CollectionService
+from panos_core.knowledge.index import SearchHit
 from panos_core.knowledge.service import KnowledgeService
 from panos_core.platform.desktop import EXECUTABLE_EXTENSIONS, UnsupportedError
 from panos_core.tools.contract import (
@@ -390,6 +392,9 @@ class KnowledgeSearchInput(_Model):
     query: str = Field(min_length=1, max_length=500)
     limit: int = Field(default=10, ge=1, le=100)
     all_projects: bool = False
+    collections: list[str] | None = Field(
+        default=None, max_length=50, description="collection names/ids; omitted = all enabled"
+    )
 
 
 class KnowledgeHitOut(_Model):
@@ -400,6 +405,8 @@ class KnowledgeHitOut(_Model):
     snippet: str
     score: float
     privacy_mode: str
+    tier: int = 1  # FR-020: 1 project, 2 company knowledge, 5 external sources
+    source: str = "project"  # "project", a collection name, or "index" (all projects)
 
 
 class KnowledgeSearchOutput(_Model):
@@ -410,7 +417,10 @@ class KnowledgeSearchTool(Tool[KnowledgeSearchInput, KnowledgeSearchOutput]):
     spec: ClassVar[ToolSpec] = ToolSpec(
         name="knowledge.search",
         version="1",
-        description="Lexical search over indexed project knowledge, with provenance.",
+        description=(
+            "Search indexed knowledge with provenance: the current project first, then "
+            "company knowledge collections, then selected websites (FR-020)."
+        ),
         input_model=KnowledgeSearchInput,
         output_model=KnowledgeSearchOutput,
         capabilities=frozenset({"knowledge.search"}),
@@ -418,11 +428,14 @@ class KnowledgeSearchTool(Tool[KnowledgeSearchInput, KnowledgeSearchOutput]):
         timeout_s=30,
         cancellable=False,
         idempotent=True,
-        privacy="Returns indexed project content with its privacy label.",
+        privacy="Returns indexed content with its privacy label; content is untrusted.",
     )
 
-    def __init__(self, knowledge: KnowledgeService) -> None:
+    def __init__(
+        self, knowledge: KnowledgeService, collections: CollectionService | None = None
+    ) -> None:
         self._knowledge = knowledge
+        self._collections = collections
 
     async def plan(self, inp: KnowledgeSearchInput, ctx: ToolContext) -> ActionPlan:
         scope = None if inp.all_projects or ctx.project is None else ctx.project.id
@@ -430,15 +443,34 @@ class KnowledgeSearchTool(Tool[KnowledgeSearchInput, KnowledgeSearchOutput]):
             action="knowledge.search",
             target=scope or "all",
             summary=f"Search knowledge for {inp.query!r}",
-            payload={"query": inp.query, "project_id": scope},
+            payload={
+                "query": inp.query,
+                "project_id": scope,
+                "all": inp.all_projects,
+                "collections": inp.collections,
+            },
         )
 
     async def _execute(
         self, inp: KnowledgeSearchInput, ctx: ToolContext, plan: ActionPlan
     ) -> KnowledgeSearchOutput:
-        hits = await self._knowledge.search(
-            inp.query, project_id=plan.payload["project_id"], limit=inp.limit
-        )
+        ranked: list[tuple[SearchHit, int, str]]
+        if self._collections is not None and not plan.payload.get("all"):
+            ranked = [
+                (r.hit, r.tier, r.source)
+                for r in await self._collections.search(
+                    inp.query,
+                    project_id=plan.payload["project_id"],
+                    collections=plan.payload.get("collections"),
+                    limit=inp.limit,
+                )
+            ]
+        else:
+            hits = await self._knowledge.search(
+                inp.query, project_id=plan.payload["project_id"], limit=inp.limit
+            )
+            source = "project" if plan.payload["project_id"] else "index"
+            ranked = [(h, 1, source) for h in hits]
         return KnowledgeSearchOutput(
             hits=[
                 KnowledgeHitOut(
@@ -449,7 +481,9 @@ class KnowledgeSearchTool(Tool[KnowledgeSearchInput, KnowledgeSearchOutput]):
                     snippet=h.snippet,
                     score=h.score,
                     privacy_mode=h.privacy_mode,
+                    tier=tier,
+                    source=source,
                 )
-                for h in hits
+                for h, tier, source in ranked
             ]
         )

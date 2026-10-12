@@ -263,6 +263,144 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/connectors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Accounts */
+        get: operations["list_accounts_api_v1_connectors_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/connectors/azure-devops": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Connect Azure Devops */
+        post: operations["connect_azure_devops_api_v1_connectors_azure_devops_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/connectors/clients/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Client */
+        get: operations["get_client_api_v1_connectors_clients__kind__get"];
+        /** Set Client */
+        put: operations["set_client_api_v1_connectors_clients__kind__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/connectors/flows/{flow_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Flow */
+        get: operations["get_flow_api_v1_connectors_flows__flow_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/connectors/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Connect Google */
+        post: operations["connect_google_api_v1_connectors_google_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/connectors/jira": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Connect Jira */
+        post: operations["connect_jira_api_v1_connectors_jira_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/connectors/microsoft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Connect Microsoft */
+        post: operations["connect_microsoft_api_v1_connectors_microsoft_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/connectors/{ref}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Disconnect */
+        delete: operations["disconnect_api_v1_connectors__ref__delete"];
+        options?: never;
+        head?: never;
+        /** Update Account */
+        patch: operations["update_account_api_v1_connectors__ref__patch"];
+        trace?: never;
+    };
     "/api/v1/conversation/messages": {
         parameters: {
             query?: never;
@@ -519,6 +657,79 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/knowledge/collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Collections */
+        get: operations["list_collections_api_v1_knowledge_collections_get"];
+        put?: never;
+        /** Add Collection */
+        post: operations["add_collection_api_v1_knowledge_collections_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge/collections/{ref}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove Collection */
+        delete: operations["remove_collection_api_v1_knowledge_collections__ref__delete"];
+        options?: never;
+        head?: never;
+        /** Update Collection */
+        patch: operations["update_collection_api_v1_knowledge_collections__ref__patch"];
+        trace?: never;
+    };
+    "/api/v1/knowledge/collections/{ref}/index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Index Collection */
+        post: operations["index_collection_api_v1_knowledge_collections__ref__index_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search
+         * @description FR-020 ranking: the project first, then company knowledge, then websites.
+         */
+        get: operations["search_api_v1_knowledge_search_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/preferences/ide/{technology}": {
         parameters: {
             query?: never;
@@ -617,6 +828,26 @@ export interface paths {
         get: operations["project_estimate_api_v1_projects__ref__estimate_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/projects/{ref}/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Export Documents
+         * @description DOCX/PDF/XLSX/PPTX exports under docs/requirements/exports (FR-029, BR-028).
+         */
+        post: operations["export_documents_api_v1_projects__ref__exports_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1047,6 +1278,31 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AccountPatch */
+        AccountPatch: {
+            privacy_mode: components["schemas"]["PrivacyMode"];
+        };
+        /** AccountView */
+        AccountView: {
+            /** Base Url */
+            base_url: string | null;
+            /** Created At */
+            created_at: string;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Label */
+            label: string;
+            /** Last Used At */
+            last_used_at: string | null;
+            /** Privacy Mode */
+            privacy_mode: string;
+            /** Scopes */
+            scopes: string[];
+            /** Status */
+            status: string;
+        };
         /** AnalyzeRequest */
         AnalyzeRequest: {
             /**
@@ -1226,6 +1482,16 @@ export interface components {
             /** Events */
             events: components["schemas"]["AuditEventView"][];
         };
+        /** AzureDevOpsIn */
+        AzureDevOpsIn: {
+            /**
+             * Org Url
+             * @example https://dev.azure.com/acme
+             */
+            org_url: string;
+            /** Pat */
+            pat: string;
+        };
         /** CapabilitiesResponse */
         CapabilitiesResponse: {
             /** Api Version */
@@ -1275,6 +1541,80 @@ export interface components {
             /** Reason */
             reason: string;
         };
+        /** ClientIn */
+        ClientIn: {
+            /** Client Id */
+            client_id: string;
+            /** Client Secret */
+            client_secret?: string | null;
+            /** Tenant */
+            tenant?: string | null;
+        };
+        /** ClientView */
+        ClientView: {
+            /** Client Id */
+            client_id?: string | null;
+            /** Kind */
+            kind: string;
+            /** Registered */
+            registered: boolean;
+            /** Tenant */
+            tenant?: string | null;
+        };
+        /** CollectionIn */
+        CollectionIn: {
+            /**
+             * Connector
+             * @description account id (drives)
+             */
+            connector?: string | null;
+            kind: components["schemas"]["CollectionKind"];
+            /**
+             * Location
+             * @description folder: {path}; website: {urls}; google_drive: {folder_id}; onedrive: {drive_id, item_id?}
+             */
+            location: {
+                [key: string]: unknown;
+            };
+            /** Name */
+            name: string;
+            /** @default LOCAL_ONLY */
+            privacy_mode: components["schemas"]["PrivacyMode"];
+        };
+        /**
+         * CollectionKind
+         * @enum {string}
+         */
+        CollectionKind: "folder" | "website" | "google_drive" | "onedrive";
+        /** CollectionPatch */
+        CollectionPatch: {
+            /** Enabled */
+            enabled?: boolean | null;
+            privacy_mode?: components["schemas"]["PrivacyMode"] | null;
+        };
+        /** CollectionView */
+        CollectionView: {
+            /** Connector Id */
+            connector_id: string | null;
+            /** Created At */
+            created_at: string;
+            /** Enabled */
+            enabled: boolean;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Last Indexed At */
+            last_indexed_at: string | null;
+            /** Location */
+            location: {
+                [key: string]: unknown;
+            };
+            /** Name */
+            name: string;
+            /** Privacy Mode */
+            privacy_mode: string;
+        };
         /**
          * Complexity
          * @enum {string}
@@ -1315,6 +1655,43 @@ export interface components {
             approval: components["schemas"]["ApprovalView"];
             /** Token */
             token: string | null;
+        };
+        /** ExportRequest */
+        ExportRequest: {
+            /** Formats */
+            formats?: ("docx" | "pdf" | "xlsx" | "pptx")[];
+        };
+        /** FlowView */
+        FlowView: {
+            /** Account Id */
+            account_id: string | null;
+            /** Auth Url */
+            auth_url: string | null;
+            /** Error */
+            error: string | null;
+            /** Id */
+            id: string;
+            /** Kind */
+            kind: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "pending" | "connected" | "failed";
+            /** User Code */
+            user_code: string | null;
+            /** Verification Uri */
+            verification_uri: string | null;
+        };
+        /** GoogleIn */
+        GoogleIn: {
+            /** Features */
+            features: ("mail" | "calendar" | "drive")[];
+            /**
+             * Open Browser
+             * @default true
+             */
+            open_browser: boolean;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1360,6 +1737,21 @@ export interface components {
             /** Unchanged */
             unchanged: number;
         };
+        /** IndexView */
+        IndexView: {
+            /** Chunks */
+            chunks: number;
+            /** Files Seen */
+            files_seen: number;
+            /** Indexed */
+            indexed: number;
+            /** Removed */
+            removed: number;
+            /** Skipped */
+            skipped: string[];
+            /** Unchanged */
+            unchanged: number;
+        };
         /** InterviewStart */
         InterviewStart: {
             /** Brief */
@@ -1394,6 +1786,18 @@ export interface components {
             /** Status */
             status: string;
         };
+        /** JiraIn */
+        JiraIn: {
+            /** Api Token */
+            api_token: string;
+            /** Email */
+            email: string;
+            /**
+             * Site Url
+             * @example acme.atlassian.net
+             */
+            site_url: string;
+        };
         /**
          * JobBudget
          * @description Job limits (FR-023). ``None`` means "use the configured default".
@@ -1423,6 +1827,11 @@ export interface components {
              * @default coding
              */
             kind: string;
+            /**
+             * Max Sources
+             * @default 5
+             */
+            max_sources: number;
             /** Objective */
             objective: string;
             /**
@@ -1430,6 +1839,8 @@ export interface components {
              * @description project id or name
              */
             project?: string | null;
+            /** Urls */
+            urls?: string[] | null;
         };
         /** JobDetail */
         JobDetail: {
@@ -1611,6 +2022,14 @@ export interface components {
             /** Level */
             level?: string | null;
         };
+        /**
+         * PrivacyMode
+         * @description Project/content privacy classification (BR-004, ADR-008, ADR-024).
+         *
+         *     ``LOCAL_ONLY`` content must never reach a cloud provider.
+         * @enum {string}
+         */
+        PrivacyMode: "LOCAL_ONLY" | "STANDARD";
         /** ProjectCreateRequest */
         ProjectCreateRequest: {
             /**
@@ -1694,6 +2113,31 @@ export interface components {
             models: string[];
             /** Ok */
             ok: boolean;
+        };
+        /** RankedHitView */
+        RankedHitView: {
+            /** Content Hash */
+            content_hash: string;
+            /** End Line */
+            end_line: number;
+            /** Indexed At */
+            indexed_at: string;
+            /** Privacy Mode */
+            privacy_mode: string;
+            /** Scope Id */
+            scope_id: string;
+            /** Score */
+            score: number;
+            /** Snippet */
+            snippet: string;
+            /** Source */
+            source: string;
+            /** Start Line */
+            start_line: number;
+            /** Tier */
+            tier: number;
+            /** Uri */
+            uri: string;
         };
         /** ReplyView */
         ReplyView: {
@@ -2564,6 +3008,306 @@ export interface operations {
             };
         };
     };
+    list_accounts_api_v1_connectors_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountView"][];
+                };
+            };
+        };
+    };
+    connect_azure_devops_api_v1_connectors_azure_devops_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AzureDevOpsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_client_api_v1_connectors_clients__kind__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: "google" | "microsoft";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    set_client_api_v1_connectors_clients__kind__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                kind: "google" | "microsoft";
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClientIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_flow_api_v1_connectors_flows__flow_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                flow_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FlowView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    connect_google_api_v1_connectors_google_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FlowView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    connect_jira_api_v1_connectors_jira_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JiraIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    connect_microsoft_api_v1_connectors_microsoft_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FlowView"];
+                };
+            };
+        };
+    };
+    disconnect_api_v1_connectors__ref__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_account_api_v1_connectors__ref__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     send_message_api_v1_conversation_messages_post: {
         parameters: {
             query?: never;
@@ -3056,6 +3800,188 @@ export interface operations {
             };
         };
     };
+    list_collections_api_v1_knowledge_collections_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionView"][];
+                };
+            };
+        };
+    };
+    add_collection_api_v1_knowledge_collections_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_collection_api_v1_knowledge_collections__ref__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_collection_api_v1_knowledge_collections__ref__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollectionView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    index_collection_api_v1_knowledge_collections__ref__index_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IndexView"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_api_v1_knowledge_search_get: {
+        parameters: {
+            query: {
+                q: string;
+                project?: string | null;
+                collection?: string[] | null;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RankedHitView"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     set_ide_preference_api_v1_preferences_ide__technology__put: {
         parameters: {
             query?: never;
@@ -3284,6 +4210,43 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_documents_api_v1_projects__ref__exports_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportRequest"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {

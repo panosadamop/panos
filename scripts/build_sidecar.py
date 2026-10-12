@@ -57,6 +57,11 @@ def main() -> None:
         "uvicorn",
         "--collect-data",
         "alembic",
+        # Office exports load their default templates (.docx/.pptx parts) from package data.
+        "--collect-data",
+        "docx",
+        "--collect-data",
+        "pptx",
         # Alembic loads env.py and the migration scripts as source files from disk.
         "--add-data",
         f"{MIGRATIONS}{os.pathsep}panos_core/persistence/migrations",

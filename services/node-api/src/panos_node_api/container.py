@@ -6,6 +6,7 @@ import time
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 
+import httpx
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from panos_core.ai.adapters import build_providers
@@ -16,8 +17,11 @@ from panos_core.ai.registry import ModelRegistry
 from panos_core.approvals import ApprovalService
 from panos_core.apps.service import AppService
 from panos_core.audit import AuditService
+from panos_core.browser import BrowserEngine
+from panos_core.browser.playwright_engine import PlaywrightEngine
 from panos_core.checkpoints import CheckpointService
 from panos_core.config import PanosSettings, ensure_directories
+from panos_core.connectors.service import ConnectorService
 from panos_core.conversation import ConversationService
 from panos_core.conversation.service import ContextFactory
 from panos_core.domain.enums import PrivacyMode
@@ -26,8 +30,14 @@ from panos_core.events import EventBus
 from panos_core.jobs import JobService
 from panos_core.jobs.context import JobContextFactory, JobServices
 from panos_core.jobs.runner import JobRunner
-from panos_core.jobs.workflows import CodingWorkflow, CommandWorkflow, ImpactAnalysisWorkflow
+from panos_core.jobs.workflows import (
+    CodingWorkflow,
+    CommandWorkflow,
+    ImpactAnalysisWorkflow,
+    ResearchWorkflow,
+)
 from panos_core.knowledge import KnowledgeIndex, KnowledgeService
+from panos_core.knowledge.collections import CollectionService
 from panos_core.knowledge.service import Embedder
 from panos_core.nodes import ensure_local_node
 from panos_core.notifications import EventChannel, LogChannel, NotificationService
@@ -80,6 +90,9 @@ class NodeContainer:
     pipeline: PipelineService
     voice: VoiceSupervisor
     screen: ScreenService
+    connectors: ConnectorService
+    collections: CollectionService
+    browser: BrowserEngine
     started_monotonic: float = field(default_factory=time.monotonic)
     background: list[asyncio.Task[object]] = field(default_factory=list)
 
@@ -101,6 +114,8 @@ class NodeContainer:
 
     async def close(self) -> None:
         await self.voice.stop()
+        await self.connectors.close()
+        await self.browser.close()
         await self.runner.close()  # running jobs are recovered as interrupted on next start
         for task in self.background:
             task.cancel()
@@ -186,6 +201,8 @@ async def build_container(
     *,
     desktop: DesktopAdapter | None = None,
     ai: AIOverride | None = None,
+    connector_transport: httpx.AsyncBaseTransport | None = None,
+    browser: BrowserEngine | None = None,
 ) -> NodeContainer:
     ensure_directories(settings)
     await asyncio.to_thread(run_migrations, settings.database_path)
@@ -204,8 +221,24 @@ async def build_container(
     analysis = AnalysisService(uow_factory, audit)
     apps = AppService(uow_factory, audit, desktop or default_desktop())
     knowledge = KnowledgeService(KnowledgeIndex(settings.data_dir / KNOWLEDGE_DB), audit)
+    connectors = ConnectorService(uow_factory, secrets, audit, transport=connector_transport)
+    requirements = RequirementsService(uow_factory, audit)
+    collections = CollectionService(
+        uow_factory, knowledge, connectors, audit, web_transport=connector_transport
+    )
+    browser_engine = browser or PlaywrightEngine(
+        settings.data_dir / "browser" / "profile", settings.browser
+    )
     registry = build_default_registry(
-        policy.policy, apps=apps, snapshots=analysis, knowledge=knowledge
+        policy.policy,
+        apps=apps,
+        snapshots=analysis,
+        knowledge=knowledge,
+        connectors=connectors,
+        requirements=requirements,
+        collections=collections,
+        browser=browser_engine,
+        allow_private_web=settings.browser.allow_private_networks,
     )
     tools = ToolRuntime(
         registry=registry,
@@ -226,9 +259,14 @@ async def build_container(
     knowledge.attach_embedder(_embedder(gateway))
     events = EventBus()
     checkpoints = CheckpointService(uow_factory, audit, settings)
-    requirements = RequirementsService(uow_factory, audit)
     pipeline = PipelineService(
-        uow_factory, audit, requirements, projects, gateway, settings.estimation
+        uow_factory,
+        audit,
+        requirements,
+        projects,
+        gateway,
+        settings.estimation,
+        settings.documents,
     )
     notifications = NotificationService([EventChannel(events), LogChannel()])
     runner = JobRunner(
@@ -243,7 +281,7 @@ async def build_container(
             context_for=_job_context_factory(uow_factory, node.id),
             requirements=requirements,
         ),
-        [CodingWorkflow(), CommandWorkflow(), ImpactAnalysisWorkflow()],
+        [CodingWorkflow(), CommandWorkflow(), ImpactAnalysisWorkflow(), ResearchWorkflow()],
         events,
         project_lookup=projects.get,
     )
@@ -262,6 +300,7 @@ async def build_container(
         settings.ai,
         node.id,
         _context_factory(uow_factory, node.id),
+        collections,
     )
 
     async def voice_reply(text: str, conversation_id: str | None) -> tuple[str, str]:
@@ -311,6 +350,9 @@ async def build_container(
         pipeline=pipeline,
         voice=voice,
         screen=screen,
+        connectors=connectors,
+        collections=collections,
+        browser=browser_engine,
     )
 
     async def impact_task(project_id: str, changed_key: str, stale_keys: list[str]) -> None:
@@ -343,7 +385,18 @@ async def build_container(
     async def start_coding_job(objective: str, project: Project, actor: str) -> str:
         return (await runner.submit(objective, project=project, actor=actor)).id
 
+    async def start_research_job(question: str, project: Project | None, actor: str) -> str:
+        job = await runner.submit(
+            question,
+            kind="research",
+            project=project,
+            input={"question": question, "max_sources": settings.browser.max_sources},
+            actor=actor,
+        )
+        return job.id
+
     container.conversations.attach_job_starter(start_coding_job)
+    container.conversations.attach_research_starter(start_research_job)
     # Discovery reads the registry/filesystem; run it after startup so /health is not delayed.
     container.background.append(asyncio.create_task(_refresh_apps(apps)))
     log.info(

@@ -1,9 +1,9 @@
 """Requirements pipeline API (API.md "Requirements", FR-007..010, US-030..033)."""
 
 from datetime import datetime
-from typing import Annotated, Any, Literal
+from typing import Annotated, Any, Literal, get_args
 
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -11,6 +11,7 @@ from panos_core.agents import AgentError
 from panos_core.ai.ports import ProviderError
 from panos_core.ai.privacy import PrivacyViolationError
 from panos_core.ai.router import NoRouteError
+from panos_core.documents import FontNotFoundError
 from panos_core.domain import Project
 from panos_core.domain.requirements import (
     Interview,
@@ -374,6 +375,28 @@ async def project_estimate(ref: str, container: Container) -> dict[str, Any]:
 async def generate_documents(ref: str, container: Container) -> dict[str, Any]:
     project = await _project(container, ref)
     return {"files": await container.pipeline.documents(project, actor=LOCAL_USER)}
+
+
+ExportFormat = Literal["docx", "pdf", "xlsx", "pptx"]
+
+
+class ExportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    formats: list[ExportFormat] = Field(
+        default_factory=lambda: list(get_args(ExportFormat)), min_length=1
+    )
+
+
+@router.post("/projects/{ref}/exports")
+async def export_documents(ref: str, body: ExportRequest, container: Container) -> dict[str, Any]:
+    """DOCX/PDF/XLSX/PPTX exports under docs/requirements/exports (FR-029, BR-028)."""
+    project = await _project(container, ref)
+    try:
+        files = await container.pipeline.export(project, list(body.formats), actor=LOCAL_USER)
+    except FontNotFoundError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return {"files": files}
 
 
 @router.post("/projects/{ref}/skills")

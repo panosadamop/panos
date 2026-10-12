@@ -50,6 +50,49 @@ def job_start(
     typer.echo(f"Started {job['id']} ({job['kind']}). Follow with: panos job watch {job['id']}")
 
 
+def _print_research(result: dict[str, Any]) -> None:
+    if "answer" not in result:
+        return
+    typer.echo(f"\n{result['answer']}\n")
+    for src in result.get("sources", []):
+        typer.echo(f"  [{src['n']}] {src['title']} — {src['url']}")
+    if result.get("uncited_answer"):
+        typer.echo("  (the answer cites no source: treat it with care)")
+
+
+def research(
+    question: Annotated[list[str], typer.Argument(help="what to find out")],
+    url: Annotated[
+        list[str] | None, typer.Option("--url", help="read these pages instead of searching")
+    ] = None,
+    sources: Annotated[int, typer.Option("--sources", "-n", min=1, max=10)] = 5,
+    project: Annotated[str | None, typer.Option("--project", "-p")] = None,
+    wait: Annotated[bool, typer.Option("--wait/--no-wait")] = True,
+) -> None:
+    """Research on the web (read-only browser) and answer with cited sources."""
+    body: dict[str, Any] = {
+        "objective": " ".join(question),
+        "kind": "research",
+        "project": project,
+        "urls": url or None,
+        "max_sources": sources,
+    }
+    job = call(lambda c: c.post("/jobs", body))
+    if not wait:
+        typer.echo(f"Started {job['id']}. Follow with: panos job show {job['id']}")
+        return
+    path = f"/jobs/{job['id']}"
+    while True:
+        job = call(lambda c: c.get(path))
+        if not job["running"] and (job["status"] in _TERMINAL or job["status"] in _WAITING):
+            break
+        time.sleep(1.0)
+    if job["status"] != "COMPLETED":
+        typer.echo(_line(job), err=True)
+        raise typer.Exit(EXIT_ERROR)
+    _print_research(job.get("result") or {})
+
+
 @job_app.command("list")
 def job_list(
     status: Annotated[list[str] | None, typer.Option(help="filter by status")] = None,
@@ -95,6 +138,7 @@ def job_show(job_id: str, as_json: AsJson = False) -> None:
             typer.echo(f"  ! {issue}")
         if result.get("commit"):
             typer.echo(f"  commit: {result['commit'].get('status')}")
+        _print_research(result)
     if job["checkpoints"]:
         typer.echo(
             f"\ncheckpoints: {', '.join(c['id'] for c in job['checkpoints'])} "

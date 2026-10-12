@@ -243,6 +243,20 @@ def project_docs(ref: str) -> None:
     typer.echo(f"Wrote {len(data['files'])} file(s): " + ", ".join(data["files"]))
 
 
+@project_app.command("export")
+def project_export(
+    ref: str,
+    formats: Annotated[
+        list[str] | None,
+        typer.Option("--format", "-f", help="docx, pdf, xlsx or pptx (repeatable; default all)"),
+    ] = None,
+) -> None:
+    """Export the requirements to Word, PDF, Excel and PowerPoint (docs/requirements/exports)."""
+    body = {"formats": formats} if formats else {}
+    data = call(lambda c: c.post(f"/projects/{ref}/exports", body))
+    typer.echo(f"Wrote {len(data['files'])} file(s): " + ", ".join(data["files"]))
+
+
 @project_app.command("skills")
 def project_skills(ref: str) -> None:
     """(Re)generate Claude skills from approved facts (versioned)."""

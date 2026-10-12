@@ -343,7 +343,29 @@ Legend: **Size** S ≤ 1 day, M 2–3 days, L ≈ 1 week (indicative, agent-assi
 
 **Exit (= MVP):** you can operate the MVP primarily through desktop and voice.
 
-### M8–M10 — Post-MVP (epic level; decomposed when M7 exits)
+### M8 — Integrations, research and documents (decomposed 2026-10-09)
+
+**Owner decisions (2026-10-09):**
+- Mail and calendar: **Gmail / Google Calendar** first. Microsoft 365 mail, Outlook COM and Thunderbird are deferred.
+- Trackers: **Jira Cloud and Azure DevOps**.
+- Browser: **Playwright Chromium** with an isolated profile.
+- Cloud document sources: **Google Drive, OneDrive/SharePoint, selected websites**. Local Office/PDF files and Git history are always included.
+
+| ID | Item | Traces | Evidence | Size |
+|---|---|---|---|---|
+| M8-00 | Connector foundation (ADR-026). **Accounts:** connector accounts (migration 0007) with tokens in the OS keyring only. **Auth:** Google installed-app OAuth (loopback + PKCE); Microsoft device-code flow; Jira API token; Azure DevOps PAT. **HTTP:** a per-connector endpoint allowlist (method + path) enforced in the HTTP client; retries and rate limits. **Privacy:** connector content is labelled untrusted and LOCAL_ONLY by default. **Surfaces:** `panos connect …` and `/connectors` API | BR-019, BR-020, BR-016, NFR-SEC-002/004, NFR-PRV-003 | Unit tests with mocked HTTP; allowlist tests; no token in DB/logs/audit | L |
+| M8-01 | Gmail: search, read, thread summary, **draft only** (`drafts.create`/`update`). The send endpoints are absent from the allowlist and no `email.send` capability exists. Prompt-injection tests (mail asking to send/forward/delete) | BR-019, FR-017, US-043, AC-US043-01..03 | Mocked Gmail API; injection corpus; registry test | M |
+| M8-02 | Google Calendar: events, free/busy, conflict detection. Create/update/delete/respond are prepared as an exact operation and executed only after P3 approval | BR-020, FR-018, US-044, AC-US044-01/02 | Mocked API; approval-binding tests | M |
+| M8-03 | Browser research (ADR-027): Playwright Chromium, isolated profile, GET navigation only. Tools `browser.read` (text, title, links, citation) and `browser.search`. A research workflow reads N sources and answers with citations. No submit/upload tool is registered; page content is untrusted | BR-022, FR-016, US-045, AC-US045-01..03 | Local test pages (forms, injection); no-submit test | M |
+| M8-04 | Knowledge adapters: DOCX/XLSX/PPTX/PDF extraction in the indexer; Git history (commit messages and changed files); knowledge collections outside projects (company folders); selected websites (robots.txt, size limits); Google Drive and OneDrive/SharePoint via connectors. Provenance per chunk; ranking per FR-020 | BR-012, FR-019, FR-020 | Fixture documents; mocked Drive/Graph; ranking test | L |
+| M8-05 | Document exports: requirement documents to DOCX and PDF, backlog/estimates to XLSX, a summary deck to PPTX; Greek text supported | BR-028, FR-029 | Golden structure tests (open and inspect the generated files) | M |
+| M8-06 | Jira Cloud and Azure DevOps: read and search work items. Prepared change sets (create/update/transition/comment) need P3 approval of the exact set; then they are executed and linked as requirement evidence | BR-016, US-042, AC-US042-01/02 | Mocked APIs; approval-binding tests | M |
+| M8-07 | Surfaces: API, CLI and desktop (Connections in Settings; mail/calendar/research in chat; exports in Projects); conversation intents (Greek/English) | BR-001, FR-002 | API tests; Vitest + axe | M |
+| M8-08 | End-to-end and documentation: ADR-026/027 notes, README, owner setup guide for the Google OAuth client, Microsoft app registration, Jira token and ADO PAT | — | E2E with mocked providers; live checks by the owner | S |
+
+**Out of M8:** Microsoft 365 mail/calendar, Outlook COM, Thunderbird; browser form submission (stays P4, not implemented).
+
+### M9–M10 — Post-MVP (epic level; M8 decomposed above)
 
 | ID | Epic | Traces |
 |---|---|---|

@@ -5,6 +5,7 @@ from typing import Self
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
+from panos_core.persistence.connector_repository import SqlConnectorRepository
 from panos_core.persistence.repositories import (
     SqlApplicationRepository,
     SqlApprovalRepository,
@@ -45,6 +46,7 @@ class SqlUnitOfWork:
         self.conversations = SqlConversationRepository(s)
         self.ai_usage = SqlUsageRepository(s)
         self.requirements = SqlRequirementRepository(s)
+        self.connectors = SqlConnectorRepository(s)
         return self
 
     async def __aexit__(

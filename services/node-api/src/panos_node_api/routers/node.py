@@ -21,6 +21,8 @@ FEATURES: tuple[str, ...] = (
     "analysis",
     "apps",
     "knowledge",
+    "connectors",
+    "collections",
 )
 
 

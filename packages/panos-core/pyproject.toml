@@ -5,6 +5,7 @@ description = "Panos core: domain, orchestration, policy, tools, persistence and
 requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2.9",
+    "email-validator>=2.2",
     "pydantic-settings>=2.6",
     "platformdirs>=4.3",
     "sqlalchemy[asyncio]>=2.0.36",
@@ -23,11 +24,19 @@ dependencies = [
     "pywin32>=308; sys_platform == 'win32'",
     "jinja2>=3.1",
     "mss>=9.0",
+    # Office/PDF documents: export (FR-029) and knowledge extraction (FR-019).
+    "python-docx>=1.1",
+    "openpyxl>=3.1",
+    "python-pptx>=1.0",
+    "fpdf2>=2.8",
+    "pypdf>=5.0",
 ]
 
 [project.optional-dependencies]
 # Cloud provider SDKs are optional: a local-only installation needs none of them.
 anthropic = ["anthropic>=1.0"]
+# Browser research (ADR-027): Playwright drives an isolated Chromium profile, read-only.
+browser = ["playwright>=1.50"]
 # Voice worker (ADR-016): STT, wake word, VAD and TTS run locally on CPU.
 voice = [
     "numpy>=2.0",

@@ -15,9 +15,10 @@ One turn:
 import time
 from collections.abc import AsyncIterator, Sequence
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from typing import Any, Final, Protocol
 
-from panos_core.ai.context import RetrievedItem, build_messages
+from panos_core.ai.context import RetrievedItem, Scope, build_messages
 from panos_core.ai.gateway import AIGateway, CallContext
 from panos_core.ai.privacy import max_label
 from panos_core.ai.router import RouteDecision
@@ -33,6 +34,8 @@ from panos_core.domain.errors import DomainError
 from panos_core.domain.models import Conversation, ConversationMessage
 from panos_core.events import EventBus
 from panos_core.knowledge import KnowledgeService
+from panos_core.knowledge.collections import CollectionService
+from panos_core.knowledge.index import SearchHit
 from panos_core.observability import get_logger
 from panos_core.persistence.unit_of_work import UnitOfWorkFactory
 from panos_core.projects import ProjectService
@@ -62,6 +65,10 @@ class ScreenAnalyzer(Protocol):
 
 class JobStarter(Protocol):
     async def __call__(self, objective: str, project: Project, actor: str) -> str: ...
+
+
+class ResearchStarter(Protocol):
+    async def __call__(self, question: str, project: Project | None, actor: str) -> str: ...
 
 
 class ConversationError(DomainError):
@@ -110,8 +117,10 @@ class ConversationService:
         settings: AISettings,
         node_id: str,
         context_for: ContextFactory,
+        collections: CollectionService | None = None,
     ) -> None:
         self._uow_factory = uow_factory
+        self._collections = collections
         self._gateway = gateway
         self._knowledge = knowledge
         self._projects = projects
@@ -123,6 +132,7 @@ class ConversationService:
         self._node_id = node_id
         self._context_for = context_for
         self._start_job: JobStarter | None = None
+        self._start_research: ResearchStarter | None = None
         self._screen: ScreenAnalyzer | None = None
 
     def attach_screen(self, analyzer: "ScreenAnalyzer") -> None:
@@ -132,6 +142,10 @@ class ConversationService:
     def attach_job_starter(self, starter: "JobStarter") -> None:
         """Work requests inside a project ("implement …") become coding jobs (M5)."""
         self._start_job = starter
+
+    def attach_research_starter(self, starter: "ResearchStarter") -> None:
+        """ "Research …" becomes a research job with cited sources (ADR-027)."""
+        self._start_research = starter
 
     # ------------------------------------------------------------------ queries
     async def get(self, conversation_id: str) -> tuple[Conversation, Sequence[ConversationMessage]]:
@@ -284,23 +298,39 @@ class ConversationService:
         privacy = turn.conversation.privacy
         retrieved: list[RetrievedItem] = []
         project = turn.project
-        if project is not None and project.knowledge_enabled:
-            try:
-                hits = await self._knowledge.search(
-                    text, project_id=project.id, limit=RETRIEVAL_LIMIT, privacy=project.privacy_mode
+        scoped = project if project is not None and project.knowledge_enabled else None
+        hits: list[tuple[SearchHit, Scope]] = []
+        try:
+            if self._collections is not None:
+                # FR-020: the current project first, then company knowledge, then external
+                # sources. Each hit keeps its own privacy label for routing (ADR-008).
+                hits = [
+                    (r.hit, r.scope)
+                    for r in await self._collections.search(
+                        text,
+                        project_id=scoped.id if scoped else None,
+                        limit=RETRIEVAL_LIMIT,
+                        privacy=scoped.privacy_mode if scoped else PrivacyMode.LOCAL_ONLY,
+                    )
+                ]
+            elif scoped is not None:
+                found = await self._knowledge.search(
+                    text, project_id=scoped.id, limit=RETRIEVAL_LIMIT, privacy=scoped.privacy_mode
                 )
-            except Exception:
-                log.warning("retrieval_failed", project_id=project.id, exc_info=True)
-                hits = []
-            retrieved = [
-                RetrievedItem(
-                    text=h.snippet,
-                    source=f"{h.uri}#L{h.start_line}-L{h.end_line}",
-                    privacy=PrivacyMode(h.privacy_mode),
-                    score=h.score,
-                )
-                for h in hits
-            ]
+                hits = [(h, "project") for h in found]
+        except Exception:
+            log.warning("retrieval_failed", project_id=scoped.id if scoped else None, exc_info=True)
+            hits = []
+        retrieved = [
+            RetrievedItem(
+                text=h.snippet,
+                source=f"{h.uri}#L{h.start_line}-L{h.end_line}",
+                privacy=PrivacyMode(h.privacy_mode),
+                scope=scope,
+                score=h.score,
+            )
+            for h, scope in hits
+        ]
         async with self._uow_factory() as uow:
             stored = await uow.conversations.messages(turn.conversation.id, limit=HISTORY_TURNS + 1)
         history = [
@@ -383,6 +413,7 @@ class ConversationService:
     async def _fast_path(self, turn: _Turn, actor: str) -> Reply | None:
         intent = turn.intent
         tool: ToolResult | None = None
+        label = turn.conversation.privacy
         if intent.kind == "list_projects":
             projects = await self._projects.list()
             text = (
@@ -433,6 +464,40 @@ class ConversationService:
                 text = _tool_text(tool, f"Launching {app.name}.")
         elif intent.kind == "screen" and self._screen is not None:
             text = await self._screen(turn.user_message.content, turn.project, actor)
+        elif intent.kind == "inbox":
+            ctx = await self._context_for(turn.project, actor=actor)
+            tool = await self._tools.invoke(
+                "email.search", {"query": "in:inbox is:unread", "limit": 10}, ctx
+            )
+            text, label = _inbox_text(tool, label)
+        elif intent.kind == "agenda":
+            ctx = await self._context_for(turn.project, actor=actor)
+            now = datetime.now().astimezone()  # the user's local day
+            start = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(
+                days=1 if intent.target == "tomorrow" else 0
+            )
+            tool = await self._tools.invoke(
+                "calendar.events",
+                {"start": start.isoformat(), "end": (start + timedelta(days=1)).isoformat()},
+                ctx,
+            )
+            text, label = _agenda_text(tool, intent.target or "today", label)
+        elif intent.kind == "research" and intent.target and self._start_research:
+            # A local-only project's context must not reach the web: research runs outside
+            # it (the question is the user's own words; sources come from the search).
+            scoped = turn.project
+            if scoped is not None and scoped.privacy_mode == PrivacyMode.LOCAL_ONLY:
+                scoped = None
+            job_id = await self._start_research(intent.target, scoped, actor)
+            text = (
+                f"Started research job {job_id}: I will search the web, read a few sources and "
+                f"answer with citations. Follow it with `panos job show {job_id}`."
+                + (
+                    " It runs outside the local-only project, so no project content is used."
+                    if turn.project is not None and scoped is None
+                    else ""
+                )
+            )
         elif intent.kind == "task" and turn.project is not None and self._start_job:
             job_id = await self._start_job(turn.user_message.content, turn.project, actor)
             text = (
@@ -442,7 +507,6 @@ class ConversationService:
             )
         else:
             return None
-        label = turn.conversation.privacy
         message = ConversationMessage(
             conversation_id=turn.conversation.id, role="assistant", content=text, privacy=label
         )
@@ -460,6 +524,43 @@ class ConversationService:
         )
         self._publish_reply(reply)
         return reply
+
+
+def _label(result: ToolResult, current: PrivacyMode) -> PrivacyMode:
+    """The reply carries the stricter of the conversation's and the content's labels."""
+    content = PrivacyMode((result.output or {}).get("privacy_mode", PrivacyMode.LOCAL_ONLY))
+    return max_label([current, content])
+
+
+def _inbox_text(result: ToolResult, current: PrivacyMode) -> tuple[str, PrivacyMode]:
+    if result.status != ToolStatus.SUCCEEDED:
+        return _tool_text(result, ""), current
+    messages = (result.output or {}).get("messages", [])
+    if not messages:
+        return "No unread email in your inbox.", _label(result, current)
+    lines = [f"- {m['sender']}: {m['subject'] or '(no subject)'}" for m in messages]
+    text = f"{len(messages)} unread email(s):\n" + "\n".join(lines)
+    return text, _label(result, current)
+
+
+def _agenda_text(result: ToolResult, when: str, current: PrivacyMode) -> tuple[str, PrivacyMode]:
+    if result.status != ToolStatus.SUCCEEDED:
+        return _tool_text(result, ""), current
+    out = result.output or {}
+    events = [e for e in out.get("events", []) if e.get("my_response") != "declined"]
+    if not events:
+        return f"Nothing on your calendar {when}.", _label(result, current)
+    lines = [
+        f"- {'all day' if e['all_day'] else e['start'][11:16] + '–' + e['end'][11:16]}"
+        f" {e['summary'] or '(no title)'}"
+        for e in events
+    ]
+    text = f"Your calendar {when}:\n" + "\n".join(lines)
+    names = {e["id"]: e["summary"] for e in out.get("events", [])}
+    for c in out.get("conflicts", []):
+        first, second = names.get(c["first"], c["first"]), names.get(c["second"], c["second"])
+        text += f"\nConflict: {first} overlaps {second}."
+    return text, _label(result, current)
 
 
 def _tool_text(result: ToolResult, success: str) -> str:
@@ -487,4 +588,10 @@ def reply_payload(reply: Reply) -> dict[str, Any]:
     }
 
 
-__all__ = ["ConversationError", "ConversationService", "Reply", "reply_payload"]
+__all__ = [
+    "ConversationError",
+    "ConversationService",
+    "Reply",
+    "ResearchStarter",
+    "reply_payload",
+]

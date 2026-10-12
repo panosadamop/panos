@@ -1,7 +1,8 @@
 """Allowlisted tool registry.
 
 Only registered tools can run. Registration fails if a tool declares a capability that
-is unknown to the policy or that must never exist in the runtime (email sending, BR-019).
+is unknown to the policy or that must never exist in the runtime (email sending, BR-019;
+browser submission and upload, BR-022).
 """
 
 from collections.abc import Iterable
@@ -10,8 +11,10 @@ from typing import Any, Final
 from panos_core.policy import Policy
 from panos_core.tools.contract import Tool
 
-# Capabilities that must not exist in the runtime at all, not merely be denied (AC-US043-02).
-FORBIDDEN_CAPABILITIES: Final = frozenset({"email.send"})
+# Capabilities that must not exist in the runtime at all, not merely be denied
+# (AC-US043-02, AC-US045-02). Browser submission/upload stay P4 in policy but have no tool
+# until a reviewed, user-driven flow exists (ADR-027).
+FORBIDDEN_CAPABILITIES: Final = frozenset({"email.send", "browser.submit", "browser.upload"})
 
 
 class ToolRegistrationError(ValueError):

@@ -46,7 +46,9 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 | R-9 | The repo was in OneDrive (sync and locking problems). | Resolved: moved (D-1) |
 | R-10 | Old Rust; no uv. | Resolved |
 | R-11 | Licences: Piper GPL-3.0, openWakeWord models and some voices non-commercial, Qwen 3B research licence. | Accepted for personal use (D-6). Revisit if Panos is ever distributed. |
-| R-12 | Gmail has no draft-only OAuth scope (`gmail.compose` can send). | Open (M8): enforce in code with no send tool plus an endpoint allowlist. |
+| R-12 | Gmail has no draft-only OAuth scope (`gmail.compose` can send). | Mitigated (M8, ADR-026): the send endpoints are not on the allowlist, a draft id can never be `send`, and the registry refuses an `email.send` tool. Residual: the token itself could send if extracted from the keyring. |
+| R-15 | **Web search engines block or degrade automated browsers.** Live check 2026-10-12: DuckDuckGo and Brave show a bot check; Bing returns irrelevant results. | Open (owner decision): research with given URLs works; search reports "blocked" clearly. Options: a search-API provider (e.g. Brave Search API with the owner's key, behind an adapter) or keep URL-driven research. No bot-detection evasion will be built. |
+| R-16 | Connected accounts hold long-lived tokens that can change external systems. | Mitigated (ADR-026): keyring only, allowlists, P3 approval bound to the exact change set, LOCAL_ONLY by default, audit for connect/privacy/disconnect. |
 | R-13 | The MVP scope is very large. | Mitigated: strict milestone gates. |
 | R-14 | `sqlite-vec` is pre-1.0. | Mitigated: behind a port. |
 
@@ -141,6 +143,18 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - **The desktop shell has no file-system or shell capability.** The WebView gets the node's base URL and token only through the `connection` command and keeps them in memory.
 - **Events are replayable.** Each event has a sequence number, and the node keeps the last 2000 for reconnecting clients; anything older triggers a resync over REST.
 
+## 5a-sexies. Design points added in M8
+
+- **Connectors use the owner's own OAuth apps.** Tokens live in the keyring; the database knows only labels and granted features. Every connector request passes an allowlist (method + host + path) before it is sent (ADR-026).
+- **Mail is read + draft only.** Calendar and work-item writes are prepared into exact requests and need P3 approval of that exact payload. A tampered set invalidates the approval.
+- **Work-item changes become requirement evidence** (`workitem:<system>:<key>`) when a requirement key is given (AC-US042-02). Changes to an existing item report that item's key, not the comment id.
+- **Knowledge collections** (folders, websites, Drive, OneDrive/SharePoint) share the index with projects and are LOCAL_ONLY by default. Retrieval ranks the current project first, then company knowledge, then websites (FR-020). The tier also sets the prompt-context scope, so `build_messages` keeps that order. Conversations now retrieve from collections even without a project; a LOCAL_ONLY collection hit therefore keeps such a turn local.
+- **Graph downloads** follow the 302 to the pre-authenticated URL **without** the bearer token.
+- **Browser research is read-only by construction** (ADR-027): there are no click/fill/upload operations, non-GET requests are aborted, in-page form submission is neutralised, and private networks are blocked. The registry refuses `browser.submit`/`browser.upload` tools.
+- **Web tools are refused in LOCAL_ONLY projects**, since a query or URL could carry protected context. "Research …" in such a chat runs outside the project and says so.
+- **Research is a job** (pause/resume/cancel at safe points; read pages are kept in the state). Page footnote markers like `[5]` are stripped before answering: in the live run they made qwen2.5:3b cite the page's footnote instead of the source number.
+- **New chat intents** (Greek/English): unread mail, today's/tomorrow's agenda with conflicts, and "research …". Mail and calendar replies need no model and keep the content's privacy label.
+
 ## 5b. Security incidents
 
 | Date | Event | Handling |
@@ -167,6 +181,7 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - `Path.write_text` emits CRLF on Windows. Write test fixtures as bytes.
 - `types-pywin32` annotates `CreateJobObject` as returning `None` (stub bug).
 - Windows `CreateProcess` and `shutil.which` search the current directory first. Resolve executables explicitly.
+- A frozen Playwright looks for browsers inside the bundle (`_internal/playwright/driver/.local-browsers`). Set `PLAYWRIGHT_BROWSERS_PATH` to the per-user cache. Found only by the frozen smoke test (M8).
 - PyInstaller does not detect modules imported by name at runtime: the SQLAlchemy dialect driver (`aiosqlite`) needs `--hidden-import`, and Alembic's `env.py`/migrations need `--add-data` (they are loaded as source files). **Smoke-test the frozen build, not just `version`.**
 - openWakeWord's Linux dependency `tflite-runtime` has no Python 3.12+ wheels. The ONNX models give identical results without it.
 - Silero VAD v5 expects a 64-sample context before every 512-sample chunk; without it the scores are wrong.
@@ -186,7 +201,7 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] Retrieval uses FTS snippets (~matched lines), not whole chunks. Pass full chunk text to the model when context budgets allow.
 - [ ] An LLM-based intent classifier on the local light tier, for paraphrased commands the rules miss.
 - [ ] Approval-gated budget escalation: still open. M5 limits block the job; the user resumes it, optionally with a larger budget via a new job.
-- [ ] DOCX/XLSX/PPTX/PDF export of the requirement documents (FR-029, BR-028).
+- [x] DOCX/XLSX/PPTX/PDF export of the requirement documents (FR-029, BR-028) — M8-05.
 - [ ] Coding jobs should record `implements` evidence links (commit, files) for the requirement IDs they touch.
 - [x] Live interview and specification run with local models (M6 report): works in about 5 min; content thin.
 - [ ] Follow-up interview rounds (questions based on the first answers) and a review/critique pass on the generated specification.
@@ -214,3 +229,12 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] Playwright end-to-end UI tests against the mock API (M7-03 asked for them; Vitest + axe cover the views today).
 - [ ] macOS/Linux: window bounds for capture, the macOS screen-recording permission flow, Wayland via the portal, and installer bundles.
 - [ ] Code signing of the installer (optional for personal use).
+- [ ] **Owner decision (M8):** web search provider for research (R-15): a search API behind an adapter vs URL-driven research only.
+- [ ] Accept or amend ADR-026 and ADR-027 (Proposed in M8).
+- [ ] Owner live checks for Google, Microsoft, Jira/ADO (`docs/planning/connectors-setup.md`). Nothing was run against real accounts; all connector tests use the fake cloud.
+- [ ] Embeddings (hybrid search) for knowledge collections. They are lexical only today.
+- [ ] Chromium for the packaged app: the frozen sidecar bundles the Playwright driver (+103 MB; the sidecar is now 445 MB) and uses the per-user browser cache (`%LOCALAPPDATA%\ms-playwright`). Chromium itself still needs a one-time `playwright install chromium`; the installer could do it, or offer it on first research.
+- [ ] Google OAuth apps in "Testing" mode get 7-day refresh tokens: reconnect weekly, or publish the app for personal use.
+- [ ] Long Drive/OneDrive index runs: the token is refreshed on a 401 and the request retried once; this is tested per request but not on a real run that outlives the access token.
+- [ ] Mail/calendar CLI commands (today they are reachable through chat intents and tools only).
+- [ ] Website collections: optional same-site crawling depth (today only the listed pages).
