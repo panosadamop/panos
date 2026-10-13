@@ -1,6 +1,6 @@
 # ADR-027: Browser research
 
-- **Status:** Proposed (for acceptance at the M8 exit review)
+- **Status:** Accepted (by the owner, 2026-10-13; Proposed at M8)
 - **Date:** 2026-10-12
 - **Traces:** BR-022, FR-016, US-045, AC-US045-01..03, ADR-023
 

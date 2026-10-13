@@ -1,6 +1,6 @@
 # ADR-029: Node identity, enrollment and mTLS
 
-- **Status:** Proposed (for acceptance at the M9 exit review)
+- **Status:** Accepted (by the owner, 2026-10-13; Proposed at M9)
 - **Date:** 2026-10-12
 - **Traces:** NFR-SEC-006, AC-US061-01, ADR-019, ADR-028
 

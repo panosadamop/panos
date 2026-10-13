@@ -29,9 +29,9 @@ ADRs are binding once **Accepted**. Status changes and superseding decisions are
 | [ADR-023](ADR-023-prompt-injection-defense.md) | Prompt-injection defense | Accepted |
 | [ADR-024](ADR-024-default-privacy-and-policy.md) | Default privacy mode and policy configuration | Accepted |
 | [ADR-025](ADR-025-screenshots.md) | Screenshot handling | Accepted |
-| [ADR-026](ADR-026-connectors.md) | External connectors (mail, calendar, drives, trackers) | Proposed (M8) |
-| [ADR-027](ADR-027-browser-research.md) | Browser research | Proposed (M8) |
-| [ADR-028](ADR-028-control-plane.md) | Control plane (hub) for multiple PCs | Proposed (M9) |
-| [ADR-029](ADR-029-node-identity.md) | Node identity, enrollment and mTLS | Proposed (M9) |
+| [ADR-026](ADR-026-connectors.md) | External connectors (mail, calendar, drives, trackers) | Accepted |
+| [ADR-027](ADR-027-browser-research.md) | Browser research | Accepted |
+| [ADR-028](ADR-028-control-plane.md) | Control plane (hub) for multiple PCs | Accepted |
+| [ADR-029](ADR-029-node-identity.md) | Node identity, enrollment and mTLS | Accepted |
 | [ADR-030](ADR-030-mobile-companion.md) | Mobile companion (PWA first) | Accepted |
 | [ADR-031](ADR-031-estimation-learning.md) | Estimation learning from approved actuals | Accepted |

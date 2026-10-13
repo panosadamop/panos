@@ -1,6 +1,6 @@
 # ADR-028: Control plane (hub) for multiple PCs
 
-- **Status:** Proposed (for acceptance at the M9 exit review)
+- **Status:** Accepted (by the owner, 2026-10-13; Proposed at M9)
 - **Date:** 2026-10-12
 - **Traces:** BR-024, BR-025, FR-026, FR-027, NFR-SEC-006, NFR-PRV-001, US-060..062, AC-US060-01, AC-US061-01..03, AC-US062-01/02, ADR-004, ADR-029
 

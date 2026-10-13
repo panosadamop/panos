@@ -1,6 +1,6 @@
 # ADR-026: External connectors (mail, calendar, drives, trackers)
 
-- **Status:** Proposed (for acceptance at the M8 exit review)
+- **Status:** Accepted (by the owner, 2026-10-13; Proposed at M8)
 - **Date:** 2026-10-12
 - **Traces:** BR-012, BR-016, BR-019, BR-020, FR-017, FR-018, FR-019, NFR-SEC-002, NFR-SEC-004, NFR-PRV-003, US-042, US-043, US-044
 

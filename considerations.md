@@ -259,7 +259,7 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] macOS/Linux: window bounds for capture, the macOS screen-recording permission flow, Wayland via the portal, and installer bundles.
 - [ ] Code signing of the installer (optional for personal use).
 - [ ] **Owner decision (M8):** web search provider for research (R-15): a search API behind an adapter vs URL-driven research only.
-- [ ] Accept or amend ADR-026 and ADR-027 (Proposed in M8).
+- [x] Accept ADR-026 and ADR-027 — accepted by the owner 2026-10-13, unchanged.
 - [ ] Owner live checks for Google, Microsoft, Jira/ADO (`docs/planning/connectors-setup.md`). Nothing was run against real accounts; all connector tests use the fake cloud.
 - [ ] Embeddings (hybrid search) for knowledge collections. They are lexical only today.
 - [ ] Chromium for the packaged app: the frozen sidecar bundles the Playwright driver (+103 MB; the sidecar is now 445 MB) and uses the per-user browser cache (`%LOCALAPPDATA%\ms-playwright`). Chromium itself still needs a one-time `playwright install chromium`; the installer could do it, or offer it on first research.
@@ -267,7 +267,7 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] Long Drive/OneDrive index runs: the token is refreshed on a 401 and the request retried once; this is tested per request but not on a real run that outlives the access token.
 - [ ] Mail/calendar CLI commands (today they are reachable through chat intents and tools only).
 - [ ] Website collections: optional same-site crawling depth (today only the listed pages).
-- [ ] Accept or amend ADR-028 and ADR-029 (Proposed in M9).
+- [x] Accept ADR-028 and ADR-029 — accepted by the owner 2026-10-13, unchanged.
 - [ ] Owner live check with a second real PC (macOS or Linux): join, dashboard passkey, dispatch, remote approval, revoke (`docs/planning/multi-pc-setup.md`).
 - [ ] `panos job start --node` from non-hub PCs: needs upward request messages through the hub (deviation from M9-04).
 - [ ] Push updates to the dashboard (today it polls every 5 s).

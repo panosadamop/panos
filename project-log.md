@@ -430,3 +430,5 @@ Report: [`docs/planning/reports/M10.md`](docs/planning/reports/M10.md). The owne
 - The tests now have neutral ids (`7981cea`), so the report can no longer print token-shaped strings. `main` is pushed and tracks `origin/main`; the local backup branch was deleted.
 
 **Owner (2026-10-13):** "accept ADR-030 and ADR-031". Both are Accepted unchanged and now binding: the PWA companion, the hub-relayed conversation, no third-party push, and calibration only after owner approval.
+
+**Owner (2026-10-13):** "accept ADR-026 to ADR-029 and push". All four are Accepted unchanged and now binding: connectors, browser research, the control plane (hub), and node identity/mTLS. All ADRs (001–031) are now Accepted.
