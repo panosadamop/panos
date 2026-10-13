@@ -66,7 +66,9 @@ export function App({ initial = "conversation" }: { initial?: ViewId }) {
   return (
     <div className="app">
       <header className="topbar">
+        <span className={`reactor reactor-${stream}`} aria-hidden="true" />
         <h1>{t("appName")}</h1>
+        <HudClock />
         <span className={`dot dot-${stream}`} role="status" aria-label={t(statusKey)}>
           {t(statusKey)}
         </span>
@@ -95,5 +97,20 @@ export function App({ initial = "conversation" }: { initial?: ViewId }) {
       </nav>
       <main id="main">{VIEWS.find((v) => v.id === view)?.render()}</main>
     </div>
+  );
+}
+
+/** A HUD readout of the local time (decorative: the OS already shows the time). */
+function HudClock() {
+  const { lang } = useI18n();
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <span className="hud-clock" aria-hidden="true">
+      {now.toLocaleTimeString(lang, { hour12: false })}
+    </span>
   );
 }

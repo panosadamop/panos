@@ -96,7 +96,10 @@ export function App({ initial }: { initial?: ViewId }) {
   return (
     <div className="shell">
       <header>
-        <h1>{t("appName")}</h1>
+        <h1>
+          <span className="reactor" aria-hidden="true" />
+          {t("appName")}
+        </h1>
         <nav aria-label="main">
           {VIEWS.map((v) => (
             <button

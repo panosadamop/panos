@@ -60,6 +60,7 @@ export function SignIn({ onSignedIn }: { onSignedIn: (name: string) => void }) {
 
   return (
     <main className="signin" aria-labelledby="signin-title">
+      <span className="reactor" aria-hidden="true" />
       <h1 id="signin-title">{t("auth.title")}</h1>
       {!supported() && <p role="alert">{t("auth.unsupported")}</p>}
       {message && <p role="alert">{message}</p>}

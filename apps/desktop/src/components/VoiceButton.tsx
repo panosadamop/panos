@@ -44,7 +44,8 @@ export function VoiceButton() {
           if (e.key === " " || e.key === "Enter") release();
         }}
       >
-        🎙 {label}
+        <span aria-hidden="true">◉ </span>
+        {label}
       </button>
       {running && (
         <button type="button" onClick={() => void api.POST("/api/v1/voice/stop-talking")}>
