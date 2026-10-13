@@ -150,7 +150,7 @@ Report: [`docs/planning/reports/M2.md`](docs/planning/reports/M2.md). Awaiting a
 **Owner:** "yes", in answer to "approve M3?" and "commit M0–M2?". Claude treated it as approval of both.
 
 **Claude:**
-- Committed M0–M2 as `f53b847` (217 files) under the owner's Git identity.
+- Committed M0–M2 as `e15ba02` (217 files) under the owner's Git identity.
 - Inventoried the machine's installed apps (read-only), then implemented M3:
   - project registry (refuses roots, home and system dirs), with persisted per-project policy overrides and an audited privacy change;
   - stack/build/test detection for 10 stacks (fixture repos);
@@ -218,7 +218,7 @@ Report: [`docs/planning/reports/M4.md`](docs/planning/reports/M4.md). M3 and M4 
 **Owner:** "approve both", in answer to "approve M5?" and "commit M3 and M4?".
 
 **Claude:**
-- Committed M3+M4 as one commit, `58de356` (173 files). The two milestones share files (domain, persistence, container), so a clean split was not possible.
+- Committed M3+M4 as one commit, `4c8d088` (173 files). The two milestones share files (domain, persistence, container), so a clean split was not possible.
 - Implemented M5:
   - asyncio job runner (recovery to PAUSED, pause at safe points, resume from persisted state, cancel with process-tree kill, approval-driven resume, limits);
   - shadow-Git checkpoints with exact-byte rollback;
@@ -254,7 +254,7 @@ Report: [`docs/planning/reports/M5.md`](docs/planning/reports/M5.md). M5 not com
 **Owner:** "approve both", in answer to "approve M6?" and "commit M5?".
 
 **Claude:**
-- Committed M5 as `839319d`.
+- Committed M5 as `b6cf9cb`.
 - Implemented M6:
   - versioned requirements with stable per-project keys (16 types);
   - cascade approval with exclusions and per-item records;
@@ -288,7 +288,7 @@ Report: [`docs/planning/reports/M6.md`](docs/planning/reports/M6.md). M6 not com
 **Owner:** "approve both", in answer to "approve M7?" and "commit M6?".
 
 **Claude:**
-- Committed M6 as `3ba0038`.
+- Committed M6 as `5e31f79`.
 - Implemented M7:
   - voice worker (separate supervised process) with push-to-talk, an ONNX wake word (dev model, opt-in), Silero VAD, faster-whisper `small`, Piper with a Greek/English splitter, barge-in, and routing ("stop talking" vs. job control);
   - `panos voice …` CLI, `/voice/*` API, spoken notifications for what needs the user;
@@ -326,7 +326,7 @@ Report: [`docs/planning/reports/M7.md`](docs/planning/reports/M7.md). M7 not com
 
 ### 11. Commit of M7, then M8 — Integrations, research and documents
 
-**Owner:** approved the M7 commit and M8 (M7 is committed as `9de9a8c`), and decided on 2026-10-09:
+**Owner:** approved the M7 commit and M8 (M7 is committed as `2da16ad`), and decided on 2026-10-09:
 - Gmail / Google Calendar first;
 - Jira Cloud and Azure DevOps;
 - Playwright Chromium with an isolated profile;
@@ -367,7 +367,7 @@ Report: [`docs/planning/reports/M8.md`](docs/planning/reports/M8.md). M8 not com
 - test machines: **this PC plus a Mac or Linux PC**.
 
 **Claude:**
-- Committed M8 as `9442fa8`.
+- Committed M8 as `8960600`.
 - Decomposed M9 into M9-00..09 in `PLAN_PROPOSAL.md`: ADR-028/029; the hub service on PostgreSQL; a private CA with one-time enrollment, mTLS and revocation; an outbound node link; remote dispatch under the target's policy; shared approvals verified by the target; allowlisted read-only aggregates with a LOCAL_ONLY metadata filter; passkey auth; the React dashboard; two-node end-to-end tests and the owner guide.
 - Noted for M9-01: the Docker daemon is not running on this PC and there is no local PostgreSQL. Tests will use an embedded PostgreSQL (or CI's), and Docker Compose is for the owner's hub.
 - Implemented M9:
@@ -403,7 +403,7 @@ Report: [`docs/planning/reports/M9.md`](docs/planning/reports/M9.md). M9 not com
 - learning: **suggest, the owner approves**.
 
 **Claude:**
-- Committed M9 as `a1febb1`.
+- Committed M9 as `3699d6c`.
 - Decomposed M10 into M10-00..09 in `PLAN_PROPOSAL.md`: ADR-030/031; effort store with approval of actuals; manual logging; tracker worklog import; job metrics as a separate machine series; calibration with suggestions the owner approves; model/cost analytics; a PWA companion with a hub-relayed conversation; native-app contract; end-to-end tests and docs.
 - Implemented M10:
   - **ADRs:** ADR-030 and ADR-031 (Proposed).
@@ -419,3 +419,12 @@ Report: [`docs/planning/reports/M9.md`](docs/planning/reports/M9.md). M9 not com
 - **Found while testing:** Playwright's request client ignores the browser's certificate pin, so the manifest check moved into the page.
 
 Report: [`docs/planning/reports/M10.md`](docs/planning/reports/M10.md). The owner asked for M10 to be committed (2026-10-12). Still awaiting the owner's phone check and the ADR-030/031 decisions.
+
+**Owner (2026-10-13):** "push it".
+- Committed M10 as `8a2ede6`.
+- The first push to `github.com/panosadamop/panos` (an empty repo) was rejected by GitHub push protection. `docs/traceability/coverage.md` printed the fake tokens from the redaction tests as pytest ids.
+- With the owner's approval, history was rewritten to replace those ids with neutral names in `coverage.md` only, so every commit hash changed:
+  - M0–M2 `e15ba02`, M3+M4 `4c8d088`, M5 `b6cf9cb`, M6 `5e31f79`;
+  - M7 `2da16ad`, M8 `8960600`, M9 `3699d6c`, M10 `8a2ede6`.
+  - The hashes in the docs were updated to match.
+- The tests now have neutral ids (`7981cea`), so the report can no longer print token-shaped strings. `main` is pushed and tracks `origin/main`; the local backup branch was deleted.

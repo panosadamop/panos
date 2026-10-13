@@ -221,12 +221,12 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 ## 7. Open follow-ups
 
 - [ ] Add a Git remote so CI runs on macOS/Linux. Commits need explicit owner approval.
-- [x] Commit M0–M2 — done 2026-10-09 (`f53b847`).
-- [x] Commit M3 — done 2026-10-09 (`58de356`, together with M4).
+- [x] Commit M0–M2 — done 2026-10-09 (`e15ba02`).
+- [x] Commit M3 — done 2026-10-09 (`4c8d088`, together with M4).
 - [ ] Coverage under-reports async API handlers run in TestClient's portal thread. Investigate (e.g. an httpx `ASGITransport` client) if API-layer coverage numbers matter.
 - [ ] Honour nested `.gitignore` files in the walker/indexer.
 - [x] Secret redaction before cloud prompts (M4, `code_safe` redaction in the gateway). The *index* itself still stores raw text locally; that is by design for a local cache.
-- [x] Commit M4 — done 2026-10-09 (`58de356`).
+- [x] Commit M4 — done 2026-10-09 (`4c8d088`).
 - [ ] Retrieval uses FTS snippets (~matched lines), not whole chunks. Pass full chunk text to the model when context budgets allow.
 - [ ] An LLM-based intent classifier on the local light tier, for paraphrased commands the rules miss.
 - [ ] Approval-gated budget escalation: still open. M5 limits block the job; the user resumes it, optionally with a larger budget via a new job.
