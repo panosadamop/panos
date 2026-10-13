@@ -13,6 +13,10 @@ from typing import Final
 
 OWW: Final = "https://github.com/dscripka/openWakeWord/releases/download/v0.5.1"
 PIPER: Final = "https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0"
+# el_GR "joy" was added after the v1.0.0 tag; pinned to a fixed commit, not to main.
+PIPER_EL: Final = (
+    "https://huggingface.co/rhasspy/piper-voices/resolve/c10ece1aade47bb51c153c893d14e5bf8e5b7117"
+)
 SILERO: Final = "https://github.com/snakers4/silero-vad/raw/v5.1.2/src/silero_vad/data"
 
 
@@ -25,10 +29,12 @@ class ModelFile:
 
 FILES: Final = (
     ModelFile("vad/silero_vad.onnx", f"{SILERO}/silero_vad.onnx"),
-    ModelFile("piper/el_GR-joy-medium.onnx", f"{PIPER}/el/el_GR/joy/medium/el_GR-joy-medium.onnx"),
+    ModelFile(
+        "piper/el_GR-joy-medium.onnx", f"{PIPER_EL}/el/el_GR/joy/medium/el_GR-joy-medium.onnx"
+    ),
     ModelFile(
         "piper/el_GR-joy-medium.onnx.json",
-        f"{PIPER}/el/el_GR/joy/medium/el_GR-joy-medium.onnx.json",
+        f"{PIPER_EL}/el/el_GR/joy/medium/el_GR-joy-medium.onnx.json",
     ),
     ModelFile(
         "piper/en_US-lessac-medium.onnx", f"{PIPER}/en/en_US/lessac/medium/en_US-lessac-medium.onnx"

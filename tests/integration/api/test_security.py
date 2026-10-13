@@ -58,6 +58,48 @@ def test_allowed_origin_accepted(client: TestClient) -> None:
     assert client.get("/api/v1/health", headers={"Origin": ORIGIN}).status_code == 200
 
 
+def test_preflight_from_allowed_origin_needs_no_token(anon_client: TestClient) -> None:
+    """Browsers send CORS preflights without credentials; the WebView's origin differs."""
+    r = anon_client.options(
+        "/api/v1/projects",
+        headers={
+            "Origin": ORIGIN,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "authorization, content-type",
+        },
+    )
+    assert r.status_code == 204
+    assert r.headers["access-control-allow-origin"] == ORIGIN
+    assert "authorization" in r.headers["access-control-allow-headers"]
+    assert "POST" in r.headers["access-control-allow-methods"]
+    assert r.content == b""
+
+
+def test_preflight_from_foreign_origin_rejected(anon_client: TestClient) -> None:
+    r = anon_client.options(
+        "/api/v1/projects",
+        headers={"Origin": "https://evil.example", "Access-Control-Request-Method": "GET"},
+    )
+    assert r.status_code == 403
+    assert "access-control-allow-origin" not in r.headers
+
+
+def test_options_without_preflight_headers_still_needs_token(anon_client: TestClient) -> None:
+    assert anon_client.options("/api/v1/projects", headers={"Origin": ORIGIN}).status_code == 401
+
+
+def test_responses_to_allowed_origin_carry_exact_cors_origin(
+    client: TestClient, anon_client: TestClient
+) -> None:
+    ok = client.get("/api/v1/health", headers={"Origin": ORIGIN})
+    assert ok.headers["access-control-allow-origin"] == ORIGIN
+    assert ok.headers["vary"] == "Origin"
+    denied = anon_client.get("/api/v1/health", headers={"Origin": ORIGIN})
+    assert denied.status_code == 401
+    assert denied.headers["access-control-allow-origin"] == ORIGIN  # the app can read the 401
+    assert "access-control-allow-origin" not in client.get("/api/v1/health").headers
+
+
 def test_unknown_routes_also_require_auth(anon_client: TestClient) -> None:
     assert anon_client.get("/api/v1/does-not-exist").status_code == 401
 
