@@ -432,3 +432,14 @@ Report: [`docs/planning/reports/M10.md`](docs/planning/reports/M10.md). The owne
 **Owner (2026-10-13):** "accept ADR-030 and ADR-031". Both are Accepted unchanged and now binding: the PWA companion, the hub-relayed conversation, no third-party push, and calibration only after owner approval.
 
 **Owner (2026-10-13):** "accept ADR-026 to ADR-029 and push". All four are Accepted unchanged and now binding: connectors, browser research, the control plane (hub), and node identity/mTLS. All ADRs (001–031) are now Accepted.
+
+**Owner (2026-10-13):** "continue from where we stopped and run the app for local test".
+- Started `panos serve`: Ollama ok, Anthropic unconfigured. `panos ask` worked both without a model and with the local model.
+- Started `tauri dev`: the app started, but the node rejected all of its requests (403 `reason=origin`), because the allowlist holds only the packaged WebView origins and not the Vite dev origin `http://localhost:5173`.
+- Restarted the node with `PANOS_ALLOWED_ORIGINS` including the dev origin and restarted the app: 0 rejections, event WebSocket accepted. Documented in the README and `considerations.md`; the default was not changed.
+
+**Owner (2026-10-13):** "add the --dev option and commit".
+- Added `panos serve --dev`: `effective_origins()` adds `DEV_ALLOWED_ORIGINS` (`http://localhost:5173`) to the configured origins and logs a `dev_origins_allowed` warning. The CLI also prints a notice.
+- The desktop shell's `node_command` appends `--dev` in debug builds (`cfg!(debug_assertions)`). Release builds are unchanged.
+- Tests (NFR-SEC-001): the origins with and without dev mode, the API returning 403 → 200 for the dev origin, CLI flag wiring, and a Rust unit test for `--dev` added once.
+

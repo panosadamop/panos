@@ -280,3 +280,4 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] Push notifications for approvals without internet push services (e.g. a LAN notification bridge) – open design question.
 - [ ] Effort: logging hours from the phone/dashboard (today: CLI and desktop), and per-role calibration (the role split is still configured).
 - [ ] Analytics charts over time in the dashboard (today: totals, meters and tables; the daily series is in the API).
+- [x] Desktop dev mode: the node rejected the Vite dev origin `http://localhost:5173` (found in the local run of 2026-10-13: every UI request returned 403 `reason=origin`). Fixed with `panos serve --dev`, which adds only that origin and logs a `dev_origins_allowed` warning. Debug desktop builds start the node with `--dev`; the default allowlist is unchanged. Note: a node that is already running without `--dev` is still attached as-is, and the dev UI then gets 403s. Restart it with `--dev`.

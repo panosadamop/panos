@@ -16,6 +16,7 @@ from filelock import FileLock, Timeout
 from panos_core import __version__
 from panos_core.config import PanosSettings, ensure_directories
 from panos_core.config.runtime import generate_token, remove_runtime_file, write_runtime_file
+from panos_core.config.settings import DEV_ALLOWED_ORIGINS
 from panos_core.observability import configure_logging, get_logger
 from panos_node_api.app import create_app
 from panos_node_api.security import AuthConfig
@@ -39,7 +40,13 @@ def bind_loopback_socket(port: int = 0) -> socket.socket:
     return sock
 
 
-def serve(settings: PanosSettings, *, port: int = 0) -> None:
+def effective_origins(settings: PanosSettings, *, dev: bool = False) -> tuple[str, ...]:
+    """The configured origins, plus the desktop dev server's origin in dev mode."""
+    extra = DEV_ALLOWED_ORIGINS if dev else ()
+    return tuple(dict.fromkeys((*settings.allowed_origins, *extra)))
+
+
+def serve(settings: PanosSettings, *, port: int = 0, dev: bool = False) -> None:
     """Run the node in the foreground. Raises :class:`AlreadyRunningError`."""
     ensure_directories(settings)
     configure_logging(
@@ -69,7 +76,11 @@ def serve(settings: PanosSettings, *, port: int = 0) -> None:
         sock = bind_loopback_socket(port)
         bound_port = sock.getsockname()[1]
         token = generate_token()
-        auth = AuthConfig.for_loopback(token, bound_port, settings.allowed_origins)
+        origins = effective_origins(settings, dev=dev)
+        if dev:
+            # Never silent: dev mode widens who may call the node (CLAUDE.md principle 10).
+            log.warning("dev_origins_allowed", origins=list(DEV_ALLOWED_ORIGINS))
+        auth = AuthConfig.for_loopback(token, bound_port, origins)
         app = create_app(settings, auth, on_shutdown=cleanup)
         write_runtime_file(
             settings.runtime_file, host=LOOPBACK, port=bound_port, token=token, version=__version__

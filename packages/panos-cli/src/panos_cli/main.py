@@ -46,13 +46,22 @@ def version() -> None:
 @app.command()
 def serve(
     port: Annotated[int, typer.Option(help="Loopback port (0 = random free port).")] = 0,
+    dev: Annotated[
+        bool,
+        typer.Option(
+            "--dev",
+            help="Also accept the desktop dev server (http://localhost:5173). Development only.",
+        ),
+    ] = False,
 ) -> None:
     """Run the local Panos node in the foreground."""
     from panos_node_api.server import AlreadyRunningError
     from panos_node_api.server import serve as run_node
 
     try:
-        run_node(load_settings(), port=port)
+        if dev:
+            typer.echo("dev mode: also accepting requests from http://localhost:5173", err=True)
+        run_node(load_settings(), port=port, dev=dev)
     except AlreadyRunningError as exc:
         typer.echo(f"error: {exc}", err=True)
         raise typer.Exit(EXIT_ALREADY_RUNNING) from exc

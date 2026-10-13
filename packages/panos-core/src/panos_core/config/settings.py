@@ -29,6 +29,9 @@ LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR"]
 
 # Origins the Tauri WebView uses (macOS/Linux and Windows respectively).
 DEFAULT_ALLOWED_ORIGINS = ("tauri://localhost", "http://tauri.localhost")
+# Added only by `panos serve --dev`: the Vite dev server the desktop app loads in `tauri dev`
+# (`devUrl` in apps/desktop/src-tauri/tauri.conf.json).
+DEV_ALLOWED_ORIGINS = ("http://localhost:5173",)
 
 
 def _default_data_dir() -> Path:

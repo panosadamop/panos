@@ -76,3 +76,18 @@ def test_node_commands_report_not_running(settings: PanosSettings, args: list[st
     result = runner.invoke(app, args)
     assert result.exit_code == EXIT_NOT_RUNNING
     assert "not running" in result.stdout
+
+
+@pytest.mark.req("NFR-SEC-001")
+@pytest.mark.parametrize(("args", "dev"), [([], False), (["--dev"], True)])
+def test_serve_passes_dev_flag(
+    settings: PanosSettings, monkeypatch: pytest.MonkeyPatch, args: list[str], dev: bool
+) -> None:
+    import panos_node_api.server as server
+
+    seen: dict[str, object] = {}
+    monkeypatch.setattr(server, "serve", lambda _s, *, port, dev: seen.update(port=port, dev=dev))
+    result = runner.invoke(app, ["serve", *args])
+    assert result.exit_code == 0
+    assert seen == {"port": 0, "dev": dev}
+    assert ("dev mode" in result.output) is dev

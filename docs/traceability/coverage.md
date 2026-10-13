@@ -1,12 +1,12 @@
 # Requirement test coverage
 
-_Generated 2026-10-12 14:08 UTC by `pytest --req-report`. Do not edit by hand._
+_Generated 2026-10-13 12:14 UTC by `pytest --req-report`. Do not edit by hand._
 
 A requirement counts as *covered* when at least one test is tagged with it. Coverage grows milestone by milestone; untested requirements belong to later milestones.
 
 | Type | Total | Covered | Passing |
 |---|---|---|---|
-| BR | 29 | 28 | 27 |
+| BR | 29 | 29 | 28 |
 | FR | 30 | 30 | 29 |
 | NFR | 31 | 21 | 21 |
 | EPIC | 7 | 0 | 0 |
@@ -39,6 +39,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | BR-020 | Calendar | passed | 10 |
 | BR-021 | Screen understanding | passed | 5 |
 | BR-022 | Browser boundary | passed | 14 |
+| BR-023 | Long-running tasks | passed | 11 |
 | BR-024 | Multi-PC | passed | 12 |
 | BR-025 | Dashboard | passed | 8 |
 | BR-026 | Mobile | passed | 1 |
@@ -90,7 +91,7 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
 | NFR-REL-001 | Persist job state before consequential steps. | passed | 4 |
 | NFR-REL-002 | Recover safely after runtime/UI crashes. | passed | 3 |
 | NFR-REL-004 | Failed tasks must not be reported as successful. | passed | 1 |
-| NFR-SEC-001 | Least privilege by default. | passed | 134 |
+| NFR-SEC-001 | Least privilege by default. | passed | 142 |
 | NFR-SEC-002 | No unrestricted LLM shell/desktop access. | passed | 262 |
 | NFR-SEC-003 | Encrypt credentials/secrets at rest using OS-backed secure storage ... | passed | 4 |
 | NFR-SEC-004 | Never include secrets in logs/prompts unless explicitly required an... | passed | 97 |
@@ -1112,6 +1113,18 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[browser.upload]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[email.send]` — passed
   - `tests/unit/policy/test_policy_engine.py::test_p4_is_denied[fs.write.git_internal]` — passed
+- **BR-023**
+  - `tests/integration/api/test_jobs_api.py::test_cli_open_project_implement_test_and_request_commit` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_api_errors` — passed
+  - `tests/integration/api/test_jobs_api.py::test_job_lifecycle_over_the_api` — passed
+  - `tests/integration/api/test_jobs_api.py::test_work_requests_in_conversation_start_jobs` — passed
+  - `tests/integration/jobs/test_runner.py::test_cancel_kills_the_running_process_tree` — passed
+  - `tests/integration/jobs/test_runner.py::test_crash_recovery_pauses_interrupted_jobs` — passed
+  - `tests/integration/jobs/test_runner.py::test_docker_inspection_needs_no_approval` — passed
+  - `tests/integration/jobs/test_runner.py::test_only_user_relevant_transitions_notify` — passed
+  - `tests/integration/jobs/test_runner.py::test_pause_at_safe_point_and_resume_from_persisted_state` — passed
+  - `tests/integration/jobs/test_runner.py::test_rejected_docker_execution_spawns_nothing` — passed
+  - `tests/integration/jobs/test_runner.py::test_token_and_runtime_limits_block_the_job` — passed
 - **BR-024**
   - `tests/e2e/test_multi_pc.py::test_hub_node_join_dispatch_and_revoke_with_real_processes` — passed
   - `tests/integration/hub/test_hub_service.py::test_audit_chain_detects_tampering` — passed
@@ -2120,6 +2133,10 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/api/test_security.py::test_localhost_host_header_accepted` — passed
   - `tests/integration/api/test_security.py::test_missing_token_is_401_problem` — passed
   - `tests/integration/api/test_security.py::test_no_shell_or_exec_endpoints_exist` — passed
+  - `tests/integration/api/test_security.py::test_options_without_preflight_headers_still_needs_token` — passed
+  - `tests/integration/api/test_security.py::test_preflight_from_allowed_origin_needs_no_token` — passed
+  - `tests/integration/api/test_security.py::test_preflight_from_foreign_origin_rejected` — passed
+  - `tests/integration/api/test_security.py::test_responses_to_allowed_origin_carry_exact_cors_origin` — passed
   - `tests/integration/api/test_security.py::test_unknown_routes_also_require_auth` — passed
   - `tests/integration/api/test_security.py::test_websocket_with_foreign_origin_is_closed` — passed
   - `tests/integration/api/test_security.py::test_wrong_token_is_401[Basic test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
@@ -2127,6 +2144,10 @@ A requirement counts as *covered* when at least one test is tagged with it. Cove
   - `tests/integration/api/test_security.py::test_wrong_token_is_401[Bearer test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
   - `tests/integration/api/test_security.py::test_wrong_token_is_401[bearer test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
   - `tests/integration/api/test_security.py::test_wrong_token_is_401[test-token-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]` — passed
+  - `tests/integration/api/test_server.py::test_dev_origin_is_allowed_only_in_dev_mode` — passed
+  - `tests/integration/api/test_server.py::test_dev_origin_reaches_the_api_only_in_dev_mode` — passed
+  - `tests/integration/cli/test_cli.py::test_serve_passes_dev_flag[args0-False]` — passed
+  - `tests/integration/cli/test_cli.py::test_serve_passes_dev_flag[args1-True]` — passed
   - `tests/integration/projects/test_git_tools.py::test_paths_outside_project_are_refused` — passed
   - `tests/integration/projects/test_project_service.py::test_dangerously_broad_locations_are_refused` — passed
   - `tests/integration/projects/test_project_service.py::test_policy_overrides_tighten_and_refuse_illegal_loosening` — passed

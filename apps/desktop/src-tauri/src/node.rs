@@ -75,8 +75,17 @@ pub fn healthy(conn: &Connection) -> bool {
 }
 
 /// How to start the node: a bundled `panos-node` next to the app, `PANOS_NODE_CMD`, or
-/// `panos` on PATH (developer installs).
-pub fn node_command(exe_dir: Option<&Path>, env: &dyn Fn(&str) -> Option<String>) -> Vec<String> {
+/// `panos` on PATH (developer installs). `dev` (debug builds, which load the Vite dev server)
+/// appends `--dev` so the node accepts that origin.
+pub fn node_command(exe_dir: Option<&Path>, env: &dyn Fn(&str) -> Option<String>, dev: bool) -> Vec<String> {
+    let mut command = base_node_command(exe_dir, env);
+    if dev && !command.iter().any(|a| a == "--dev") {
+        command.push("--dev".into());
+    }
+    command
+}
+
+fn base_node_command(exe_dir: Option<&Path>, env: &dyn Fn(&str) -> Option<String>) -> Vec<String> {
     if let Some(dir) = exe_dir {
         let name = if cfg!(windows) { "panos-node.exe" } else { "panos-node" };
         // Installed layout: <app>/panos-node/panos-node(.exe) (one-folder PyInstaller build).
@@ -118,7 +127,7 @@ pub fn ensure_node(
             return Ok((conn, None));
         }
     }
-    let command = node_command(exe_dir, env);
+    let command = node_command(exe_dir, env, cfg!(debug_assertions));
     let mut child = spawn(&command).map_err(|e| format!("could not start `{}`: {e}", command.join(" ")))?;
     let started = Instant::now();
     while started.elapsed() < timeout {
@@ -185,15 +194,23 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("panos-bin-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let none = env_of(&[]);
-        assert_eq!(node_command(Some(&dir), &none), vec!["panos", "serve"]);
+        assert_eq!(node_command(Some(&dir), &none, false), vec!["panos", "serve"]);
         let env = env_of(&[("PANOS_NODE_CMD", "uv run panos serve")]);
-        assert_eq!(node_command(Some(&dir), &env), vec!["uv", "run", "panos", "serve"]);
+        assert_eq!(node_command(Some(&dir), &env, false), vec!["uv", "run", "panos", "serve"]);
         std::fs::create_dir_all(dir.join("panos-node")).unwrap();
         let exe = dir.join("panos-node").join(if cfg!(windows) { "panos-node.exe" } else { "panos-node" });
         std::fs::write(&exe, b"").unwrap();
-        assert_eq!(node_command(Some(&dir), &env)[1], "serve");
-        assert!(node_command(Some(&dir), &env)[0].ends_with(exe.file_name().unwrap().to_str().unwrap()));
+        assert_eq!(node_command(Some(&dir), &env, false)[1], "serve");
+        assert!(node_command(Some(&dir), &env, false)[0].ends_with(exe.file_name().unwrap().to_str().unwrap()));
         std::fs::remove_dir_all(&dir).ok();
+    }
+
+    #[test]
+    fn dev_builds_start_the_node_in_dev_mode_once() {
+        let none = env_of(&[]);
+        assert_eq!(node_command(None, &none, true), vec!["panos", "serve", "--dev"]);
+        let env = env_of(&[("PANOS_NODE_CMD", "uv run panos serve --dev")]);
+        assert_eq!(node_command(None, &env, true), vec!["uv", "run", "panos", "serve", "--dev"]);
     }
 
     #[test]

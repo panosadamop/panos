@@ -123,7 +123,8 @@ The desktop app (Tauri 2 + React) attaches to a running node or starts it. It pr
 
 ```bash
 pnpm install
-pnpm --dir apps/desktop tauri dev               # development (uses `panos serve` on PATH or PANOS_NODE_CMD)
+pnpm --dir apps/desktop tauri dev               # development: starts `panos serve --dev` (PATH or PANOS_NODE_CMD)
+uv run panos serve --dev                        # or run the node yourself first; --dev accepts the Vite origin :5173
 pnpm --dir apps/desktop check                   # typecheck, Vitest + axe, generated-code drift
 uv run python scripts/build_sidecar.py --voice  # frozen node for the installer (~315 MB)
 pnpm --dir apps/desktop tauri build --config src-tauri/tauri.bundle.conf.json   # NSIS installer
