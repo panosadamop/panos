@@ -1,6 +1,6 @@
 # ADR-031: Estimation learning from approved actuals
 
-- **Status:** Proposed (for acceptance at the M10 exit review)
+- **Status:** Accepted (by the owner, 2026-10-13; Proposed at M10)
 - **Date:** 2026-10-12
 - **Traces:** BR-014, BR-015, KNOWLEDGE_MEMORY "estimation memory", ADR-014
 

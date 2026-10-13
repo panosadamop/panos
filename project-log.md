@@ -428,3 +428,5 @@ Report: [`docs/planning/reports/M10.md`](docs/planning/reports/M10.md). The owne
   - M7 `2da16ad`, M8 `8960600`, M9 `3699d6c`, M10 `8a2ede6`.
   - The hashes in the docs were updated to match.
 - The tests now have neutral ids (`7981cea`), so the report can no longer print token-shaped strings. `main` is pushed and tracks `origin/main`; the local backup branch was deleted.
+
+**Owner (2026-10-13):** "accept ADR-030 and ADR-031". Both are Accepted unchanged and now binding: the PWA companion, the hub-relayed conversation, no third-party push, and calibration only after owner approval.

@@ -274,7 +274,7 @@ Status legend: **Resolved** · **Mitigated** (risk reduced, still relevant) · *
 - [ ] The hub as a background service (Windows service / launchd / systemd) and an installer option; today `panos hub serve` runs in a terminal or at login.
 - [ ] The hub in the frozen sidecar is untested: the build was not rerun in M9. The hub was run from the development install; smoke-test `panos-node hub serve` before packaging it.
 - [ ] Hub database backups (beyond the Docker volume) and hub CA rotation.
-- [ ] Accept or amend ADR-030 and ADR-031 (Proposed in M10).
+- [x] Accept ADR-030 and ADR-031 — accepted by the owner 2026-10-13, unchanged.
 - [ ] Owner live check on a real phone (iOS and/or Android): install the PWA, passkey, talk, approve (`docs/planning/mobile-and-estimates.md`).
 - [ ] Native app (React Native) and its sign-in method (native passkeys need an associated public domain).
 - [ ] Push notifications for approvals without internet push services (e.g. a LAN notification bridge) – open design question.

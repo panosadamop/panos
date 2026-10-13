@@ -33,5 +33,5 @@ ADRs are binding once **Accepted**. Status changes and superseding decisions are
 | [ADR-027](ADR-027-browser-research.md) | Browser research | Proposed (M8) |
 | [ADR-028](ADR-028-control-plane.md) | Control plane (hub) for multiple PCs | Proposed (M9) |
 | [ADR-029](ADR-029-node-identity.md) | Node identity, enrollment and mTLS | Proposed (M9) |
-| [ADR-030](ADR-030-mobile-companion.md) | Mobile companion (PWA first) | Proposed (M10) |
-| [ADR-031](ADR-031-estimation-learning.md) | Estimation learning from approved actuals | Proposed (M10) |
+| [ADR-030](ADR-030-mobile-companion.md) | Mobile companion (PWA first) | Accepted |
+| [ADR-031](ADR-031-estimation-learning.md) | Estimation learning from approved actuals | Accepted |
