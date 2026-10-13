@@ -15,9 +15,22 @@ SECRETS = [
     "xoxb-1234567890-abcdefghij",
     "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV",
 ]
+# Neutral test ids: the generated coverage report must never print token-shaped strings
+# (GitHub push protection flags them as leaked secrets).
+SECRET_IDS = [
+    "anthropic",
+    "openai-project",
+    "openai",
+    "github-classic",
+    "github-fine-grained",
+    "aws",
+    "google",
+    "slack",
+    "jwt",
+]
 
 
-@pytest.mark.parametrize("secret", SECRETS)
+@pytest.mark.parametrize("secret", SECRETS, ids=SECRET_IDS)
 def test_known_secret_formats_are_redacted(secret: str) -> None:
     out = redact_text(f"value is {secret} here")
     assert secret not in out
@@ -99,6 +112,7 @@ def test_tuples_and_sets_keep_their_type() -> None:
         "sk_live_" + "4eC39HqLyjWDarjtT1zdp7dc",
         "SG." + "ngeVfQFYQlKU0ufo8x5d1A" + "." + "TwL2iGABf9DHoTf-09kqeF8tAmbihYzrnopKc-1s5cr",
     ],
+    ids=["gitlab", "npm", "huggingface", "stripe", "sendgrid"],
 )
 def test_more_provider_formats_redacted(secret: str) -> None:
     assert secret not in redact_text(f"x {secret} y")
